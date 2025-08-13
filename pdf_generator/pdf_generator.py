@@ -276,15 +276,45 @@ class PDFGenerator:
             # Determine if value should be bold
             should_be_bold = info["label"] in ["SpanTran Number:", "Name on Application:", "Name on Documentation:"]
 
-            # Draw value
-            self.document.draw_text(
-                normalize_text(info["value"]),
-                value_x,
-                current_y,
-                9,
-                "bold" if should_be_bold else "regular",
-                BLACK_COLOR,
-            )
+            # Calculate available width for value
+            available_width = self.document.page_width - value_x - self.config.layout.RIGHT_MARGIN
+            
+            # Check if text needs wrapping (for long names)
+            if len(info["value"]) > 40 and info["label"] in ["Name on Application:", "Name on Documentation:"]:
+                # Wrap text for long names
+                wrapped_lines = wrap_text(info["value"], self.document.font_manager, 9, available_width, "bold" if should_be_bold else "regular")
+                
+                # Draw first line
+                self.document.draw_text(
+                    normalize_text(wrapped_lines[0]),
+                    value_x,
+                    current_y,
+                    9,
+                    "bold" if should_be_bold else "regular",
+                    BLACK_COLOR,
+                )
+                
+                # Draw additional lines if any
+                for line in wrapped_lines[1:]:
+                    current_y -= 12
+                    self.document.draw_text(
+                        normalize_text(line),
+                        value_x,
+                        current_y,
+                        9,
+                        "bold" if should_be_bold else "regular",
+                        BLACK_COLOR,
+                    )
+            else:
+                # Draw single line value
+                self.document.draw_text(
+                    normalize_text(info["value"]),
+                    value_x,
+                    current_y,
+                    9,
+                    "bold" if should_be_bold else "regular",
+                    BLACK_COLOR,
+                )
 
             current_y -= 12  # TypeScript line height
 
@@ -378,7 +408,7 @@ class PDFGenerator:
         # Draw credential header
         self.document.draw_text(
             f"CREDENTIAL {credential_index} of {total_credentials}",
-            50,  # Match new left margin
+            self.config.layout.LEFT_MARGIN + 15,  # Match label positioning
             current_y,
             9,
             "bold",
@@ -405,8 +435,8 @@ class PDFGenerator:
         # Calculate label width for alignment
         max_label_width = max(self.document.get_text_width(detail["label"], 9, "bold") for detail in credential_details)
 
-        # Positioning - move everything right and increase spacing between label and value
-        label_x = 50  # Move right from 35 to 50
+        # Positioning - use config margins consistently  
+        label_x = self.config.layout.LEFT_MARGIN + 15  # Slight indent from margin
         value_x = label_x + max_label_width + 25  # Increased spacing from 15 to 25
 
         # Draw each detail
@@ -421,9 +451,17 @@ class PDFGenerator:
             # Draw label
             self.document.draw_text(normalize_text(detail["label"]), label_x, current_y, 9, "bold", BLACK_COLOR)
 
-            # Calculate available width for value - match left margin (50px) on right side
-            right_margin = 50  # Match the left margin
-            available_width = self.document.page_width - value_x - right_margin
+            # Calculate available width for value - ensure adequate space for text wrapping
+            # Available width = page width minus value start position minus right margin
+            # Ensure minimum width to prevent text overlap
+            available_width = self.document.page_width - value_x - self.config.layout.RIGHT_MARGIN
+            
+            # If available width is too small, adjust value_x to ensure proper wrapping
+            min_width_for_wrapping = 300  # Minimum width needed for readable text
+            if available_width < min_width_for_wrapping:
+                # Recalculate value_x to ensure minimum width
+                value_x = self.document.page_width - min_width_for_wrapping - self.config.layout.RIGHT_MARGIN
+                available_width = min_width_for_wrapping
 
             # Wrap text for long values (especially Recommended U.S. Equivalency)
             if len(detail["value"]) > 80 or is_equivalency_label:  # Increased threshold for better wrapping
@@ -450,7 +488,7 @@ class PDFGenerator:
 
                 # Draw first line with appropriate font weight
                 if is_equivalency_label:
-                    value_font_type = "bold"  # Equivalency statement should be bold
+                    value_font_type = "bold-italic"  # Equivalency statement should be bold-italic
                 elif is_notes_label:
                     value_font_type = "regular"  # Notes should be regular
                 else:
@@ -467,7 +505,7 @@ class PDFGenerator:
             else:
                 # Draw single line value with appropriate font weight
                 if is_equivalency_label:
-                    value_font_type = "bold"  # Equivalency statement should be bold
+                    value_font_type = "bold-italic"  # Equivalency statement should be bold-italic
                 elif detail["label"] == "Notes:":
                     value_font_type = "regular"  # Notes should be regular
                 else:
@@ -711,15 +749,45 @@ Foreign grades are converted to U.S. letter grades based on the 4.00 system. Let
             # Determine if value should be bold
             should_be_bold = info["label"] in ["SpanTran Number:", "Name on Application:", "Name on Documentation:"]
 
-            # Draw value with shifted position (only values are shifted left)
-            self.document.draw_text(
-                normalize_text(info["value"]),
-                student_value_x_position,
-                current_y,
-                self.config.fonts.NORMAL_SIZE,
-                "bold" if should_be_bold else "regular",
-                BLACK_COLOR,
-            )
+            # Calculate available width for value
+            available_width = self.document.page_width - student_value_x_position - self.config.layout.RIGHT_MARGIN
+            
+            # Check if text needs wrapping (for long names)
+            if len(info["value"]) > 40 and info["label"] in ["Name on Application:", "Name on Documentation:"]:
+                # Wrap text for long names
+                wrapped_lines = wrap_text(info["value"], self.document.font_manager, self.config.fonts.NORMAL_SIZE, available_width, "bold" if should_be_bold else "regular")
+                
+                # Draw first line
+                self.document.draw_text(
+                    normalize_text(wrapped_lines[0]),
+                    student_value_x_position,
+                    current_y,
+                    self.config.fonts.NORMAL_SIZE,
+                    "bold" if should_be_bold else "regular",
+                    BLACK_COLOR,
+                )
+                
+                # Draw additional lines if any
+                for line in wrapped_lines[1:]:
+                    current_y -= self.config.layout.LINE_HEIGHT
+                    self.document.draw_text(
+                        normalize_text(line),
+                        student_value_x_position,
+                        current_y,
+                        self.config.fonts.NORMAL_SIZE,
+                        "bold" if should_be_bold else "regular",
+                        BLACK_COLOR,
+                    )
+            else:
+                # Draw single line value
+                self.document.draw_text(
+                    normalize_text(info["value"]),
+                    student_value_x_position,
+                    current_y,
+                    self.config.fonts.NORMAL_SIZE,
+                    "bold" if should_be_bold else "regular",
+                    BLACK_COLOR,
+                )
 
             current_y -= self.config.layout.LINE_HEIGHT
 
@@ -746,7 +814,7 @@ Foreign grades are converted to U.S. letter grades based on the 4.00 system. Let
         # Calculate box dimensions
         available_width = self.document.get_available_width()
         line_spacing = self.config.fonts.EQUIVALENCY_SIZE * 1.2
-        box_width = available_width + self.config.layout.HORIZONTAL_PADDING * 2
+        box_width = available_width  # Don't add extra padding to prevent overflow
 
         # Calculate text width inside the box (accounting for internal margins)
         # Text position: LEFT_MARGIN + HORIZONTAL_PADDING - 10
@@ -839,7 +907,7 @@ Foreign grades are converted to U.S. letter grades based on the 4.00 system. Let
         max_label_width = max(self.document.get_text_width(detail["label"], self.config.fonts.NORMAL_SIZE, "bold") for detail in credential_details)
 
         # Calculate position for credential details values (same as student info)
-        credential_value_x_position = self.config.layout.STUDENT_INFO_MARGIN + max_label_width + 10
+        credential_value_x_position = self.config.layout.STUDENT_INFO_MARGIN + max_label_width + 30
 
         # Draw each detail
         for detail in credential_details:
@@ -851,10 +919,40 @@ Foreign grades are converted to U.S. letter grades based on the 4.00 system. Let
                 normalize_text(detail["label"]), self.config.layout.LEFT_MARGIN, current_y, self.config.fonts.NORMAL_SIZE, "bold", BLACK_COLOR
             )
 
-            # Draw value (shifted to match student info values)
-            self.document.draw_text(
-                normalize_text(detail["value"]), credential_value_x_position, current_y, self.config.fonts.NORMAL_SIZE, "regular", BLACK_COLOR
-            )
+            # Calculate available width for value
+            available_width = self.document.page_width - credential_value_x_position - self.config.layout.RIGHT_MARGIN
+            
+            # Ensure minimum width for proper text wrapping
+            min_width_for_wrapping = 300
+            if available_width < min_width_for_wrapping:
+                credential_value_x_position = self.document.page_width - min_width_for_wrapping - self.config.layout.RIGHT_MARGIN
+                available_width = min_width_for_wrapping
+
+            # Check if text needs wrapping
+            is_equivalency_label = detail["label"] == "Recommended U.S. Equivalency:"
+            if len(detail["value"]) > 50 or is_equivalency_label:
+                # Wrap text for long values
+                font_type_for_wrap = "bold-italic" if is_equivalency_label else "regular"
+                wrapped_lines = wrap_text(detail["value"], self.document.font_manager, self.config.fonts.NORMAL_SIZE, available_width, font_type_for_wrap)
+                
+                # Draw first line
+                font_type = "bold-italic" if is_equivalency_label else "regular"
+                self.document.draw_text(
+                    normalize_text(wrapped_lines[0]), credential_value_x_position, current_y, self.config.fonts.NORMAL_SIZE, font_type, BLACK_COLOR
+                )
+                
+                # Draw additional lines if any
+                for line in wrapped_lines[1:]:
+                    current_y -= self.config.layout.LINE_HEIGHT
+                    self.document.draw_text(
+                        normalize_text(line), credential_value_x_position, current_y, self.config.fonts.NORMAL_SIZE, font_type, BLACK_COLOR
+                    )
+            else:
+                # Draw single line value
+                font_type = "bold-italic" if is_equivalency_label else "regular"
+                self.document.draw_text(
+                    normalize_text(detail["value"]), credential_value_x_position, current_y, self.config.fonts.NORMAL_SIZE, font_type, BLACK_COLOR
+                )
 
             current_y -= self.config.layout.LINE_HEIGHT
 
