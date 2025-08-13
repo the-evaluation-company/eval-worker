@@ -4,7 +4,7 @@ Data models for credential analysis results.
 Defines the structure for credential analysis results and related data.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Optional, Dict, Any
 from datetime import datetime
 
@@ -34,10 +34,16 @@ class CredentialMatch:
 
 
 @dataclass
-class AttendanceDates:
-    """Start and end dates for educational program attendance."""
+class AttendancePeriod:
+    """A single contiguous attendance period."""
     start_date: Optional[str] = None
     end_date: Optional[str] = None
+
+
+@dataclass
+class AttendanceDates:
+    """One or more non-contiguous attendance periods."""
+    periods: List[AttendancePeriod] = field(default_factory=list)
 
 
 @dataclass
@@ -167,12 +173,38 @@ class CredentialAnalysisResultBuilder:
                     match_confidence=credential_data.get("match_confidence", "not_found")
                 )
                 
-                # Parse attendance dates
-                dates_data = cred_data.get("attendance_dates", {})
-                attendance_dates = AttendanceDates(
-                    start_date=dates_data.get("start_date"),
-                    end_date=dates_data.get("end_date")
-                ) if dates_data else None
+                # Parse attendance dates (support multiple non-contiguous periods)
+                dates_data = cred_data.get("attendance_dates")
+                attendance_dates = None
+                if dates_data:
+                    periods: List[AttendancePeriod] = []
+
+                    # Case 1: String like "1999, 2004-2007"
+                    if isinstance(dates_data, str):
+                        for segment in [s.strip() for s in dates_data.split(",") if s.strip()]:
+                            if "-" in segment:
+                                start, end = [p.strip() or None for p in segment.split("-", 1)]
+                                periods.append(AttendancePeriod(start_date=start or None, end_date=end or None))
+                            else:
+                                periods.append(AttendancePeriod(start_date=segment, end_date=None))
+
+                    # Case 2: Dict with explicit periods list
+                    elif isinstance(dates_data, dict) and isinstance(dates_data.get("periods"), list):
+                        for p in dates_data.get("periods", []):
+                            periods.append(AttendancePeriod(
+                                start_date=p.get("start_date"),
+                                end_date=p.get("end_date")
+                            ))
+
+                    # Case 3: Backward compatibility: single start/end at top-level
+                    elif isinstance(dates_data, dict) and ("start_date" in dates_data or "end_date" in dates_data):
+                        periods.append(AttendancePeriod(
+                            start_date=dates_data.get("start_date"),
+                            end_date=dates_data.get("end_date")
+                        ))
+
+                    if periods:
+                        attendance_dates = AttendanceDates(periods=periods)
                 
                 # Parse program length
                 length_data = cred_data.get("program_length", {})
@@ -291,8 +323,13 @@ class CredentialAnalysisResultBuilder:
                     "program_of_study": cred.program_of_study,
                     "award_date": cred.award_date,
                     "attendance_dates": {
-                        "start_date": cred.attendance_dates.start_date,
-                        "end_date": cred.attendance_dates.end_date
+                        "periods": [
+                            {
+                                "start_date": period.start_date,
+                                "end_date": period.end_date
+                            }
+                            for period in (cred.attendance_dates.periods if cred.attendance_dates and cred.attendance_dates.periods else [])
+                        ]
                     } if cred.attendance_dates else None,
                     "program_length": {
                         "extracted_length": cred.program_length.extracted_length,

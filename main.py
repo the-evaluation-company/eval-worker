@@ -133,7 +133,7 @@ def show_stats() -> None:
         sys.exit(1)
 
 
-def analyze_folio(filename: str, document_type: str = "general") -> None:
+def analyze_folio(filename: str, document_type: str = "general", generate_pdf: bool = False) -> None:
     """Analyze a folio PDF document for credentials."""
     
     setup_logging(level="INFO")
@@ -182,6 +182,20 @@ def analyze_folio(filename: str, document_type: str = "general") -> None:
         print("Starting analysis (this may take a few minutes)...")
         result = processor.process_pdf(str(folio_path), document_type=document_type)
         
+        # Generate PDF report if requested
+        if generate_pdf:
+            try:
+                from document_processor.pdf_service import PDFService
+                pdf_service = PDFService()
+                pdf_path = pdf_service.generate_evaluation_pdf(
+                    result=result,
+                    filename=filename
+                )
+                print(f"PDF evaluation report generated: {pdf_path}")
+            except Exception as e:
+                print(f"Warning: PDF generation failed: {e}")
+                logger.warning(f"PDF generation failed for {filename}: {e}")
+        
         # Display results
         print(f"\n{'='*70}")
         print(f"ANALYSIS RESULTS")
@@ -227,10 +241,16 @@ def analyze_folio(filename: str, document_type: str = "general") -> None:
                     print(f"Program: {cred.program_of_study}")
                 if cred.award_date:
                     print(f"Award Date: {cred.award_date}")
-                if cred.attendance_dates:
-                    start = cred.attendance_dates.start_date or 'Not specified'
-                    end = cred.attendance_dates.end_date or 'Not specified'
-                    print(f"Attendance: {start} to {end}")
+                if cred.attendance_dates and getattr(cred.attendance_dates, 'periods', None):
+                    periods_str = []
+                    for p in cred.attendance_dates.periods:
+                        s = p.start_date or 'Not specified'
+                        e = p.end_date or 'Not specified'
+                        if p.end_date:
+                            periods_str.append(f"{s} to {e}")
+                        else:
+                            periods_str.append(f"{s}")
+                    print(f"Attendance: {', '.join(periods_str)}")
                 
                 if cred.program_length and cred.program_length.extracted_length:
                     pl_status = "[MATCH]" if cred.program_length.validated_length else "[NO MATCH]"
@@ -315,6 +335,11 @@ if __name__ == "__main__":
         default="general",
         help="Document type: 'general' for basic credentials, 'cbc' for course-by-course analysis (default: general)"
     )
+    parser.add_argument(
+        "--pdf",
+        action="store_true",
+        help="Generate PDF evaluation report in addition to JSON results"
+    )
     
     args = parser.parse_args()
     
@@ -327,10 +352,10 @@ if __name__ == "__main__":
     elif args.command == "analyze":
         if not args.filename:
             print("ERROR: filename is required for analyze command")
-            print("Usage: python main.py analyze <filename.pdf> [--type general|cbc]")
-            print("Example: python main.py analyze \"Folio 002293166.pdf\" --type general")
+            print("Usage: python main.py analyze <filename.pdf> [--type general|cbc] [--pdf]")
+            print("Example: python main.py analyze \"Folio 002293166.pdf\" --type general --pdf")
             sys.exit(1)
-        analyze_folio(args.filename, args.type)
+        analyze_folio(args.filename, args.type, args.pdf)
     else:
         parser.print_help()
         sys.exit(1)

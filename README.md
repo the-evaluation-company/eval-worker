@@ -1,6 +1,6 @@
 # Evaluator - Educational Credential Analysis System
 
-A modular Python system for extracting educational credentials from Salesforce, normalizing the data into SQLite, and performing automated credential analysis on PDF documents using Large Language Models with tool calling capabilities.
+A modular Python system for extracting educational credentials from Salesforce, normalizing the data into SQLite, performing automated credential analysis on PDF documents using Large Language Models with tool calling capabilities, and generating professional PDF evaluation reports.
 
 ## Quick Setup
 
@@ -48,6 +48,10 @@ python main.py stats                      # Display database statistics and inte
 # Credential Analysis
 python main.py analyze "filename.pdf" --type general    # Analyze PDF (general evaluation)
 python main.py analyze "filename.pdf" --type cbc        # Analyze PDF (course-by-course)
+
+# PDF Report Generation
+# The analyze command automatically generates a PDF evaluation report
+# Output: results/filename_evaluation_report.pdf
 ```
 
 ### Command Details
@@ -57,11 +61,12 @@ python main.py analyze "filename.pdf" --type cbc        # Analyze PDF (course-by
 | `migrate` | Extracts data from Salesforce `Credentials_Form_Setup_Data__c` object and loads into normalized SQLite tables | Console log + `data/evaluator.db` |
 | `reset` | Drops all tables and recreates schema (destructive) | Clean database |
 | `stats` | Shows record counts and data integrity status | Console statistics |
-| `analyze <filename> [--type general\|cbc]` | Processes PDF using LLM + database tools (default: general) | Console output + timestamped JSON in `results/` |
+| `analyze <filename> [--type general\|cbc]` | Processes PDF using LLM + database tools (default: general) | Console output + timestamped JSON + PDF report in `results/` |
 
 ### Analysis Output
 - **Console**: Human-readable credential analysis with validation status
 - **JSON**: Comprehensive results with metadata in `results/YYYYMMDD_HHMMSS_filename.json`
+- **PDF Report**: Professional evaluation report in `results/filename_evaluation_report.pdf`
 
 ## System Architecture
 
@@ -88,6 +93,8 @@ graph TD
     D --> L[Structured Analysis]
     L --> M[JSON Output]
     L --> N[Console Display]
+    L --> S[PDF Generator]
+    S --> T[PDF Report]
     
     O[Salesforce API] --> P[Data Migration]
     P --> Q[Schema Normalization]
@@ -128,11 +135,35 @@ Evaluator/
 │
 ├── document_processor/                 # PDF analysis orchestration
 │   ├── processor.py                   # Main processing pipeline
-│   └── models.py                      # Result data structures
+│   ├── models.py                      # Result data structures
+│   ├── pdf_adapter.py                 # Converts analysis to PDF format
+│   └── pdf_service.py                 # PDF generation service
+│
+├── pdf_generator/                      # PDF report generation
+│   ├── pdf_generator.py               # Main PDF generation class
+│   ├── __init__.py                    # Package exports
+│   ├── config/                        # PDF configuration
+│   │   └── pdf_config.py             # Layout, fonts, spacing settings
+│   ├── core/                          # Core PDF components
+│   │   ├── pdf_document.py           # Document management
+│   │   ├── font_manager.py           # Font handling
+│   │   └── image_manager.py          # Image/background handling
+│   ├── types/                         # PDF data types
+│   │   └── pdf_types.py              # Pydantic models for PDF data
+│   └── utils/                         # PDF utilities
+│       └── text_utils.py             # Text processing, wrapping
 │
 ├── prompts/                            # LLM prompts by provider
 │   └── anthropic/
-│       └── credential_analysis.py     # Claude analysis prompt
+│       ├── base_template.py          # Base prompt template
+│       ├── general_instructions.py   # General analysis instructions
+│       └── cbc_instructions.py       # Course-by-course instructions
+│
+├── public/                             # Static resources
+│   └── resources/
+│       ├── background.png            # PDF background template
+│       ├── signature.png             # Signature image
+│       └── fonts/                    # Font files (Arial variants)
 │
 └── utils/                              # Shared utilities
     └── helpers.py                     # Logging, validation, formatters
@@ -183,17 +214,40 @@ All tables populated from Salesforce `Credentials_Form_Setup_Data__c` where:
 4. **Metadata Capture** → Tool calls, token usage, timing, parameters
 
 ### Key Features
-- **Modular Architecture**: Separated concerns (DB, Salesforce, LLM, Processing)
+- **Modular Architecture**: Separated concerns (DB, Salesforce, LLM, Processing, PDF Generation)
 - **Comprehensive Logging**: DEBUG/INFO levels with structured output
 - **Error Handling**: Graceful failures with detailed error reporting
 - **Extensible**: Abstract base classes for multiple LLM providers
 - **Production Ready**: Robust connection management, retry logic, validation
+- **Professional PDF Reports**: Automated generation of formatted evaluation reports
+
+## PDF Report Generation
+
+### Features
+- **Automatic Generation**: PDF reports are created automatically after each credential analysis
+
+
+### Report Sections
+1. **Header**: Date, case number, student information, evaluation type
+2. **Credentials Summary**: Highlighted box with US equivalency statement
+3. **Credential Details**: Country, institution, program, length, and equivalency for each credential
+4. **Comments**: NACES membership notice and authentication requirements
+5. **Policy Statements**: Comprehensive evaluation policies and grade conversion information
+
+### PDF Technical Details
+- **Engine**: ReportLab for PDF generation
+- **Fonts**: Arial family with bold and italic variants
+- **Background**: Custom SpanTran template with watermark
+- **Page Size**: Standard US Letter (8.5" x 11")
+- **Margins**: Consistent margins with proper text boundaries
 
 ## Technical Specifications
 
 ### Dependencies
 - **Core**: `simple-salesforce`, `anthropic`
 - **Database**: SQLite (built-in)
+- **PDF Generation**: `reportlab`, `pypdf`, `Pillow`
+- **Data Models**: `pydantic`
 - **Utilities**: `python-dotenv`, `pathlib`
 
 
@@ -221,3 +275,13 @@ All tables populated from Salesforce `Credentials_Form_Setup_Data__c` where:
 2. Update migration logic in `database/migrations.py`
 3. Add queries to `database/queries.py`
 4. Update project structure documentation
+
+## Recent Updates
+
+### November 2024
+- **PDF Generation**: Added automated PDF report generation for all credential analyses
+- **Text Wrapping**: Implemented intelligent text wrapping to prevent content overflow
+- **Font Styling**: Added proper bold/italic formatting for credential details
+- **Layout Fixes**: Fixed box width calculations and label/value spacing
+- **Multi-page Support**: Added automatic page breaks with proper numbering
+- **Template Integration**: Integrated SpanTran-branded background template
