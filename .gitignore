@@ -83,5 +83,8 @@ coverage.xml
 *.tmp
 *.temp
 
-# Analysis Results (keep folder structure but ignore result files)
-results/*.json
+# Analysis Results (keep folder structure but ignore all generated files)
+results/*
+results/*
+results/*
+!results/.gitkeep

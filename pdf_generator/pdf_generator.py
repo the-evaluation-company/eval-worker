@@ -364,7 +364,7 @@ class PDFGenerator:
         current_y = current_y - box_height + line_spacing
 
         # Add spacing after box
-        current_y -= 30
+        current_y -= 50
 
         return current_y
 
@@ -378,7 +378,7 @@ class PDFGenerator:
         # Draw credential header
         self.document.draw_text(
             f"CREDENTIAL {credential_index} of {total_credentials}",
-            35,  # TypeScript left margin
+            50,  # Match new left margin
             current_y,
             9,
             "bold",
@@ -405,9 +405,9 @@ class PDFGenerator:
         # Calculate label width for alignment
         max_label_width = max(self.document.get_text_width(detail["label"], 9, "bold") for detail in credential_details)
 
-        # Positioning
-        label_x = 35
-        value_x = label_x + max_label_width + 15
+        # Positioning - move everything right and increase spacing between label and value
+        label_x = 50  # Move right from 35 to 50
+        value_x = label_x + max_label_width + 25  # Increased spacing from 15 to 25
 
         # Draw each detail
         for detail in credential_details:
@@ -421,12 +421,14 @@ class PDFGenerator:
             # Draw label
             self.document.draw_text(normalize_text(detail["label"]), label_x, current_y, 9, "bold", BLACK_COLOR)
 
-            # Calculate available width for value
-            available_width = self.document.page_width - value_x - 35  # Right margin
+            # Calculate available width for value - match left margin (50px) on right side
+            right_margin = 50  # Match the left margin
+            available_width = self.document.page_width - value_x - right_margin
 
             # Wrap text for long values (especially Recommended U.S. Equivalency)
             if len(detail["value"]) > 80 or is_equivalency_label:  # Increased threshold for better wrapping
                 # Special handling for Recommended U.S. Equivalency to ensure proper wrapping
+                is_notes_label = detail["label"] == "Notes:"
                 if is_equivalency_label:
                     # Split at "regionally-accredited institution" for better formatting
                     split_phrase = "regionally-accredited institution"
@@ -437,14 +439,23 @@ class PDFGenerator:
                             second_part = parts[1]
                             wrapped_lines = [first_part, second_part]
                         else:
-                            wrapped_lines = wrap_text(detail["value"], self.document.font_manager, 9, available_width, "bold-italic")
+                            wrapped_lines = wrap_text(detail["value"], self.document.font_manager, 9, available_width, "bold")
                     else:
-                        wrapped_lines = wrap_text(detail["value"], self.document.font_manager, 9, available_width, "bold-italic")
+                        wrapped_lines = wrap_text(detail["value"], self.document.font_manager, 9, available_width, "bold")
+                elif is_notes_label:
+                    # Notes should not be bold but should wrap
+                    wrapped_lines = wrap_text(detail["value"], self.document.font_manager, 9, available_width, "regular")
                 else:
                     wrapped_lines = wrap_text(detail["value"], self.document.font_manager, 9, available_width, "regular")
 
-                # Draw first line
-                value_font_type = "bold-italic" if is_equivalency_label else "regular"
+                # Draw first line with appropriate font weight
+                if is_equivalency_label:
+                    value_font_type = "bold"  # Equivalency statement should be bold
+                elif is_notes_label:
+                    value_font_type = "regular"  # Notes should be regular
+                else:
+                    value_font_type = "regular"
+                    
                 self.document.draw_text(normalize_text(wrapped_lines[0]), value_x, current_y, 9, value_font_type, BLACK_COLOR)
 
                 # Draw additional lines if any
@@ -454,8 +465,13 @@ class PDFGenerator:
 
                 current_y -= 12  # Extra spacing after wrapped text
             else:
-                # Draw single line value
-                value_font_type = "bold-italic" if is_equivalency_label else "regular"
+                # Draw single line value with appropriate font weight
+                if is_equivalency_label:
+                    value_font_type = "bold"  # Equivalency statement should be bold
+                elif detail["label"] == "Notes:":
+                    value_font_type = "regular"  # Notes should be regular
+                else:
+                    value_font_type = "regular"
                 self.document.draw_text(normalize_text(detail["value"]), value_x, current_y, 9, value_font_type, BLACK_COLOR)
 
             current_y -= 12  # TypeScript line height

@@ -97,16 +97,10 @@ class PDFAdapter:
         if cred.program_length:
             program_length = cred.program_length.validated_length or cred.program_length.extracted_length or ""
         
-        # Build notes from additional info
-        notes_parts = []
-        if cred.additional_info:
-            if cred.additional_info.grades:
-                notes_parts.append(f"Grades: {cred.additional_info.grades}")
-            if cred.additional_info.honors:
-                notes_parts.append(f"Honors: {cred.additional_info.honors}")
-            if cred.additional_info.notes:
-                notes_parts.append(cred.additional_info.notes)
-        notes = "; ".join(notes_parts) if notes_parts else None
+        # Only use the actual notes field from additional info
+        notes = None
+        if cred.additional_info and cred.additional_info.notes:
+            notes = f"(LLM Generated): {cred.additional_info.notes}"
         
         return CredentialGroup(
             id=credential_id,
