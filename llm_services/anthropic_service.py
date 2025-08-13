@@ -17,7 +17,6 @@ from anthropic.types import MessageParam, ToolUseBlock, ToolResultBlockParam
 
 from .base import BaseLLMService
 from .tools import TOOL_SCHEMAS, execute_tool
-from prompts.anthropic.credential_analysis import CREDENTIAL_ANALYSIS_PROMPT
 from config import ANTHROPIC_API_KEY, ANTHROPIC_MODEL, ANTHROPIC_TIMEOUT
 
 logger = logging.getLogger(__name__)
@@ -94,8 +93,10 @@ class AnthropicService(BaseLLMService):
             logger.info(f"Starting analysis of PDF: {pdf_path}")
             pdf_data = self._encode_pdf(pdf_path)
             
-            # Use provided prompt or default
-            analysis_prompt = prompt or CREDENTIAL_ANALYSIS_PROMPT
+            # Use provided prompt
+            if not prompt:
+                raise ValueError("Analysis prompt is required")
+            analysis_prompt = prompt
             
             # Create initial message with PDF and prompt
             messages = self._create_initial_message(pdf_data, analysis_prompt)
