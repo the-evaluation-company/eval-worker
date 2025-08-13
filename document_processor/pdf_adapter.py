@@ -91,7 +91,7 @@ class PDFAdapter:
                 period = cred.attendance_dates.periods[0]
                 start = period.start_date or "Not specified"
                 end = period.end_date or "Not specified"
-                date_of_attendance = f"{start} to {end}"
+                date_of_attendance = f"{start}-{end}"
             else:
                 # Multiple periods - format as comma-separated ranges
                 period_strings = []
@@ -101,7 +101,7 @@ class PDFAdapter:
                     if start == end and start != "Not specified":
                         period_strings.append(start)
                     else:
-                        period_strings.append(f"{start} to {end}")
+                        period_strings.append(f"{start}-{end}")
                 date_of_attendance = ", ".join(period_strings)
         
         # Extract program details

@@ -67,10 +67,10 @@ Provide your analysis in the following JSON structure:
         "match_confidence": "high/medium/low/not_found"
       }},
       "program_of_study": "string",
-      "award_date": "YYYY-MM-DD or partial date",
+      "award_date": "YYYY",
       "attendance_dates": {{
-        "start_date": "YYYY-MM-DD or partial date",
-        "end_date": "YYYY-MM-DD or partial date"
+        "start_date": "YYYY",
+        "end_date": "YYYY"
       }},
       "program_length": {{
         "extracted_length": "string (as written in document)",

@@ -896,6 +896,7 @@ Foreign grades are converted to U.S. letter grades based on the 4.00 system. Let
             {"label": "Institution:", "value": form_data.institution or ""},
             {"label": "Foreign Credential:", "value": program_value},
             {"label": "Length of Program:", "value": form_data.programLength or ""},
+            {"label": "Dates of Attendance:", "value": form_data.dateOfAttendance or ""},
             {"label": "Recommended U.S. Equivalency:", "value": form_data.usEquivalency or ""},
         ]
 
