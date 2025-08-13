@@ -85,6 +85,8 @@ coverage.xml
 
 # Analysis Results (keep folder structure but ignore all generated files)
 results/*
-results/*
-results/*
 !results/.gitkeep
+
+# Folio PDFs (keep folder structure but ignore all PDF files)
+data/folios/*
+!data/folios/.gitkeep

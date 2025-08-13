@@ -1,0 +1,2 @@
+# This file ensures the folios directory structure is preserved in git
+# while ignoring all PDF files in this directory
