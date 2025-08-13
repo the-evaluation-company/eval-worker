@@ -112,6 +112,7 @@ Normalized SQLite tables from Salesforce `Credentials_Form_Setup_Data__c` using 
 - Shared utilities belong in `utils/`
 - Configuration comes from [config.py](mdc:config.py) only
 - Follow the data flow architecture for new features
+- **No Emojis**: Never use emojis in code, comments, print statements, or error messages - use clear text alternatives instead
 
 ## Important: Structure Updates
 **When project structure changes, this rule file MUST be updated to reflect:**

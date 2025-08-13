@@ -1,6 +1,7 @@
 # Core dependencies
 simple-salesforce
 python-dotenv
+anthropic
 
 # Utilities
 typing-extensions
