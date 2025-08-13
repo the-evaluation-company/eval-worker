@@ -1,0 +1,613 @@
+---
+description: Gemini API Function Calling Documentation
+alwaysApply: false
+---
+
+# Function Calling with the Gemini API
+
+Function calling lets you connect models to external tools and APIs. Instead of generating text responses, the model determines when to call specific functions and provides the necessary parameters to execute real-world actions. This allows the model to act as a bridge between natural language and real-world actions and data.
+
+## Primary Use Cases
+
+Function calling has 3 primary use cases:
+
+1. **Augment Knowledge**: Access information from external sources like databases, APIs, and knowledge bases.
+2. **Extend Capabilities**: Use external tools to perform computations and extend the limitations of the model, such as using a calculator or creating charts.
+3. **Take Actions**: Interact with external systems using APIs, such as scheduling appointments, creating invoices, sending emails, or controlling smart home devices.
+
+## Basic Example
+
+```python
+from google import genai
+from google.genai import types
+
+# Define the function declaration for the model
+schedule_meeting_function = {
+    "name": "schedule_meeting",
+    "description": "Schedules a meeting with specified attendees at a given time and date.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "attendees": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": "List of people attending the meeting.",
+            },
+            "date": {
+                "type": "string",
+                "description": "Date of the meeting (e.g., '2024-07-29')",
+            },
+            "time": {
+                "type": "string",
+                "description": "Time of the meeting (e.g., '15:00')",
+            },
+            "topic": {
+                "type": "string",
+                "description": "The subject or topic of the meeting.",
+            },
+        },
+        "required": ["attendees", "date", "time", "topic"],
+    },
+}
+
+# Configure the client and tools
+client = genai.Client()
+tools = types.Tool(function_declarations=[schedule_meeting_function])
+config = types.GenerateContentConfig(tools=[tools])
+
+# Send request with function declarations
+response = client.models.generate_content(
+    model="gemini-2.5-flash",
+    contents="Schedule a meeting with Bob and Alice for 03/14/2025 at 10:00 AM about the Q3 planning.",
+    config=config,
+)
+
+# Check for a function call
+if response.candidates[0].content.parts[0].function_call:
+    function_call = response.candidates[0].content.parts[0].function_call
+    print(f"Function to call: {function_call.name}")
+    print(f"Arguments: {function_call.args}")
+    #  In a real app, you would call your function here:
+    #  result = schedule_meeting(**function_call.args)
+else:
+    print("No function call found in the response.")
+    print(response.text)
+```
+
+## How Function Calling Works
+
+Function calling involves a structured interaction between your application, the model, and external functions:
+
+1. **Define Function Declaration**: Define the function declaration in your application code. Function Declarations describe the function's name, parameters, and purpose to the model.
+
+2. **Call LLM with function declarations**: Send user prompt along with the function declaration(s) to the model. It analyzes the request and determines if a function call would be helpful. If so, it responds with a structured JSON object.
+
+3. **Execute Function Code (Your Responsibility)**: The Model does not execute the function itself. It's your application's responsibility to process the response and check for Function Call:
+   - **Yes**: Extract the name and args of the function and execute the corresponding function in your application.
+   - **No**: The model has provided a direct text response to the prompt.
+
+4. **Create User friendly response**: If a function was executed, capture the result and send it back to the model in a subsequent turn of the conversation. It will use the result to generate a final, user-friendly response that incorporates the information from the function call.
+
+This process can be repeated over multiple turns, allowing for complex interactions and workflows. The model also supports calling multiple functions in a single turn (parallel function calling) and in sequence (compositional function calling).
+
+## Step-by-Step Implementation
+
+### Step 1: Define a Function Declaration
+
+```python
+# Define a function that the model can call to control smart lights
+set_light_values_declaration = {
+    "name": "set_light_values",
+    "description": "Sets the brightness and color temperature of a light.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "brightness": {
+                "type": "integer",
+                "description": "Light level from 0 to 100. Zero is off and 100 is full brightness",
+            },
+            "color_temp": {
+                "type": "string",
+                "enum": ["daylight", "cool", "warm"],
+                "description": "Color temperature of the light fixture, which can be `daylight`, `cool` or `warm`.",
+            },
+        },
+        "required": ["brightness", "color_temp"],
+    },
+}
+
+# This is the actual function that would be called based on the model's suggestion
+def set_light_values(brightness: int, color_temp: str) -> dict[str, int | str]:
+    """Set the brightness and color temperature of a room light. (mock API).
+
+    Args:
+        brightness: Light level from 0 to 100. Zero is off and 100 is full brightness
+        color_temp: Color temperature of the light fixture, which can be `daylight`, `cool` or `warm`.
+
+    Returns:
+        A dictionary containing the set brightness and color temperature.
+    """
+    return {"brightness": brightness, "colorTemperature": color_temp}
+```
+
+### Step 2: Call the Model with Function Declarations
+
+```python
+from google.genai import types
+
+# Configure the client and tools
+client = genai.Client()
+tools = types.Tool(function_declarations=[set_light_values_declaration])
+config = types.GenerateContentConfig(tools=[tools])
+
+# Define user prompt
+contents = [
+    types.Content(
+        role="user", parts=[types.Part(text="Turn the lights down to a romantic level")]
+    )
+]
+
+# Send request with function declarations
+response = client.models.generate_content(
+    model="gemini-2.5-flash",
+    contents=contents,
+    config=config,
+)
+
+print(response.candidates[0].content.parts[0].function_call)
+# Output: id=None args={'color_temp': 'warm', 'brightness': 25} name='set_light_values'
+```
+
+### Step 3: Execute Function Code
+
+```python
+# Extract tool call details
+tool_call = response.candidates[0].content.parts[0].function_call
+
+if tool_call.name == "set_light_values":
+    result = set_light_values(**tool_call.args)
+    print(f"Function execution result: {result}")
+```
+
+### Step 4: Create User-Friendly Response
+
+```python
+# Create a function response part
+function_response_part = types.Part.from_function_response(
+    name=tool_call.name,
+    response={"result": result},
+)
+
+# Append function call and result to contents
+contents.append(response.candidates[0].content) # Append the model's response
+contents.append(types.Content(role="user", parts=[function_response_part])) # Append function response
+
+final_response = client.models.generate_content(
+    model="gemini-2.5-flash",
+    config=config,
+    contents=contents,
+)
+
+print(final_response.text)
+```
+
+## Function Declarations
+
+When implementing function calling, you create a `tools` object containing one or more function declarations using JSON with a subset of the OpenAPI schema format:
+
+### Required Parameters
+
+- **name** (string): A unique function name (e.g., `get_weather_forecast`, `send_email`). Use descriptive names without spaces or special characters.
+- **description** (string): Clear explanation of the function's purpose and capabilities. Be specific and provide examples.
+- **parameters** (object): Defines input parameters with:
+  - **type** (string): Overall data type (usually `object`)
+  - **properties** (object): Individual parameters with:
+    - **type** (string): Parameter data type (`string`, `integer`, `boolean`, `array`)
+    - **description** (string): Parameter purpose and format with examples
+    - **enum** (array, optional): Fixed set of allowed values
+  - **required** (array): Array of mandatory parameter names
+
+### Example Function Declaration
+
+```python
+weather_function = {
+    "name": "get_weather_forecast",
+    "description": "Gets current weather for a specific location",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "location": {
+                "type": "string",
+                "description": "The city and state, e.g., 'San Francisco, CA' or zip code '95616'"
+            },
+            "unit": {
+                "type": "string",
+                "enum": ["celsius", "fahrenheit"],
+                "description": "Temperature unit"
+            }
+        },
+        "required": ["location"]
+    }
+}
+```
+
+You can also construct FunctionDeclarations from Python functions directly using:
+```python
+types.FunctionDeclaration.from_callable(client=client, callable=your_function)
+```
+
+## Function Calling with Thinking
+
+Enabling "thinking" can improve function call performance by allowing the model to reason through requests before suggesting function calls. The Gemini API is stateless, so the model's reasoning context will be lost between turns unless you use **thought signatures**.
+
+### Standard Pattern
+
+The standard pattern for multi-turn tool use automatically preserves context:
+```python
+# Append the model's complete previous response to conversation history
+contents.append(response.candidates[0].content)  # Includes thought_signatures automatically
+```
+
+### Manual Thought Signature Management
+
+If you modify conversation history manually, follow these rules:
+
+1. Always send the `thought_signature` back inside its original `Part`
+2. Don't merge a `Part` containing a signature with one that doesn't
+3. Don't combine two `Parts` that both contain signatures
+
+### Inspecting Thought Signatures
+
+```python
+import base64
+
+# After receiving a response from a thinking-enabled model
+part = response.candidates[0].content.parts[0]
+if part.thought_signature:
+    print(base64.b64encode(part.thought_signature).decode("utf-8"))
+```
+
+## Parallel Function Calling
+
+Execute multiple independent functions simultaneously:
+
+```python
+# Define multiple function declarations
+power_disco_ball = {
+    "name": "power_disco_ball",
+    "description": "Powers the spinning disco ball.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "power": {
+                "type": "boolean",
+                "description": "Whether to turn the disco ball on or off.",
+            }
+        },
+        "required": ["power"],
+    },
+}
+
+start_music = {
+    "name": "start_music",
+    "description": "Play some music matching the specified parameters.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "energetic": {
+                "type": "boolean",
+                "description": "Whether the music is energetic or not.",
+            },
+            "loud": {
+                "type": "boolean",
+                "description": "Whether the music is loud or not.",
+            },
+        },
+        "required": ["energetic", "loud"],
+    },
+}
+
+dim_lights = {
+    "name": "dim_lights",
+    "description": "Dim the lights.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "brightness": {
+                "type": "number",
+                "description": "The brightness of the lights, 0.0 is off, 1.0 is full.",
+            }
+        },
+        "required": ["brightness"],
+    },
+}
+
+# Configure client with all tools
+client = genai.Client()
+house_tools = [
+    types.Tool(function_declarations=[power_disco_ball, start_music, dim_lights])
+]
+config = types.GenerateContentConfig(
+    tools=house_tools,
+    automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
+    # Force the model to call functions
+    tool_config=types.ToolConfig(
+        function_calling_config=types.FunctionCallingConfig(mode='ANY')
+    ),
+)
+
+chat = client.chats.create(model="gemini-2.5-flash", config=config)
+response = chat.send_message("Turn this place into a party!")
+
+# Process multiple function calls
+for fn in response.function_calls:
+    args = ", ".join(f"{key}={val}" for key, val in fn.args.items())
+    print(f"{fn.name}({args})")
+```
+
+## Automatic Function Calling (Python SDK)
+
+The Python SDK can automatically handle the entire function calling cycle:
+
+```python
+from google import genai
+from google.genai import types
+
+# Define actual function implementations
+def power_disco_ball_impl(power: bool) -> dict:
+    """Powers the spinning disco ball.
+    
+    Args:
+        power: Whether to turn the disco ball on or off.
+    
+    Returns:
+        A status dictionary indicating the current state.
+    """
+    return {"status": f"Disco ball powered {'on' if power else 'off'}"}
+
+def start_music_impl(energetic: bool, loud: bool) -> dict:
+    """Play some music matching the specified parameters.
+    
+    Args:
+        energetic: Whether the music is energetic or not.
+        loud: Whether the music is loud or not.
+    
+    Returns:
+        A dictionary containing the music settings.
+    """
+    music_type = "energetic" if energetic else "chill"
+    volume = "loud" if loud else "quiet"
+    return {"music_type": music_type, "volume": volume}
+
+def dim_lights_impl(brightness: float) -> dict:
+    """Dim the lights.
+    
+    Args:
+        brightness: The brightness of the lights, 0.0 is off, 1.0 is full.
+    
+    Returns:
+        A dictionary containing the new brightness setting.
+    """
+    return {"brightness": brightness}
+
+# Configure client with function implementations
+client = genai.Client()
+config = types.GenerateContentConfig(
+    tools=[power_disco_ball_impl, start_music_impl, dim_lights_impl]
+)
+
+# Make request - SDK handles everything automatically
+response = client.models.generate_content(
+    model="gemini-2.5-flash",
+    contents="Do everything you need to turn this place into a party!",
+    config=config,
+)
+
+print(response.text)
+# Output: "I've turned on the disco ball, started playing loud and energetic music, and dimmed the lights to 50% brightness. Let's get this party started!"
+```
+
+## Compositional Function Calling
+
+Chain multiple function calls together to fulfill complex requests:
+
+```python
+import os
+from google import genai
+from google.genai import types
+
+def get_weather_forecast(location: str) -> dict:
+    """Gets the current weather temperature for a given location."""
+    print(f"Tool Call: get_weather_forecast(location={location})")
+    # TODO: Make API call
+    print("Tool Response: {'temperature': 25, 'unit': 'celsius'}")
+    return {"temperature": 25, "unit": "celsius"}
+
+def set_thermostat_temperature(temperature: int) -> dict:
+    """Sets the thermostat to a desired temperature."""
+    print(f"Tool Call: set_thermostat_temperature(temperature={temperature})")
+    # TODO: Interact with thermostat API
+    print("Tool Response: {'status': 'success'}")
+    return {"status": "success"}
+
+# Configure client
+client = genai.Client()
+config = types.GenerateContentConfig(
+    tools=[get_weather_forecast, set_thermostat_temperature]
+)
+
+# Make request with conditional logic
+response = client.models.generate_content(
+    model="gemini-2.5-flash",
+    contents="If it's warmer than 20°C in London, set the thermostat to 20°C, otherwise set it to 18°C.",
+    config=config,
+)
+
+print(response.text)
+```
+
+Expected Output:
+```
+Tool Call: get_weather_forecast(location=London)
+Tool Response: {'temperature': 25, 'unit': 'celsius'}
+Tool Call: set_thermostat_temperature(temperature=20)
+Tool Response: {'status': 'success'}
+OK. I've set the thermostat to 20°C.
+```
+
+## Function Calling Modes
+
+Control how the model uses provided tools via `function_calling_config`:
+
+### AUTO (Default)
+Model decides whether to generate natural language or call functions based on context.
+
+### ANY
+Model must always call a function. Use `allowed_function_names` to restrict choices.
+
+### NONE
+Model prohibited from making function calls.
+
+```python
+from google.genai import types
+
+# Configure function calling mode
+tool_config = types.ToolConfig(
+    function_calling_config=types.FunctionCallingConfig(
+        mode="ANY", 
+        allowed_function_names=["get_current_temperature"]
+    )
+)
+
+config = types.GenerateContentConfig(
+    tools=[tools],
+    tool_config=tool_config,
+)
+```
+
+## Automatic Function Schema Declaration
+
+The SDK supports automatic schema generation from Python functions with type hints:
+
+```python
+def get_current_temperature(location: str) -> dict:
+    """Gets the current temperature for a given location.
+
+    Args:
+        location: The city and state, e.g. San Francisco, CA
+
+    Returns:
+        A dictionary containing the temperature and unit.
+    """
+    return {"temperature": 25, "unit": "Celsius"}
+
+# Use function directly as tool
+client = genai.Client()
+config = types.GenerateContentConfig(tools=[get_current_temperature])
+
+response = client.models.generate_content(
+    model="gemini-2.5-flash",
+    contents="What's the temperature in Boston?",
+    config=config,
+)
+
+print(response.text)  # SDK handles everything automatically
+```
+
+### Supported Types
+
+```python
+AllowedType = (
+    int | float | bool | str | list['AllowedType'] | pydantic.BaseModel
+)
+```
+
+### Inspect Generated Schema
+
+```python
+def multiply(a: float, b: float):
+    """Returns a * b."""
+    return a * b
+
+fn_decl = types.FunctionDeclaration.from_callable(callable=multiply, client=client)
+print(fn_decl.to_json_dict())
+```
+
+### Disable Automatic Function Calling
+
+```python
+config = types.GenerateContentConfig(
+    tools=[get_current_temperature],
+    automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
+)
+```
+
+## Multi-Tool Use
+
+Combine native tools with function calling (Live API only):
+
+```python
+# Example combining lights, code execution, and search
+prompt = """
+Hey, I need you to do three things for me.
+
+1. Turn on the lights.
+2. Then compute the largest prime palindrome under 100000.
+3. Then use Google Search to look up information about the largest earthquake in California the week of Dec 5 2024.
+
+Thanks!
+"""
+
+tools = [
+    {'google_search': {}},
+    {'code_execution': {}},
+    {'function_declarations': [turn_on_the_lights_schema, turn_off_the_lights_schema]}
+]
+
+# Execute with specified tools in audio modality
+await run(prompt, tools=tools, modality="AUDIO")
+```
+
+## Best Practices
+
+1. **Function Descriptions**: Be specific and detailed. Include examples and constraints.
+2. **Parameter Validation**: Use `enum` for fixed value sets instead of just describing them.
+3. **Error Handling**: Always check if function calls exist in responses before processing.
+4. **Type Hints**: Use proper type hints for automatic schema generation.
+5. **Thought Signatures**: Preserve them when manually managing conversation history.
+6. **Tool Selection**: Use appropriate modes (AUTO/ANY/NONE) based on your use case.
+7. **Documentation**: Use Google-style docstrings for optimal SDK performance.
+
+## Common Patterns
+
+### Single Function Call
+```python
+# Check for function call
+if response.candidates[0].content.parts[0].function_call:
+    # Execute function
+    # Send result back to model
+```
+
+### Multiple Function Calls
+```python
+# Process all function calls
+for fn in response.function_calls:
+    # Execute each function
+    # Collect results
+# Send all results back to model
+```
+
+### Conditional Logic
+```python
+# Use compositional calling for "if-then" logic
+contents = "If condition X, then do Y, otherwise do Z"
+```
+
+### Error Recovery
+```python
+try:
+    result = function_call(**args)
+except Exception as e:
+    result = {"error": str(e)}
+# Always send result back to model
+```
