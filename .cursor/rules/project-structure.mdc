@@ -1,0 +1,124 @@
+---
+alwaysApply: true
+description: Evaluator project structure and module organization guidelines
+---
+
+# Evaluator Project Structure
+
+## Current Project Layout
+```
+Evaluator/
+├── [config.py](mdc:config.py)                     # Credentials & settings (existing)
+├── [main.py](mdc:main.py)                         # Entry point and orchestration
+├── [requirements.txt](mdc:requirements.txt)       # Python dependencies
+│
+├── data/                                          # Database storage
+│   └── evaluator.db                              # SQLite database file
+│
+├── database/                                      # Database operations & setup
+│   ├── [__init__.py](mdc:database/__init__.py)
+│   ├── [connection.py](mdc:database/connection.py)    # Database connection management
+│   ├── [schema.py](mdc:database/schema.py)            # Table definitions & creation
+│   ├── [migrations.py](mdc:database/migrations.py)    # Data extraction & loading logic
+│   └── [queries.py](mdc:database/queries.py)          # Common database queries & utilities
+│
+├── salesforce/                                    # Salesforce integration
+│   ├── [__init__.py](mdc:salesforce/__init__.py)
+│   ├── [client.py](mdc:salesforce/client.py)          # Salesforce connection setup
+│   └── [extractors.py](mdc:salesforce/extractors.py)  # SOQL queries & data extraction methods
+│
+└── utils/                                         # Shared utilities
+    ├── [__init__.py](mdc:utils/__init__.py)
+    └── [helpers.py](mdc:utils/helpers.py)             # Common helper functions & validators
+```
+
+## Module Responsibilities
+
+### Configuration Layer
+- **[config.py](mdc:config.py)** - Environment variables, credentials, LLM provider settings
+
+### Database Layer (`database/`)
+- **[connection.py](mdc:database/connection.py)** - SQLite connection management, context managers
+- **[schema.py](mdc:database/schema.py)** - Table definitions, CREATE TABLE statements, indexes
+- **[migrations.py](mdc:database/migrations.py)** - Extract from Salesforce → Transform → Load to SQLite
+- **[queries.py](mdc:database/queries.py)** - Common SELECT queries, data validation queries
+
+### Salesforce Layer (`salesforce/`)
+- **[client.py](mdc:salesforce/client.py)** - Salesforce authentication & connection setup using [config.py](mdc:config.py)
+- **[extractors.py](mdc:salesforce/extractors.py)** - All SOQL queries (Country, Institution, Grade Scale, etc.)
+
+### Data Storage (`data/`)
+- **evaluator.db** - The actual SQLite database file (not tracked in git)
+
+### Utilities (`utils/`)
+- **[helpers.py](mdc:utils/helpers.py)** - Logging, data cleaning, validation functions
+
+### Entry Point
+- **[main.py](mdc:main.py)** - Command-line interface, orchestrates the full pipeline
+
+## Data Flow Architecture
+1. **[main.py](mdc:main.py)** → **[salesforce/client.py](mdc:salesforce/client.py)** (authenticate)
+2. **[main.py](mdc:main.py)** → **[database/schema.py](mdc:database/schema.py)** (create tables)
+3. **[main.py](mdc:main.py)** → **[salesforce/extractors.py](mdc:salesforce/extractors.py)** (extract data via SOQL)
+4. **[main.py](mdc:main.py)** → **[database/migrations.py](mdc:database/migrations.py)** (transform & load data)
+5. **[main.py](mdc:main.py)** → **[database/queries.py](mdc:database/queries.py)** (validate & report)
+
+## Database Schema Overview
+Normalized SQLite tables from Salesforce `Credentials_Form_Setup_Data__c` using natural keys and UUIDs:
+
+### Table Structure:
+- **Country** - Master reference table with natural key
+  - `country_name` (TEXT PRIMARY KEY) - Natural key from `Key__c` where `Type__c = 'Country'`
+  - `created_at` (TIMESTAMP)
+
+- **ForeignCredential** - Country credentials (`Type__c = 'Country'`)
+  - `credential_uuid` (TEXT PRIMARY KEY) - UUID4
+  - `country_name` (TEXT FK -> Country.country_name)
+  - Foreign credential details from `Value_1__c`, `Value_2__c`, `Value_3__c`
+
+- **Institution** - Educational institutions (`Type__c = 'Country Institute'`)
+  - `institution_uuid` (TEXT PRIMARY KEY) - UUID4
+  - `country_name` (TEXT FK -> Country.country_name)
+  - Institution details from `Value_1__c` through `Value_4__c`
+
+- **ProgramLength** - Program duration data (`Type__c = 'Program Length'`)
+  - `program_length_uuid` (TEXT PRIMARY KEY) - UUID4
+  - `country_name` (TEXT FK -> Country.country_name)
+  - Program length from `Value_1__c`
+
+- **GradeScale** - Grading systems (`Type__c = 'Country Grade'`)
+  - `grade_scale_uuid` (TEXT PRIMARY KEY) - UUID4
+  - `country_name` (TEXT FK -> Country.country_name)
+  - Grade scale details from `Value_1__c`, `Value_2__c`, `Value_3__c`, `Value_5__c`
+
+- **USEquivalency** - Equivalency mappings (`Type__c = 'All Equivalncy'`) - standalone
+  - `equivalency_uuid` (TEXT PRIMARY KEY) - UUID4
+  - Equivalency data from `Key__c` and `Value_1__c`
+
+- **Notes** - General notes (`Key__c` contains notes) - standalone
+  - `note_uuid` (TEXT PRIMARY KEY) - UUID4
+  - Note content from `Key__c`
+
+### Key Design Decisions:
+- **Natural Key**: Country name used as primary key for readability and performance
+- **Text-based Foreign Keys**: Direct country_name references eliminate join overhead
+- **UUIDs**: All other primary keys use UUID4 for global uniqueness
+- **Simplified Queries**: No complex joins needed for country-based filtering
+
+## Development Guidelines
+- Keep modules focused on single responsibilities
+- All database operations must go through the `database/` layer
+- All Salesforce operations must go through the `salesforce/` layer
+- Shared utilities belong in `utils/`
+- Configuration comes from [config.py](mdc:config.py) only
+- Follow the data flow architecture for new features
+
+## Important: Structure Updates
+**When project structure changes, this rule file MUST be updated to reflect:**
+- New directories or files
+- Changed module responsibilities  
+- Updated data flow
+- Modified file references using `[filename](mdc:filename)` format
+- Any architectural changes
+
+**Always update this file immediately after structural changes to maintain accurate documentation.**

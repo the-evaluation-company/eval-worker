@@ -1,0 +1,6 @@
+# Core dependencies
+simple-salesforce
+python-dotenv
+
+# Utilities
+typing-extensions

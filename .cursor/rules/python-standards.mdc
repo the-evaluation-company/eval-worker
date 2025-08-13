@@ -1,0 +1,63 @@
+---
+globs: *.py
+description: Python coding standards and best practices for the Evaluator project
+---
+
+# Python Coding Standards
+
+## Code Style & Formatting
+- Use PEP 8 style guidelines
+- Use 4 spaces for indentation (no tabs)
+- Maximum line length of 88 characters (Black formatter standard)
+- Use snake_case for variable and function names
+- Use PascalCase for class names
+- Use UPPER_CASE for constants
+
+## Import Organization
+- Standard library imports first
+- Third-party imports second  
+- Local application imports last
+- Separate each group with a blank line
+- Use absolute imports when possible
+
+## Documentation & Comments
+- Use docstrings for all functions, classes, and modules
+- Follow Google or NumPy docstring format
+- Include type hints for function parameters and return values
+- Avoid inline comments unless absolutely necessary for clarity
+
+## Error Handling
+- Use specific exception types rather than bare `except:`
+- Include meaningful error messages
+- Use context managers (with statements) for resource management
+- Log errors appropriately using the logging module
+
+## Database Operations
+- Always use parameterized queries to prevent SQL injection
+- Use context managers for database connections
+- Handle database exceptions gracefully
+- Close connections and cursors properly
+
+## Environment & Configuration
+- Never hardcode credentials or sensitive data
+- Use environment variables via [config.py](mdc:config.py)
+- Validate required environment variables on startup
+- Use type conversion for environment variables (int, float, bool)
+
+## Memory Management
+- Prefer list comprehensions over loops when appropriate
+- Use generators for large datasets
+- Close file handles and database connections explicitly
+- Avoid global variables when possible
+
+## Testing Considerations
+- Write testable functions (single responsibility)
+- Avoid side effects in pure functions
+- Use dependency injection for external services
+- Mock external API calls in tests
+
+## Project-Specific Guidelines
+- Follow the modular structure defined in project-structure.mdc
+- Use the Salesforce client from [salesforce/client.py](mdc:salesforce/client.py)
+- Database operations should go through [database/](mdc:database/) modules
+- Utility functions belong in [utils/helpers.py](mdc:utils/helpers.py)
