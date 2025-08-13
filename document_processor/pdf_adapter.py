@@ -85,10 +85,24 @@ class PDFAdapter:
         
         # Format attendance dates
         date_of_attendance = ""
-        if cred.attendance_dates:
-            start = cred.attendance_dates.start_date or "Not specified"
-            end = cred.attendance_dates.end_date or "Not specified"
-            date_of_attendance = f"{start} to {end}"
+        if cred.attendance_dates and cred.attendance_dates.periods:
+            # Handle multiple periods by using the first one or combining them
+            if len(cred.attendance_dates.periods) == 1:
+                period = cred.attendance_dates.periods[0]
+                start = period.start_date or "Not specified"
+                end = period.end_date or "Not specified"
+                date_of_attendance = f"{start} to {end}"
+            else:
+                # Multiple periods - format as comma-separated ranges
+                period_strings = []
+                for period in cred.attendance_dates.periods:
+                    start = period.start_date or "Not specified"
+                    end = period.end_date or "Not specified"
+                    if start == end and start != "Not specified":
+                        period_strings.append(start)
+                    else:
+                        period_strings.append(f"{start} to {end}")
+                date_of_attendance = ", ".join(period_strings)
         
         # Extract program details
         program = cred.foreign_credential.validated_type or cred.foreign_credential.extracted_type

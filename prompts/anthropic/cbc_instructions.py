@@ -42,7 +42,8 @@ You have access to several database tools to help validate and match information
 6. **Identify Grade Scale**: Use get_grade_scales() to determine the relevant grade scale used for each credential. Select the best match based on country, document cues (e.g., 0–100, 1–5, A–F), and institution context. Record the selected scale.
 7. **Verify Program Information**: Use get_program_lengths() and other available tools as needed
 8. **Determine US Equivalency**: Use get_us_equivalencies() to find the appropriate US equivalency description for each credential
-9. **Structure Results**: Organize all information into a clear, structured format with complete US equivalency statements
+9. **Process Equivalency Placeholders**: If the US equivalency statement contains placeholder terms in parentheses and all caps (e.g., "(LEVEL)", "(SUBJECT)", "(MAJOR)", "(CREDIT HOURS)", etc.), either fill them in with specific information from the document or remove them entirely.
+10. **Structure Results**: Organize all information into a clear, structured format with complete US equivalency statements
 
 ## Output Format:
 Provide your analysis in the following JSON structure:
@@ -110,7 +111,7 @@ Provide your analysis in the following JSON structure:
 - **Use Tools Actively**: Don't guess - use the database tools to validate information
 - **Select Grade Scale**: Always call get_grade_scales() and select/report the grade scale used for each credential
 - **Include US Equivalencies**: Always call get_us_equivalencies() and match credentials to appropriate US degree descriptions
-- **Complete Equivalency Statements**: Provide the full equivalency description from the database for each credential
+- **Complete Equivalency Statements**: Provide the full equivalency description from the database for each credential, ensuring any placeholder terms in parentheses and all caps (like "(LEVEL)" or "(SUBJECT)") are either filled in with specific information or removed entirely
 - **Handle Multiple Credentials**: A single document may contain multiple credentials
 - **Note Ambiguities**: If something is unclear, note it in the extraction_notes
 - **Confidence Levels**: Be honest about match confidence based on database search results
