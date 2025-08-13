@@ -48,6 +48,21 @@ class ProgramLength:
 
 
 @dataclass
+class ValidatedGradeScale:
+    """Validated grade scale reference from the database."""
+    id: Optional[Any] = None
+    name: Optional[str] = None
+
+
+@dataclass
+class GradeScaleInfo:
+    """Information about the selected grade scale for a credential."""
+    extracted_hint: Optional[str] = None
+    validated_scale: Optional[ValidatedGradeScale] = None
+    match_confidence: str = "not_found"  # high, medium, low, not_found
+
+
+@dataclass
 class USEquivalency:
     """Information about US degree equivalency."""
     equivalency_statement: Optional[str] = None
@@ -73,6 +88,7 @@ class CredentialInfo:
     award_date: Optional[str] = None
     attendance_dates: Optional[AttendanceDates] = None
     program_length: Optional[ProgramLength] = None
+    grade_scale: Optional[GradeScaleInfo] = None
     us_equivalency: Optional[USEquivalency] = None
     additional_info: Optional[AdditionalInfo] = None
 
@@ -166,6 +182,23 @@ class CredentialAnalysisResultBuilder:
                 ) if length_data else None
                 
                 # Parse US equivalency
+                # Parse grade scale
+                grade_data = cred_data.get("grade_scale", {})
+                if grade_data:
+                    validated_scale_data = grade_data.get("validated_scale", {}) or {}
+                    validated_scale = ValidatedGradeScale(
+                        id=validated_scale_data.get("id"),
+                        name=validated_scale_data.get("name")
+                    ) if validated_scale_data else None
+                    grade_scale = GradeScaleInfo(
+                        extracted_hint=grade_data.get("extracted_hint"),
+                        validated_scale=validated_scale,
+                        match_confidence=grade_data.get("match_confidence", "not_found")
+                    )
+                else:
+                    grade_scale = None
+
+                # Parse US equivalency
                 equivalency_data = cred_data.get("us_equivalency", {})
                 us_equivalency = USEquivalency(
                     equivalency_statement=equivalency_data.get("equivalency_statement"),
@@ -190,6 +223,7 @@ class CredentialAnalysisResultBuilder:
                     award_date=cred_data.get("award_date"),
                     attendance_dates=attendance_dates,
                     program_length=program_length,
+                    grade_scale=grade_scale,
                     us_equivalency=us_equivalency,
                     additional_info=additional_info
                 )
@@ -264,6 +298,14 @@ class CredentialAnalysisResultBuilder:
                         "extracted_length": cred.program_length.extracted_length,
                         "validated_length": cred.program_length.validated_length
                     } if cred.program_length else None,
+                    "grade_scale": {
+                        "extracted_hint": cred.grade_scale.extracted_hint,
+                        "validated_scale": {
+                            "id": cred.grade_scale.validated_scale.id,
+                            "name": cred.grade_scale.validated_scale.name
+                        } if cred.grade_scale.validated_scale else None,
+                        "match_confidence": cred.grade_scale.match_confidence
+                    } if cred.grade_scale else None,
                     "us_equivalency": {
                         "equivalency_statement": cred.us_equivalency.equivalency_statement,
                         "match_confidence": cred.us_equivalency.match_confidence

@@ -236,6 +236,17 @@ def analyze_folio(filename: str, document_type: str = "general") -> None:
                     pl_status = "[MATCH]" if cred.program_length.validated_length else "[NO MATCH]"
                     print(f"{pl_status} Program Length: {cred.program_length.extracted_length} → {cred.program_length.validated_length or 'Not found'}")
                 
+                # Grade scale
+                if getattr(cred, 'grade_scale', None):
+                    gs = cred.grade_scale
+                    if gs.validated_scale and (gs.validated_scale.id or gs.validated_scale.name):
+                        gs_status = "[MATCH]" if gs.match_confidence in ['high', 'medium'] else "[LOW CONF]"
+                        print(f"{gs_status} Grade Scale: {gs.validated_scale.name or 'Unnamed'} (ID: {gs.validated_scale.id or 'N/A'})")
+                    elif gs.extracted_hint:
+                        print(f"[HINT] Grade Scale: {gs.extracted_hint} (no database match)")
+                    else:
+                        print(f"[NO MATCH] Grade Scale: Not found")
+
                 if cred.us_equivalency and cred.us_equivalency.equivalency_statement:
                     eq_status = "[MATCH]" if cred.us_equivalency.match_confidence in ['high', 'medium'] else "[NO MATCH]"
                     print(f"{eq_status} US Equivalency: {cred.us_equivalency.equivalency_statement}")

@@ -83,6 +83,20 @@ TOOL_SCHEMAS = [
         }
     },
     {
+        "name": "get_grade_scales",
+        "description": "Get grade scales used in a specific country. Use this to select the relevant grading system for a credential.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "country_name": {
+                    "type": "string",
+                    "description": "Exact country name to get grade scales for"
+                }
+            },
+            "required": ["country_name"]
+        }
+    },
+    {
         "name": "get_us_equivalencies",
         "description": "Get all US equivalency mappings. Use this to find appropriate US degree equivalencies for foreign credentials.",
         "input_schema": {
@@ -309,6 +323,7 @@ def execute_tool(tool_name: str, **kwargs) -> Dict[str, Any]:
         "find_institutions": tools.find_institutions,
         "get_foreign_credentials": tools.get_foreign_credentials,
         "get_program_lengths": tools.get_program_lengths,
+        "get_grade_scales": tools.get_grade_scales,
         "get_us_equivalencies": tools.get_us_equivalencies
     }
     

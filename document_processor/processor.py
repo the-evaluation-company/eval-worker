@@ -69,18 +69,12 @@ class DocumentProcessor:
             
             # Create document type specific prompt
             if prompt is None:
-                from prompts.anthropic.base_template import CREDENTIAL_ANALYSIS_TEMPLATE
-                
                 if document_type == "cbc":
                     from prompts.anthropic.cbc_instructions import CBC_DOCUMENT_INSTRUCTIONS
-                    document_instructions = CBC_DOCUMENT_INSTRUCTIONS
+                    analysis_prompt = CBC_DOCUMENT_INSTRUCTIONS
                 else:
                     from prompts.anthropic.general_instructions import GENERAL_DOCUMENT_INSTRUCTIONS
-                    document_instructions = GENERAL_DOCUMENT_INSTRUCTIONS
-                
-                analysis_prompt = CREDENTIAL_ANALYSIS_TEMPLATE.format(
-                    DOCUMENT_TYPE_INSTRUCTIONS=document_instructions
-                )
+                    analysis_prompt = GENERAL_DOCUMENT_INSTRUCTIONS
             else:
                 analysis_prompt = prompt
             
