@@ -142,7 +142,7 @@ def wrap_text(text: str, font, font_size: float, max_width: float, font_type: st
     # Find hyphenated words and replace them with placeholders
     import re
 
-    hyphen_pattern = r"\b\w+(?:-\w+)+\b"
+    hyphen_pattern = r"\\b\\w+(?:-\\w+)+\\b"
     matches = re.finditer(hyphen_pattern, protected_text)
 
     for i, match in enumerate(matches):
@@ -159,7 +159,6 @@ def wrap_text(text: str, font, font_size: float, max_width: float, font_type: st
             if placeholder in word:
                 words[j] = word.replace(placeholder, original_word)
 
-    # If all words fit in one line, return as is
     # Helper for backward-compatible width measurements (supports 2 or 3 args)
     def _get_width_safe(s: str) -> float:
         try:
@@ -204,29 +203,6 @@ def wrap_text(text: str, font, font_size: float, max_width: float, font_type: st
 
     if current_line:
         lines.append(current_line)
-
-    # Post-process: merge short lines with previous ones if possible
-    if len(lines) > 1:
-        optimized_lines = []
-        for i, line in enumerate(lines):
-            line_width = _get_width_safe(line)
-            line_usage = line_width / max_width
-
-            # If this line uses less than 50% width and we have a previous line
-            if line_usage < 0.5 and optimized_lines:
-                # Try to merge with previous line
-                prev_line = optimized_lines[-1]
-                merged_line = prev_line + " " + line
-                merged_width = _get_width_safe(merged_line)
-                # If merged line fits within 110% of max_width (allow slight overflow)
-                if merged_width <= max_width * 1.1:
-                    optimized_lines[-1] = merged_line
-                else:
-                    optimized_lines.append(line)
-            else:
-                optimized_lines.append(line)
-
-        return optimized_lines
 
     return lines
 
