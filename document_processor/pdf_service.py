@@ -30,7 +30,8 @@ class PDFService:
         case_number: Optional[str] = None,
         name_on_application: Optional[str] = None,
         date_of_birth: Optional[str] = None,
-        output_path: Optional[str] = None
+        output_path: Optional[str] = None,
+        is_cbc: bool = False
     ) -> str:
         """
         Generate a PDF evaluation report from analysis results.
@@ -42,6 +43,7 @@ class PDFService:
             name_on_application: Optional student name override
             date_of_birth: Optional DOB override (YYYY-MM-DD format)
             output_path: Optional output file path
+            is_cbc: Whether this is a course-by-course evaluation (default: False)
             
         Returns:
             Path to generated PDF file
@@ -62,7 +64,8 @@ class PDFService:
                 case_number=final_case_number,
                 name_on_application=final_name,
                 date_of_birth=final_dob,
-                verification_status="Pending"
+                verification_status="Pending",
+                is_cbc=is_cbc
             )
             
             # Generate PDF
@@ -108,6 +111,9 @@ class PDFService:
                 "country", "institution", "credential", "program_of_study",
                 "award_date", "attendance_dates", "program_length", 
                 "us_equivalency", "grades", "honors", "notes"
+            ],
+            "cbc_features": [
+                "grade_conversion_table", "course_analysis", "gpa_calculation"
             ],
             "required_case_info": [
                 "case_number", "name_on_application", "date_of_birth"

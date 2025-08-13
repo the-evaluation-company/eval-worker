@@ -187,9 +187,12 @@ def analyze_folio(filename: str, document_type: str = "general", generate_pdf: b
             try:
                 from document_processor.pdf_service import PDFService
                 pdf_service = PDFService()
+                # Pass is_cbc flag based on document_type
+                is_cbc = (document_type == "cbc")
                 pdf_path = pdf_service.generate_evaluation_pdf(
                     result=result,
-                    filename=filename
+                    filename=filename,
+                    is_cbc=is_cbc
                 )
                 print(f"PDF evaluation report generated: {pdf_path}")
             except Exception as e:

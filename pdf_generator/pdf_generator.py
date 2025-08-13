@@ -10,7 +10,7 @@ from typing import Any, Dict, List, Optional
 
 from .config import BLACK_COLOR, PDF_CONFIG
 from .core import PDFDocument
-from .types import CaseInfo, CredentialGroup, PDFGenerationOptions
+from .types import CaseInfo, CredentialGroup, CredentialGroupWithCBC, GradeMapping, PDFGenerationOptions
 from .utils import normalize_text, wrap_text
 
 
@@ -514,6 +514,10 @@ class PDFGenerator:
 
             current_y -= 12  # TypeScript line height
 
+        # Add grade conversion table for CBC evaluations
+        if isinstance(form_data, CredentialGroupWithCBC) and form_data.parsedGradeScaleTable:
+            current_y = self._draw_grade_conversion_table(current_y, form_data.parsedGradeScaleTable)
+
         return current_y
 
     def _draw_enhanced_footer(self, current_y: float) -> float:
@@ -957,6 +961,10 @@ Foreign grades are converted to U.S. letter grades based on the 4.00 system. Let
 
             current_y -= self.config.layout.LINE_HEIGHT
 
+        # Add grade conversion table for CBC evaluations
+        if isinstance(form_data, CredentialGroupWithCBC) and form_data.parsedGradeScaleTable:
+            current_y = self._draw_grade_conversion_table(current_y, form_data.parsedGradeScaleTable)
+
         return current_y
 
     def _draw_comments_section(self, current_y: float) -> float:
@@ -1030,3 +1038,202 @@ All documentation submitted to TEC is reviewed internally. At a minimum, TEC req
         self.document.draw_text("Issuing Office - Houston, TX", self.config.layout.LEFT_MARGIN, current_y, self.config.fonts.COMMENTS_SIZE, "bold", BLACK_COLOR)
 
         return current_y
+
+    def _draw_grade_conversion_table(self, current_y: float, grade_mappings: List[GradeMapping]) -> float:
+        """
+        Draw grade conversion table for CBC evaluations.
+
+        Args:
+            current_y: Current Y position
+            grade_mappings: List of grade mappings to display
+
+        Returns:
+            New Y position after the table
+        """
+        if not grade_mappings:
+            return current_y
+
+        # Add spacing before table
+        current_y -= self.config.layout.LINE_HEIGHT * 2.0
+
+        # Draw "COURSE ANALYSIS" header
+        self.document.draw_text(
+            "COURSE ANALYSIS",
+            self.config.layout.LEFT_MARGIN,
+            current_y,
+            self.config.fonts.NORMAL_SIZE,
+            "bold",
+            BLACK_COLOR,
+        )
+
+        current_y -= self.config.layout.LINE_HEIGHT * 1.2
+
+        # Draw "Grade Conversion:" label
+        self.document.draw_text(
+            "Grade Conversion:",
+            self.config.layout.LEFT_MARGIN,
+            current_y,
+            self.config.fonts.NORMAL_SIZE,
+            "regular",
+            BLACK_COLOR,
+        )
+
+        current_y -= self.config.layout.LINE_HEIGHT * 1.2
+
+        # Prepare table data
+        original_grades = []
+        us_grades = []
+        
+        # Sort grade mappings by original grade (descending)
+        sorted_mappings = sorted(grade_mappings, key=lambda x: self._extract_numeric_grade(x.originalGrade), reverse=True)
+        
+        for mapping in sorted_mappings:
+            original_grades.append(mapping.originalGrade)
+            # Format US grade as "GPA/Letter" (e.g., "4.00/A")
+            us_grade = f"{mapping.gpa}/{mapping.letterGrade}" if mapping.gpa and mapping.letterGrade else mapping.usGrade
+            us_grades.append(us_grade)
+
+        # Create table data
+        table_data = [
+            ["Original Grade"] + original_grades,
+            ["U.S. Grade"] + us_grades,
+        ]
+
+        # Calculate column widths to span the page
+        page_width = self.document.page_width
+        table_width = page_width - self.config.layout.LEFT_MARGIN - self.config.layout.RIGHT_MARGIN
+        num_grade_cols = len(original_grades)
+        label_col_width = 90  # Fixed width for label column
+        
+        # Distribute remaining width evenly among grade columns
+        remaining_width = table_width - label_col_width
+        grade_col_width = remaining_width / num_grade_cols if num_grade_cols > 0 else 60
+        col_widths = [label_col_width] + [grade_col_width] * num_grade_cols
+
+        # Draw table with special formatting
+        table_y = self._draw_grade_table_custom(
+            x=self.config.layout.LEFT_MARGIN,
+            y=current_y,
+            data=table_data,
+            col_widths=col_widths,
+            row_height=20,
+            font_size=9,
+            border_color=BLACK_COLOR,
+            border_width=1,
+        )
+
+        return table_y - self.config.layout.LINE_HEIGHT
+
+    def _draw_grade_table_custom(
+        self,
+        x: float,
+        y: float,
+        data: List[List[str]],
+        col_widths: List[float],
+        row_height: float,
+        font_size: float = 10,
+        border_color: tuple = (0, 0, 0),
+        border_width: float = 1,
+    ) -> float:
+        """
+        Draw a custom grade conversion table with bold labels.
+
+        Args:
+            x: X coordinate of top-left corner
+            y: Y coordinate of top-left corner (top of table)
+            data: List of rows, each row is a list of cell values
+            col_widths: List of column widths
+            row_height: Height of each row
+            font_size: Font size for table text
+            border_color: Border color as RGB tuple
+            border_width: Border width
+
+        Returns:
+            Y coordinate after the table
+        """
+        if not data or not col_widths:
+            return y
+
+        table_width = sum(col_widths)
+        table_height = len(data) * row_height
+
+        # Draw table border
+        self.document.draw_rectangle(x, y - table_height, table_width, table_height, border_color, border_width)
+
+        # Light gray color for label cells background
+        light_gray = (0.9, 0.9, 0.9)
+
+        # Draw rows
+        for row_idx, row_data in enumerate(data):
+            row_y = y - (row_idx * row_height)
+            
+            # Fill first column (label column) with light gray background
+            self.document.draw_rectangle(
+                x, row_y - row_height, 
+                col_widths[0], row_height, 
+                border_color, 0,  # No border for fill
+                fill_color=light_gray
+            )
+            
+            # Draw column separators and cell content
+            col_x = x
+            for col_idx, cell_value in enumerate(row_data):
+                # Draw vertical line (column separator)
+                if col_idx > 0:
+                    self.document.current_page.setStrokeColorRGB(*border_color)
+                    self.document.current_page.setLineWidth(border_width)
+                    self.document.current_page.line(col_x, y, col_x, y - table_height)
+
+                # Draw cell text
+                if cell_value:
+                    cell_width = col_widths[col_idx]
+                    
+                    # First column (labels) should be bold
+                    if col_idx == 0:
+                        font_type = "bold"
+                        # Left-align labels with some padding
+                        text_x = col_x + 5
+                    else:
+                        font_type = "regular"
+                        # Center-align grade values
+                        text_width = self.document.get_text_width(str(cell_value), font_size, font_type)
+                        text_x = col_x + (cell_width - text_width) / 2
+                    
+                    text_y = row_y - row_height + (row_height - font_size) / 2
+                    self.document.draw_text(str(cell_value), text_x, text_y, font_size, font_type, border_color)
+
+                col_x += col_widths[col_idx]
+
+            # Draw horizontal line (row separator)
+            if row_idx < len(data) - 1:
+                self.document.current_page.setStrokeColorRGB(*border_color)
+                self.document.current_page.setLineWidth(border_width)
+                self.document.current_page.line(x, row_y - row_height, x + table_width, row_y - row_height)
+
+        return y - table_height
+
+    def _extract_numeric_grade(self, grade_str: str) -> float:
+        """
+        Extract numeric value from grade string for sorting.
+        
+        Args:
+            grade_str: Grade string (e.g., "17-20", "13-16", "A")
+            
+        Returns:
+            Numeric value for sorting
+        """
+        import re
+        
+        # Extract numbers from grade string
+        numbers = re.findall(r'\d+', grade_str)
+        if numbers:
+            # Use the first number for sorting
+            return float(numbers[0])
+        
+        # Handle letter grades
+        letter_values = {"A": 20, "B": 16, "C": 12, "D": 8, "F": 4}
+        for letter, value in letter_values.items():
+            if letter in grade_str.upper():
+                return float(value)
+        
+        return 0.0
