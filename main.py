@@ -133,11 +133,11 @@ def show_stats() -> None:
         sys.exit(1)
 
 
-def analyze_folio(filename: str) -> None:
+def analyze_folio(filename: str, document_type: str = "general") -> None:
     """Analyze a folio PDF document for credentials."""
     
     setup_logging(level="INFO")
-    logger.info(f"Starting folio analysis for: {filename}")
+    logger.info(f"Starting folio analysis for: {filename} (type: {document_type})")
     
     try:
         # Check if database exists
@@ -167,7 +167,7 @@ def analyze_folio(filename: str) -> None:
                 print("  (no PDF files found)")
             sys.exit(1)
         
-        print(f"Analyzing: {filename}")
+        print(f"Analyzing: {filename} (Document Type: {document_type.upper()})")
         print(f"File size: {folio_path.stat().st_size / 1024:.1f} KB")
         
         # Initialize processor
@@ -180,7 +180,7 @@ def analyze_folio(filename: str) -> None:
         
         # Process the PDF
         print("Starting analysis (this may take a few minutes)...")
-        result = processor.process_pdf(str(folio_path))
+        result = processor.process_pdf(str(folio_path), document_type=document_type)
         
         # Display results
         print(f"\n{'='*70}")
@@ -235,6 +235,12 @@ def analyze_folio(filename: str) -> None:
                 if cred.program_length and cred.program_length.extracted_length:
                     pl_status = "[MATCH]" if cred.program_length.validated_length else "[NO MATCH]"
                     print(f"{pl_status} Program Length: {cred.program_length.extracted_length} → {cred.program_length.validated_length or 'Not found'}")
+                
+                if cred.us_equivalency and cred.us_equivalency.equivalency_statement:
+                    eq_status = "[MATCH]" if cred.us_equivalency.match_confidence in ['high', 'medium'] else "[NO MATCH]"
+                    print(f"{eq_status} US Equivalency: {cred.us_equivalency.equivalency_statement}")
+                elif cred.us_equivalency and cred.us_equivalency.match_confidence == 'not_found':
+                    print("[NO MATCH] US Equivalency: No equivalent found")
         
         # Show extraction notes
         if result.extraction_notes:
@@ -292,6 +298,12 @@ if __name__ == "__main__":
         nargs="?",
         help="PDF filename to analyze (required for 'analyze' command)"
     )
+    parser.add_argument(
+        "--type",
+        choices=["general", "cbc"],
+        default="general",
+        help="Document type: 'general' for basic credentials, 'cbc' for course-by-course analysis (default: general)"
+    )
     
     args = parser.parse_args()
     
@@ -304,10 +316,10 @@ if __name__ == "__main__":
     elif args.command == "analyze":
         if not args.filename:
             print("ERROR: filename is required for analyze command")
-            print("Usage: python main.py analyze <filename.pdf>")
-            print("Example: python main.py analyze \"Folio 002293166.pdf\"")
+            print("Usage: python main.py analyze <filename.pdf> [--type general|cbc]")
+            print("Example: python main.py analyze \"Folio 002293166.pdf\" --type general")
             sys.exit(1)
-        analyze_folio(args.filename)
+        analyze_folio(args.filename, args.type)
     else:
         parser.print_help()
         sys.exit(1)

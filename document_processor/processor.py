@@ -42,13 +42,14 @@ class DocumentProcessor:
         else:
             raise ValueError(f"Unsupported LLM provider: {self.llm_provider}")
     
-    def process_pdf(self, pdf_path: str, prompt: Optional[str] = None) -> CredentialAnalysisResult:
+    def process_pdf(self, pdf_path: str, prompt: Optional[str] = None, document_type: str = "general") -> CredentialAnalysisResult:
         """
         Process a PDF document for credential analysis.
         
         Args:
             pdf_path: Path to the PDF file to analyze
             prompt: Optional custom prompt for analysis
+            document_type: Type of document analysis ("general" or "cbc")
             
         Returns:
             CredentialAnalysisResult: Structured analysis results
@@ -66,8 +67,25 @@ class DocumentProcessor:
                     errors=[f"File not found: {pdf_path}"]
                 )
             
+            # Create document type specific prompt
+            if prompt is None:
+                from prompts.anthropic.base_template import CREDENTIAL_ANALYSIS_TEMPLATE
+                
+                if document_type == "cbc":
+                    from prompts.anthropic.cbc_instructions import CBC_DOCUMENT_INSTRUCTIONS
+                    document_instructions = CBC_DOCUMENT_INSTRUCTIONS
+                else:
+                    from prompts.anthropic.general_instructions import GENERAL_DOCUMENT_INSTRUCTIONS
+                    document_instructions = GENERAL_DOCUMENT_INSTRUCTIONS
+                
+                analysis_prompt = CREDENTIAL_ANALYSIS_TEMPLATE.format(
+                    DOCUMENT_TYPE_INSTRUCTIONS=document_instructions
+                )
+            else:
+                analysis_prompt = prompt
+            
             # Analyze with LLM service
-            llm_result = self.llm_service.analyze_pdf_document(pdf_path, prompt)
+            llm_result = self.llm_service.analyze_pdf_document(pdf_path, analysis_prompt)
             
             # Convert to structured result
             if llm_result.get("success", False):

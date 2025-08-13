@@ -13,7 +13,8 @@ from database.queries import (
     get_institutions_by_country,
     get_foreign_credentials_by_country,
     get_program_lengths_by_country,
-    get_grade_scales_by_country
+    get_grade_scales_by_country,
+    get_all_us_equivalencies
 )
 
 logger = logging.getLogger(__name__)
@@ -79,6 +80,15 @@ TOOL_SCHEMAS = [
                 }
             },
             "required": ["country_name"]
+        }
+    },
+    {
+        "name": "get_us_equivalencies",
+        "description": "Get all US equivalency mappings. Use this to find appropriate US degree equivalencies for foreign credentials.",
+        "input_schema": {
+            "type": "object",
+            "properties": {},
+            "required": []
         }
     }
 ]
@@ -264,6 +274,29 @@ class DatabaseTools:
         except Exception as e:
             logger.error(f"Error getting grade scales: {e}")
             return {"error": str(e)}
+    
+    @staticmethod
+    def get_us_equivalencies() -> Dict[str, Any]:
+        """Get all US equivalency mappings."""
+        try:
+            logger.debug("Getting all US equivalencies")
+            
+            equivalencies = get_all_us_equivalencies()
+            
+            if not equivalencies:
+                return {"error": "No US equivalency data found", "equivalencies": []}
+            
+            result = {
+                "equivalencies": equivalencies,
+                "total_count": len(equivalencies)
+            }
+            
+            logger.debug(f"Retrieved {len(equivalencies)} US equivalency entries")
+            return result
+            
+        except Exception as e:
+            logger.error(f"Error getting US equivalencies: {e}")
+            return {"error": str(e)}
 
 
 # Tool dispatcher for LLM providers
@@ -275,7 +308,8 @@ def execute_tool(tool_name: str, **kwargs) -> Dict[str, Any]:
         "search_countries": tools.search_countries,
         "find_institutions": tools.find_institutions,
         "get_foreign_credentials": tools.get_foreign_credentials,
-        "get_program_lengths": tools.get_program_lengths
+        "get_program_lengths": tools.get_program_lengths,
+        "get_us_equivalencies": tools.get_us_equivalencies
     }
     
     if tool_name not in tool_map:

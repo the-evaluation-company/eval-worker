@@ -46,7 +46,8 @@ python main.py reset                      # Drop and recreate all database table
 python main.py stats                      # Display database statistics and integrity
 
 # Credential Analysis
-python main.py analyze "filename.pdf"    # Analyze single PDF folio
+python main.py analyze "filename.pdf" --type general    # Analyze PDF (general evaluation)
+python main.py analyze "filename.pdf" --type cbc        # Analyze PDF (course-by-course)
 ```
 
 ### Command Details
@@ -56,7 +57,7 @@ python main.py analyze "filename.pdf"    # Analyze single PDF folio
 | `migrate` | Extracts data from Salesforce `Credentials_Form_Setup_Data__c` object and loads into normalized SQLite tables | Console log + `data/evaluator.db` |
 | `reset` | Drops all tables and recreates schema (destructive) | Clean database |
 | `stats` | Shows record counts and data integrity status | Console statistics |
-| `analyze <filename>` | Processes PDF using LLM + database tools | Console output + timestamped JSON in `results/` |
+| `analyze <filename> [--type general\|cbc]` | Processes PDF using LLM + database tools (default: general) | Console output + timestamped JSON in `results/` |
 
 ### Analysis Output
 - **Console**: Human-readable credential analysis with validation status
@@ -163,7 +164,7 @@ All tables populated from Salesforce `Credentials_Form_Setup_Data__c` where:
 
 ### LLM Integration
 - **Provider**: Anthropic Claude (extensible architecture)
-- **Tool Calling**: 4 database tools available to LLM
+- **Tool Calling**: 5 database tools available to LLM
 - **Context**: Base64 PDF upload + structured prompt
 - **Timeout**: 20-minute limit for large documents
 - **Tracking**: Complete conversation metadata with token usage
@@ -173,6 +174,7 @@ All tables populated from Salesforce `Credentials_Form_Setup_Data__c` where:
 2. **`find_institutions(country_name, query)`** - Institution search within country
 3. **`get_foreign_credentials(country_name)`** - Available credential types
 4. **`get_program_lengths(country_name)`** - Typical program durations
+5. **`get_us_equivalencies()`** - All US degree equivalencies and descriptions
 
 ### Data Flow
 1. **PDF Upload** → Base64 encoding → Claude API

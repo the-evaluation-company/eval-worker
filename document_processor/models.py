@@ -48,6 +48,13 @@ class ProgramLength:
 
 
 @dataclass
+class USEquivalency:
+    """Information about US degree equivalency."""
+    equivalency_statement: Optional[str] = None
+    match_confidence: str = "not_found"  # high, medium, low, not_found
+
+
+@dataclass
 class AdditionalInfo:
     """Additional credential information."""
     grades: Optional[str] = None
@@ -66,6 +73,7 @@ class CredentialInfo:
     award_date: Optional[str] = None
     attendance_dates: Optional[AttendanceDates] = None
     program_length: Optional[ProgramLength] = None
+    us_equivalency: Optional[USEquivalency] = None
     additional_info: Optional[AdditionalInfo] = None
 
 
@@ -157,6 +165,13 @@ class CredentialAnalysisResultBuilder:
                     validated_length=length_data.get("validated_length")
                 ) if length_data else None
                 
+                # Parse US equivalency
+                equivalency_data = cred_data.get("us_equivalency", {})
+                us_equivalency = USEquivalency(
+                    equivalency_statement=equivalency_data.get("equivalency_statement"),
+                    match_confidence=equivalency_data.get("match_confidence", "not_found")
+                ) if equivalency_data else None
+                
                 # Parse additional info
                 additional_data = cred_data.get("additional_info", {})
                 additional_info = AdditionalInfo(
@@ -175,6 +190,7 @@ class CredentialAnalysisResultBuilder:
                     award_date=cred_data.get("award_date"),
                     attendance_dates=attendance_dates,
                     program_length=program_length,
+                    us_equivalency=us_equivalency,
                     additional_info=additional_info
                 )
                 
@@ -248,6 +264,10 @@ class CredentialAnalysisResultBuilder:
                         "extracted_length": cred.program_length.extracted_length,
                         "validated_length": cred.program_length.validated_length
                     } if cred.program_length else None,
+                    "us_equivalency": {
+                        "equivalency_statement": cred.us_equivalency.equivalency_statement,
+                        "match_confidence": cred.us_equivalency.match_confidence
+                    } if cred.us_equivalency else None,
                     "additional_info": {
                         "grades": cred.additional_info.grades,
                         "honors": cred.additional_info.honors,
