@@ -85,6 +85,7 @@ class CredentialAnalysisResult:
     extraction_notes: List[str]
     success: bool = True
     errors: List[str] = None
+    conversation_metadata: Optional[Dict[str, Any]] = None
     
     def __post_init__(self):
         if self.errors is None:
@@ -186,6 +187,10 @@ class CredentialAnalysisResultBuilder:
                 extraction_notes=response_data.get("extraction_notes", [])
             )
             
+            # Preserve conversation metadata if present
+            if "conversation_metadata" in response_data:
+                result.conversation_metadata = response_data["conversation_metadata"]
+            
             return result
             
         except Exception as e:
@@ -209,12 +214,12 @@ class CredentialAnalysisResultBuilder:
         Returns:
             Dict representation of the result
         """
-        return {
+        result_dict = {
             "analysis_summary": {
                 "total_credentials_found": result.analysis_summary.total_credentials_found,
                 "document_type": result.analysis_summary.document_type,
                 "analysis_confidence": result.analysis_summary.analysis_confidence
-            },
+            } if result.analysis_summary else None,
             "credentials": [
                 {
                     "credential_id": cred.credential_id,
@@ -255,3 +260,9 @@ class CredentialAnalysisResultBuilder:
             "success": result.success,
             "errors": result.errors
         }
+        
+        # Include conversation metadata if available
+        if hasattr(result, 'conversation_metadata') and result.conversation_metadata:
+            result_dict["conversation_metadata"] = result.conversation_metadata
+        
+        return result_dict

@@ -82,3 +82,6 @@ coverage.xml
 # Temporary Files
 *.tmp
 *.temp
+
+# Analysis Results (keep folder structure but ignore result files)
+results/*.json

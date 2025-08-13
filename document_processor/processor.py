@@ -6,6 +6,8 @@ a simple interface for analyzing credential documents.
 """
 
 import logging
+import json
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, Optional
 
@@ -77,6 +79,11 @@ class DocumentProcessor:
                     logger.info(f"Found {len(result.credentials)} credentials")
                 else:
                     logger.warning(f"Processing completed with errors for: {pdf_path}")
+                
+                # Save results to JSON file
+                json_path = self._save_results_to_json(result, pdf_path)
+                if json_path:
+                    logger.info(f"Results saved to: {json_path}")
                 
                 return result
             else:
@@ -152,3 +159,52 @@ class DocumentProcessor:
             "llm_provider": self.llm_provider,
             "llm_service_info": self.llm_service.get_model_info()
         }
+    
+    def _save_results_to_json(self, result: CredentialAnalysisResult, original_pdf_path: str) -> Optional[str]:
+        """
+        Save analysis results to a timestamped JSON file.
+        
+        Args:
+            result: The credential analysis result to save
+            original_pdf_path: Path to the original PDF file
+            
+        Returns:
+            Path to the saved JSON file, or None if save failed
+        """
+        try:
+            # Create results directory
+            results_dir = Path("results")
+            results_dir.mkdir(exist_ok=True)
+            
+            # Generate timestamp-based filename
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            pdf_name = Path(original_pdf_path).stem
+            json_filename = f"{timestamp}_{pdf_name}.json"
+            json_path = results_dir / json_filename
+            
+            # Convert result to dictionary
+            result_dict = CredentialAnalysisResultBuilder.to_dict(result)
+            
+            # Add metadata
+            result_dict["metadata"] = {
+                "original_file": original_pdf_path,
+                "processed_at": datetime.now().isoformat(),
+                "processor_info": self.get_processor_info()
+            }
+            
+            # Add conversation metadata if available
+            if hasattr(result, 'conversation_metadata') and result.conversation_metadata:
+                result_dict["conversation_metadata"] = result.conversation_metadata
+            elif "conversation_metadata" in result_dict:
+                # conversation_metadata is already in the result_dict from LLM response
+                pass
+            
+            # Save to JSON file
+            with open(json_path, 'w', encoding='utf-8') as f:
+                json.dump(result_dict, f, indent=2, ensure_ascii=False)
+            
+            return str(json_path)
+            
+        except Exception as e:
+            logger.error(f"Failed to save results to JSON: {e}")
+            return None

@@ -8,6 +8,7 @@ with tool calling capabilities for PDF credential analysis.
 import base64
 import json
 import logging
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 
@@ -37,7 +38,24 @@ class AnthropicService(BaseLLMService):
         self.model = ANTHROPIC_MODEL
         self.tools = TOOL_SCHEMAS
         
+        # Initialize tracking variables
+        self._reset_tracking()
+        
         logger.info(f"Initialized Anthropic service with model: {self.model}")
+    
+    def _reset_tracking(self):
+        """Reset all tracking variables for a new analysis."""
+        self.conversation_metadata = {
+            "started_at": datetime.now().isoformat(),
+            "tool_calls": [],
+            "llm_interactions": [],
+            "token_usage": {
+                "total_input_tokens": 0,
+                "total_output_tokens": 0,
+                "total_tokens": 0,
+                "interactions": []
+            }
+        }
     
     def get_model_info(self) -> Dict[str, str]:
         """Get information about the model being used."""
@@ -59,13 +77,17 @@ class AnthropicService(BaseLLMService):
             Dict containing analysis results
         """
         try:
+            # Reset tracking for new analysis
+            self._reset_tracking()
+            
             # Validate PDF file
             if not self.validate_pdf_file(pdf_path):
                 return {
                     "success": False,
                     "errors": [f"Invalid PDF file: {pdf_path}"],
                     "credentials": [],
-                    "metadata": {}
+                    "metadata": {},
+                    "conversation_metadata": self.conversation_metadata
                 }
             
             # Load and encode PDF
@@ -81,6 +103,10 @@ class AnthropicService(BaseLLMService):
             # Process with Claude using tool calling
             result = self._process_with_tools(messages)
             
+            # Add conversation metadata to result
+            self.conversation_metadata["completed_at"] = datetime.now().isoformat()
+            result["conversation_metadata"] = self.conversation_metadata
+            
             logger.info(f"Completed analysis of PDF: {pdf_path}")
             return result
             
@@ -90,7 +116,8 @@ class AnthropicService(BaseLLMService):
                 "success": False,
                 "errors": [f"Analysis failed: {str(e)}"],
                 "credentials": [],
-                "metadata": {}
+                "metadata": {},
+                "conversation_metadata": self.conversation_metadata
             }
     
     def _encode_pdf(self, pdf_path: str) -> str:
@@ -145,6 +172,8 @@ class AnthropicService(BaseLLMService):
             iteration += 1
             logger.debug(f"Claude conversation iteration {iteration}")
             
+            interaction_start = datetime.now()
+            
             try:
                 # Send message to Claude
                 response = self.client.messages.create(
@@ -153,6 +182,9 @@ class AnthropicService(BaseLLMService):
                     tools=self.tools,
                     messages=conversation_messages
                 )
+                
+                # Track token usage and interaction
+                self._track_llm_interaction(iteration, response, interaction_start)
                 
                 # Add Claude's response to conversation
                 conversation_messages.append({
@@ -163,7 +195,7 @@ class AnthropicService(BaseLLMService):
                 # Check if Claude wants to use tools
                 if response.stop_reason == "tool_use":
                     # Extract and execute tool calls
-                    tool_results = self._execute_tool_calls(response.content)
+                    tool_results = self._execute_tool_calls(response.content, iteration)
                     
                     # Add tool results to conversation
                     conversation_messages.append({
@@ -196,12 +228,13 @@ class AnthropicService(BaseLLMService):
             "metadata": {"max_iterations_reached": True}
         }
     
-    def _execute_tool_calls(self, content: List) -> List[ToolResultBlockParam]:
+    def _execute_tool_calls(self, content: List, iteration: int) -> List[ToolResultBlockParam]:
         """
         Execute tool calls from Claude's response.
         
         Args:
             content: Claude's response content containing tool_use blocks
+            iteration: Current conversation iteration number
             
         Returns:
             List of tool result blocks to send back to Claude
@@ -217,9 +250,19 @@ class AnthropicService(BaseLLMService):
                 
                 logger.debug(f"Executing tool: {tool_name} with input: {tool_input}")
                 
+                # Track tool call start
+                tool_start = datetime.now()
+                
                 # Execute the tool
                 try:
                     result = execute_tool(tool_name, **tool_input)
+                    tool_duration = (datetime.now() - tool_start).total_seconds()
+                    
+                    # Track successful tool call
+                    self._track_tool_call(
+                        iteration, tool_name, tool_input, result, tool_duration, True
+                    )
+                    
                     tool_results.append({
                         "type": "tool_result",
                         "tool_use_id": tool_id,
@@ -227,11 +270,19 @@ class AnthropicService(BaseLLMService):
                     })
                     
                 except Exception as e:
+                    tool_duration = (datetime.now() - tool_start).total_seconds()
+                    error_result = {"error": f"Tool execution failed: {str(e)}"}
+                    
+                    # Track failed tool call
+                    self._track_tool_call(
+                        iteration, tool_name, tool_input, error_result, tool_duration, False
+                    )
+                    
                     logger.error(f"Tool execution failed for {tool_name}: {e}")
                     tool_results.append({
                         "type": "tool_result",
                         "tool_use_id": tool_id,
-                        "content": json.dumps({"error": f"Tool execution failed: {str(e)}"})
+                        "content": json.dumps(error_result)
                     })
         
         return tool_results
@@ -333,3 +384,52 @@ class AnthropicService(BaseLLMService):
                 continue
         
         return None
+    
+    def _track_llm_interaction(self, iteration: int, response, start_time: datetime):
+        """Track an LLM interaction with token usage and timing."""
+        duration = (datetime.now() - start_time).total_seconds()
+        
+        # Extract token usage from response
+        input_tokens = response.usage.input_tokens if hasattr(response, 'usage') else 0
+        output_tokens = response.usage.output_tokens if hasattr(response, 'usage') else 0
+        total_tokens = input_tokens + output_tokens
+        
+        # Update running totals
+        self.conversation_metadata["token_usage"]["total_input_tokens"] += input_tokens
+        self.conversation_metadata["token_usage"]["total_output_tokens"] += output_tokens
+        self.conversation_metadata["token_usage"]["total_tokens"] += total_tokens
+        
+        # Track individual interaction
+        interaction_data = {
+            "iteration": iteration,
+            "timestamp": start_time.isoformat(),
+            "duration_seconds": duration,
+            "input_tokens": input_tokens,
+            "output_tokens": output_tokens,
+            "total_tokens": total_tokens,
+            "stop_reason": response.stop_reason,
+            "model": response.model
+        }
+        
+        self.conversation_metadata["llm_interactions"].append(interaction_data)
+        self.conversation_metadata["token_usage"]["interactions"].append({
+            "iteration": iteration,
+            "input_tokens": input_tokens,
+            "output_tokens": output_tokens,
+            "total_tokens": total_tokens
+        })
+    
+    def _track_tool_call(self, iteration: int, tool_name: str, tool_input: Dict[str, Any], 
+                        result: Dict[str, Any], duration: float, success: bool):
+        """Track a tool call with parameters and results."""
+        tool_call_data = {
+            "iteration": iteration,
+            "timestamp": datetime.now().isoformat(),
+            "tool_name": tool_name,
+            "parameters": tool_input,
+            "result": result,
+            "duration_seconds": duration,
+            "success": success
+        }
+        
+        self.conversation_metadata["tool_calls"].append(tool_call_data)

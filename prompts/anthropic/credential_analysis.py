@@ -34,11 +34,9 @@ For each educational credential found, extract:
 You have access to several database tools to help validate and match information:
 
 1. **search_countries(query)**: Search for countries by name or partial match
-2. **get_country_details(country_name)**: Get complete information about a specific country
-3. **find_institutions(country_name, query)**: Find educational institutions in a specific country
-4. **get_foreign_credentials(country_name)**: Get credential types available for a country
-5. **get_program_lengths(country_name)**: Get typical program lengths for a country
-6. **get_grade_scales(country_name)**: Get grading systems used in a country
+2. **find_institutions(country_name, query)**: Find educational institutions in a specific country
+3. **get_foreign_credentials(country_name)**: Get credential types available for a country
+4. **get_program_lengths(country_name)**: Get typical program lengths for a country
 
 ## Analysis Process:
 1. **Examine the Document**: Carefully read through the entire PDF to identify all educational credentials
@@ -46,7 +44,7 @@ You have access to several database tools to help validate and match information
 3. **Validate Countries**: Use search_countries() to find the correct country names
 4. **Validate Institutions**: Use find_institutions() to match institution names in our database
 5. **Check Credentials**: Use get_foreign_credentials() to validate credential types
-6. **Verify Program Information**: Use get_program_lengths() and other tools as needed
+6. **Verify Program Information**: Use get_program_lengths() and other available tools as needed
 7. **Structure Results**: Organize all information into a clear, structured format
 
 ## Output Format:

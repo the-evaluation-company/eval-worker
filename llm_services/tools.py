@@ -36,20 +36,6 @@ TOOL_SCHEMAS = [
         }
     },
     {
-        "name": "get_country_details",
-        "description": "Get complete details for a specific country including all available data.",
-        "input_schema": {
-            "type": "object",
-            "properties": {
-                "country_name": {
-                    "type": "string",
-                    "description": "Exact country name to get details for"
-                }
-            },
-            "required": ["country_name"]
-        }
-    },
-    {
         "name": "find_institutions",
         "description": "Find educational institutions in a specific country. Use this to match institution names from credentials.",
         "input_schema": {
@@ -90,20 +76,6 @@ TOOL_SCHEMAS = [
                 "country_name": {
                     "type": "string",
                     "description": "Exact country name to get program lengths for"
-                }
-            },
-            "required": ["country_name"]
-        }
-    },
-    {
-        "name": "get_grade_scales",
-        "description": "Get grading systems and scales used in a specific country.",
-        "input_schema": {
-            "type": "object",
-            "properties": {
-                "country_name": {
-                    "type": "string",
-                    "description": "Exact country name to get grade scales for"
                 }
             },
             "required": ["country_name"]
@@ -301,11 +273,9 @@ def execute_tool(tool_name: str, **kwargs) -> Dict[str, Any]:
     
     tool_map = {
         "search_countries": tools.search_countries,
-        "get_country_details": tools.get_country_details,
         "find_institutions": tools.find_institutions,
         "get_foreign_credentials": tools.get_foreign_credentials,
-        "get_program_lengths": tools.get_program_lengths,
-        "get_grade_scales": tools.get_grade_scales
+        "get_program_lengths": tools.get_program_lengths
     }
     
     if tool_name not in tool_map:

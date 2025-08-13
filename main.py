@@ -247,6 +247,8 @@ def analyze_folio(filename: str) -> None:
         print(f"SUMMARY")
         print(f"{'='*70}")
         
+        print(f"JSON results automatically saved to the 'results' folder with timestamp.")
+        
         if result.success:
             total_creds = len(result.credentials)
             validated_countries = sum(1 for c in result.credentials if c.country.match_confidence in ['high', 'medium'])
