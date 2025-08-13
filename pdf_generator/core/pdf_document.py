@@ -162,6 +162,82 @@ class PDFDocument:
         # Draw rectangle
         self.current_page.rect(x, y, width, height, fill=fill_color is not None)
 
+    def draw_table(
+        self,
+        x: float,
+        y: float,
+        data: List[List[str]],
+        col_widths: List[float],
+        row_height: float,
+        font_size: float = 10,
+        border_color: Tuple[int, int, int] = (0, 0, 0),
+        border_width: float = 1,
+        header_fill_color: Optional[Tuple[int, int, int]] = None,
+    ) -> float:
+        """
+        Draw a table on the current page.
+
+        Args:
+            x: X coordinate of top-left corner
+            y: Y coordinate of top-left corner (top of table)
+            data: List of rows, each row is a list of cell values
+            col_widths: List of column widths
+            row_height: Height of each row
+            font_size: Font size for table text
+            border_color: Border color as RGB tuple
+            border_width: Border width
+            header_fill_color: Fill color for header row (optional)
+
+        Returns:
+            Y coordinate after the table
+        """
+        if not self.current_page:
+            raise ValueError("No current page available")
+
+        if not data or not col_widths:
+            return y
+
+        table_width = sum(col_widths)
+        table_height = len(data) * row_height
+
+        # Draw table border
+        self.draw_rectangle(x, y - table_height, table_width, table_height, border_color, border_width)
+
+        # Draw rows
+        for row_idx, row_data in enumerate(data):
+            row_y = y - (row_idx * row_height)
+            
+            # Fill header row if specified
+            if row_idx == 0 and header_fill_color:
+                self.draw_rectangle(x, row_y - row_height, table_width, row_height, border_color, border_width, header_fill_color)
+
+            # Draw column separators and cell content
+            col_x = x
+            for col_idx, cell_value in enumerate(row_data):
+                # Draw vertical line (column separator)
+                if col_idx > 0:
+                    self.current_page.setStrokeColorRGB(*border_color)
+                    self.current_page.setLineWidth(border_width)
+                    self.current_page.line(col_x, y, col_x, y - table_height)
+
+                # Draw cell text (centered)
+                if cell_value:
+                    cell_width = col_widths[col_idx]
+                    text_width = self.get_text_width(str(cell_value), font_size, "regular")
+                    text_x = col_x + (cell_width - text_width) / 2
+                    text_y = row_y - row_height + (row_height - font_size) / 2
+                    self.draw_text(str(cell_value), text_x, text_y, font_size, "regular", border_color)
+
+                col_x += col_widths[col_idx]
+
+            # Draw horizontal line (row separator)
+            if row_idx < len(data) - 1:
+                self.current_page.setStrokeColorRGB(*border_color)
+                self.current_page.setLineWidth(border_width)
+                self.current_page.line(x, row_y - row_height, x + table_width, row_y - row_height)
+
+        return y - table_height
+
     def get_text_width(self, text: str, font_size: float, font_type: str = "regular") -> float:
         """
         Get text width for a given font and size.
