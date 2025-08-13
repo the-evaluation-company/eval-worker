@@ -227,10 +227,16 @@ def analyze_folio(filename: str, document_type: str = "general") -> None:
                     print(f"Program: {cred.program_of_study}")
                 if cred.award_date:
                     print(f"Award Date: {cred.award_date}")
-                if cred.attendance_dates:
-                    start = cred.attendance_dates.start_date or 'Not specified'
-                    end = cred.attendance_dates.end_date or 'Not specified'
-                    print(f"Attendance: {start} to {end}")
+                if cred.attendance_dates and getattr(cred.attendance_dates, 'periods', None):
+                    periods_str = []
+                    for p in cred.attendance_dates.periods:
+                        s = p.start_date or 'Not specified'
+                        e = p.end_date or 'Not specified'
+                        if p.end_date:
+                            periods_str.append(f"{s} to {e}")
+                        else:
+                            periods_str.append(f"{s}")
+                    print(f"Attendance: {', '.join(periods_str)}")
                 
                 if cred.program_length and cred.program_length.extracted_length:
                     pl_status = "[MATCH]" if cred.program_length.validated_length else "[NO MATCH]"

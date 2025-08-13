@@ -23,7 +23,7 @@ For each educational credential found, extract:
 - **Foreign Credential**: The type/name of the credential (degree, diploma, certificate, etc.)
 - **Program of Study**: The field of study or major
 - **Award Date**: When the credential was awarded
-- **Date of Attendance**: Start and end dates of the educational program
+- **Dates of Attendance**: One or more attendance periods (can be non-contiguous)
 - **Program Length**: Duration of the educational program
 
 ## Database Tools Available:
@@ -71,8 +71,12 @@ Provide your analysis in the following JSON structure:
       "program_of_study": "string",
       "award_date": "YYYY-MM-DD or partial date",
       "attendance_dates": {{
-        "start_date": "YYYY-MM-DD or partial date",
-        "end_date": "YYYY-MM-DD or partial date"
+        "periods": [
+          {{
+            "start_date": "YYYY-MM-DD or partial date",
+            "end_date": "YYYY-MM-DD or partial date"
+          }}
+        ]
       }},
       "program_length": {{
         "extracted_length": "string (as written in document)",
