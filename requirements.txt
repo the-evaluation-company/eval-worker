@@ -3,5 +3,11 @@ simple-salesforce
 python-dotenv
 anthropic
 
+# PDF Generation dependencies
+reportlab
+Pillow
+pydantic
+pypdf
+
 # Utilities
 typing-extensions

@@ -1,0 +1,2012 @@
+[
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Construction Management",
+    "Designation": " Science",
+    "MAJOR TO USE ON EQUIVALENCY": " Construction Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Civil Engineeing",
+    "Designation": " Science",
+    "MAJOR TO USE ON EQUIVALENCY": " Civil Engineeing"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Civil Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Civil Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Mechanical Engineering",
+    "Designation": " Science",
+    "MAJOR TO USE ON EQUIVALENCY": " Mechanical Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Accounting",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Accounting"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Accounting (2-year programs following completion of secondary)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Associate's degree in accounting"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Accounting and Finance",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Accounting and Finance"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Accounting Information Systems",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Accounting Information Systems"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Adult Education",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Adult Education"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Adult and Continuing Education (master's degree)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Diploma from an accredited vocational senior high school"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Aeronautical Engineering (undergraduate)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Aerospace Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Aeronautical Science",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Aeronautical Science - Flight"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Agroindustrial Engineering ",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Agricultural Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Agropecuario",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Agricutlture"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Allied Health Science (Associate's degree)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Associate of Science in Allied Health Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Anesthesiology (Bachelor's degree)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Medical Sciences"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Applied Postitive Psychology (master's level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Positive Applied Psychology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Airline and Airport Management (undergraduate)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Aviation Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Aircraft Mechanical Engineering (AS) level",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "agr"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Aircraft Maintenance (bachelor's level)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "BS in Aviation Maintenance Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Air Traffic Transportation",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Air Traffic Control"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Andragogy",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Adult Education"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Applied Statistics and Data Science",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "MSc in Applied Statistics and Data Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Applied Physics",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Applied Physics"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Art and Technology",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Art and Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Audiology (graduate level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Communicative Disorders and Sciences / Communication Disorders / Speech-Language Pathology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Audiology and Speech Language Pathology (undergraduate level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Speech-Language Pathology and Audiology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Automation and Control Engineering (BS)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Automation and Control Engineering Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Aviation (Civil Aviation)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Aviation Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Aviation Electronics Technology (AS level)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "AAS in Avionics"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Aviation Electronics Technology (BS level)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "BSc in Avionics"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Aviation Management",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Aviation Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Aviation Pilot",
+    "Designation": "Professional Training",
+    "MAJOR TO USE ON EQUIVALENCY": "Professional Pilot Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Bachelor of Engineering - Instrumentation Technology",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Instrumentation Engineering Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Bacteriologia/Bacteriologo",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Microbiology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Bachelor of Commerce - Computer Applications/Computers",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Management Information Systems"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Bacteriologia/Bacteriologo (master's degree)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Bacteriology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Banking and Finance",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Banking and Finance"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Big Data",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Data Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Bioanalyis",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Bioanalytical Chemistry"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Biochemical Engineering (BS+MS)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Biochemical Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Biodiversity",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Biodiversity and conservation"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Bioengineering (bachelor)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Bioengineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Biological Sciences",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Biological Sciences"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Biomedical Sciences (master level)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Biomedical Sciences"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Biomedical Research (and variations) (master's level)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Biomedical Research"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Biometry (graduate level)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Biometry (Master of Science)"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Biotechnology ",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Biotechnology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Biotechnology Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Biotechnology Engineering* (*only use for non-ECA's)"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Brewing science and technology",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Fermentation Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Building Construction (associate's level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "AAS in Building Construction Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Building and Construction Engineerng",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Construction Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Business Computing",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Management Information Systems"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Business Economics",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Business Economics"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Business English",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "English Language"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Business Intelligence",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Business Analytics"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Business Information Systems",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Business Information Systems"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Business Information Technology",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Business Information Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Cancer / Oncology",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Cancer Biology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Career Development (bachelor)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Professional Studies"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Chemical Pharmacology",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Pharmacological Chemistry"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Choir (as a major or concentration)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Choral Music"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Choir/Choral Conducting",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Choral Conducting"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Child Studies",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Child Development"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Chinese for foreigners/Chinese as a second language",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Teaching Chinese as a Foreign Language"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Ciencias Administrativas",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Business Administration"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Civil aviation",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Aviation Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Civil and Environmental Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Civil and Evironmental Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Civil Engineering Technology",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Civil Engineering Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Clinical Psychology (undergraduate level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Psychology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Clinical Psychology (graduate level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Clinical Psychology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Commercial Engineering",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Business Administration"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Community Development",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Community Development"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Community Health ",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Community Health"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Communication Disorders (Master of Education)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Master's degree in education with a concentration in communication sciences and disorders..."
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Communications (mass com; social communications)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Communications"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Communication Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Telecommunications Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Communication Technology",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Communications Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Computacion ",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Computer science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Computer Applications",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Computer Information Systems"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Computer Applications Development",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Software Development"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Computer Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Computer Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Computer Systems Engineering (undergraduate and graduate levels)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Computer Systems Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Conflict and Mediation",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Conflict Management and Resolution"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Construction Engineering (bachelor's level)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Construction Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Consular Affairs",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Diplomacy"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Contador Publico",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Accounting"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Control and Automation Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Automation and Control Engineering Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Cosmetology (Associate of Applied Science)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Associate of Applied Science in Cosmetology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Cost Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Engineering Project Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Counseling (undergraduate)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Human services"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Counseling Psychology (master's)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Counseling Psychology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Criminal Justice (bachelor's)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Criminal Justice"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Criminalistica (undergraduate level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Criminal Justice with a concentration in criminalistics"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Criminology",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Criminology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Critical Pedagogy (graduate level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Critical Pedagogy"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Crop Science",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Crop Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Culinary Arts (associate's degree)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Culinary Arts"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Culinary Arts (bachelor's degree)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Culinary Arts and Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Cultural Heritage",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Cultural Heritage and Preservation Studies"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Culture and media studies",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Culture, media and communication"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Curriculum and instruction",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Curriculum and Instruction"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Customs, Border Patrol, etc",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Border and Homeland Security"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Customs and and trade or anything to do with customs",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "International Trade"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Dental Technology (bachelor's degree)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Dental Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Design",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Design"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Development Education",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Education"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Development Studies ",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Development Studies"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Digital Enterprise Management",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Digital Technology Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Diplomacy/Diplomatic Affairs",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Diplomacy"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Diseñador de Imagen y Sonido",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Digital Media Design"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Divinity (master's)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Master of Divinity"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Docencia para la Educacion Superior",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Curriculum and Instruction"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Docencia Universitaria",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Curriculum and Instruction"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Doctorate in traditional Chinese medicine",
+    "Designation": "Alternative Medicine",
+    "MAJOR TO USE ON EQUIVALENCY": "Earned doctorate in traditional Chinese medicine"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Drama",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Theatre"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Early Childhood Education (including Associate's degree)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Early Childhood Education"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "E-Commerce Analytics",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Business Analytics"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Educacion primaria",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Elementary education"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Education (Associate's degree)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Associate's degree in education"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Educational Innovation (at graduate level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Educational Innovation and Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Educational Leadership (at undergraduate level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Education"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Educational Leadership (at graduate level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Educational Leadership"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Educational Management (at graduate level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Educational Administration"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Educational Management/Administration (at undergraduate level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Education"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Educational Measurement (at undergraduate level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "NaN"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Educational Measurement (at graduate level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Educational Assessment and Evaluation"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Educational Planning",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Education Policy and Planning"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Educational Psychology (at graduate level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Educational Psychology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Educational Psychology (at undergraduate level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Education"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Educational Technology",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Instructional Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Electrical Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Electrical Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Electrical and Electronics Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Electrical and Electronics Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Electromechanical Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Electromechanical Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Electro-Mechanical Engineering Technology",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Electro-Mechanical Engineering Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Electromecanico",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Mechatronics engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Electronic Commerce",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "e-Commerce"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Electronics",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Electronic Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Electronics and Communications Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Electronic and Telecommunications Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Electronics and Information Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Electronics and Computer Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Electronics Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Electronics Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Electronics Engineering Technology",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Electronics Engineering Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Elementary Education (Associate's Degree)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Elementary Education"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Endodontics (Master's Degree)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Master of Science in Endodontics"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Energy Systems Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Energy Systems Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Engineering Drawing (associate level)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "AAS in Drafting and Design Technology / Engineerign Drafting and DEsign Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Engineering Management",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Bachelor of Science or Master of Science in Engineering Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Engineering Mechanics",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "B.S. in Engineering Mechanics"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Entrepreneurship",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Entrepreneurship"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Environmental Communication",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Environmental Communication"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Environmental Management",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Environmental Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Estate Management",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Real Estate Property Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Ethnoeducation",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Ethnic Studies"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Events Management",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Events Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Family and Consumer Science",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Family and Consumer Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Family, Children and Youth Studies",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Child, youth and family studies"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Fashion Business",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Fashion Merchandising"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Fashion Design and Management",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Fashion Design and Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Feldsher",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "xxx semester credit hours of UG study of medical sciences"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Film and TV Production",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Film and television production"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Financial Administration",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Financial Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Financial Engineering",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Financial Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Financial Management",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Financial Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Fire and Saftey Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Safety Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Food and Beverage Industry Management",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Hospitality Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Food Engineering (Ingeniera en Alimentos)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Food engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Food and Nutrition",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Nutrition and Food Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Food Science and Technology",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Food Science and Technology (undergraduate BS and graduate)"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Food Technology",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Food science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Foreign Trade",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "International Business"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Forest Engineering",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Forest Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Game Art Animation",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Game Art and Animation"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Game Programming / Design (associate's degree)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Game Development and Design"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "General Studies (bachelor's)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "General Studies"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Genetics (masteral level)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Genetics"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Geodesy, Geomatics",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Geomatics"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Geodetic Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Geomatics Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Geographyic Information Systems or Technology",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "BSc / MSc Geographic Information Systems"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Geography and Rural Development",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Geography with a concentration in community and environmental planning"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Geomatics Engineering ",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Geomatics Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Geophysical Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Geophysical Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Geophysics",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Geophysics"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Guidance and counseling (undergraduate level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Education"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Guidance and counseling (graduatel level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "School Counseling"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Health Promotion (associate's level)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Public and Community Health"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Health Sciences",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Health Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Heritage Management",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Cultural Heritage and Preservation Studies"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "HIV/AIDS Management (bachelor's degree)",
+    "Designation": "Neither",
+    "MAJOR TO USE ON EQUIVALENCY": "Community Health"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Home economics",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Family and Consumer Science/Studies"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Hospitality",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Hospitality Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Hospital Administration (associate's degree)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Healthcare Administration"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Hotel studies (of any kind) (including associate's degree)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Hospitality Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Human Ecology",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Human Ecology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Human Kinetics ",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Kinesiology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Human Resource Management (including associates degree)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Human Resources Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Imaging",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Radiologic and Imaging Sciences"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Inclusive Education",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Inclusive Education"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Industrial and Production Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Industrial and Manufacturing Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Industrial and Systems Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Industrial and Systems Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Industrial Design",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Industrial Design"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Industrial Education",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Industrial Education"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Industrial Production",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Manufacturing Systems Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Industrial Relations",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Industrial and Labor Relations"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Informatica Administrativa",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Management Information Systems*"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Information and Communication Technology",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Information and Communication Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Information and Library Science",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Information and Library Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Informatics",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Computer science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Information Security",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Information Security"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Information Systems (bachelor's level)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Information Systems"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Information Systems Technology (Associate's degree)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "AAS in Information Systems Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Ingeniero Administrador",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Business Administration"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Ingeniero de Mantenimiento de Obras",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Civil and Infrastrucutre Engineering (DW)"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Ingenieria en Produccion",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Production Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Ingeniero en Sistemas Computacionales",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Computer systems engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Ingeniero Industrial",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Industrial Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Ingeniero Industrial Administrador",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Industrial engineering and management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Ingeniero Industrial y de Sistemas",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Industrial and systems engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Ingeniero Mecanico Electrica",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Electro-Mechanical Engineering Technology / DW: Electromechanical Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Ingeniero en Tecnologias de Informacion Comunicaciones",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Electro-Mechanical Engineering Technology / DW: Electromechanical Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Instrumentation Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Instrumentation engineering technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Insurance",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Insurance and Risk Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Intelligent Vision, Biometrics, Computer Vision, AI (graduate)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Computer Vision with a concentration in biometrics"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Interdisciplinary Studies",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Interdisciplinary Studies"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "International/Global Public Health (bachelor's degree)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "International/Global Public Health"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "International Relations",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "International Relations"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "International Studies & Diplomacy (bachelor's and master's levels)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "International Studies and Diplomacy"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "International Economics and Trade",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "International Economics and Trade"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "International Trade (master's degree)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "International Trade"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Internet Business",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "E-Commerce"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Internet of Things Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Internet of Things Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Interior Design",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Interior Design"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Knowledge Engineering (undergraduate)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Computer Systems Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Knowledge Engineering (graduate)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Information Systems Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Knowledge Management and Engineering (graduate level)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Information Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Labor Relations",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Management and Labor Relations"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Land Economy",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Land Economics"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Language and Literacy Education",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Language and Literacy"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Law - Incomplete or not 1st professional degree",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Legal Studies"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Law (Master level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Master of Laws"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Letters",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Letters"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Library and Information Science",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "BSc/MSc in Library and Information Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Librarianship",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Information and Library Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Linguistics and Communications Studies (undergraduate)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Linguistics and Communication Studies"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Literacy Studies",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Literacy and Reading"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Livelihood education",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Career and Technical Education"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Logistics",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Logistics and supply chain management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Logistics Management (associates degree)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Logistics Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Logistics and Transport",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Logistics and Transportation Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Maintenance Engineering",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Facilities Engineering and Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Management Economics",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Business Economics"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Managerial Psychology",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Industrial and Organizational Psychology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Manufacturing Engineeing",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Manufacturing Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Marine Transportation (associate's degree)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "AAS Maritime Transportation"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Mass Communications",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Communications"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Mathematical Statistics (bachelor's degree and graduate degrees)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Mathematical Statistics"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Materials Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Materials Science and Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Mechatronics Engineering (bachelor's degree)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Mechatronics Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Mechanical Technology (A.A.S.)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Associate of Applied Science in Mechanical Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Media Studies (associate's degree)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Media Studies"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Medical Assisting (AS)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "AAS in Medical Assisting"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Medical Chemistry/Medicinal Chemistry",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Medicinal Chemistry"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Medical Imaging Sciences",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "AAS Radiologic Technology / AAS Medical Radiologic Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "NaN",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "BS Radiological Science, Radiologic Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Medical Laboratory Science",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "BS Medical Laboratory Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Medical Laboratory Technology (A.A.S.)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "A.A.S. in Medical Laboratory Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Medical Physics",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Medical Physics"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Medical Sciences - bachelor level",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Medical Sciences"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Medical Technology",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Medical Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Microelectronic engineering ",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Microelectronic engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Midwifery Associate of Science OR a Diploma in Midwifery from a higher education institution)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Associate of Science in Midwifery from a regionally-accredited institution of higher education"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Midwifery (Bachelor's)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Bachelor of Science in Midwifery from an institution with the appropriate program accreditation"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Military Science / Military Studies",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Bachelor's degree / Master's degree in military science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Modern Languages (Bachelor's)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Modern Languages"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Montessori Education (Teacher Training) bachelor level",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Montessori concentration (BS in education, Montessori concentration)"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Motion Pictures",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Film Studies"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Multimedia and Digital Animation",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Digital Art and Mulitmedia Production"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Multiomics/Multiomics Technologies",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Multiomics"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Museology (Bachelor/Master)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Museum Studies"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Music and Audio Technology",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Music Audio Technology A.A.S."
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Music Performance",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Music Performance"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Musical Theatre",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Musical Theatre"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Nanotechnology/engineering including all variations (associate)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Associate of Applied Science in Nanotechnology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Nanoengineering (bachelor, master)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Nanoengineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Nanoscale Engineering (bachelor, master)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Nanoscale Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Nutrition",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "BSc Nutrition"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Occupational Health and Safety (AS)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Occupational Safety and Health"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Occupational Health and Safety (undergraduate level)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Occupational Safety and Health"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Oceanologia Quimica (Oeanological Chemistry)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Marine Chemistry"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Oil and Gas Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Petroleum and Natural Gas Engineering (BS)"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Oncology",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Cancer Biology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Organizational Leadership (at graduate level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Organizational Leadership"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Packaging Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Industrial Engineering Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Paint Technology",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Polymers and Coatings"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Paleontology (master's degree)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "MSc in Geosciences"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Paramedic (associate's level)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "AAS in Emergency Medical Technician"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Pharmacy Technician or Pharmacy Assistant",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Associate of Science in Pharmacy Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Pharmacology (master's degree)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "MSc in Pharmacology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Phonoaudiology (bachelor's level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Speech-Language Pathology and Audiology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Physical Culture",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Physical Culture and Sports"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Physical Education",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Education with a concentration in Physical Education"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Physician Assistant",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Bachelor of Science in Physician Assistant"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Physiology (bachelor)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Bachelor of Science in Physiology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Physiotherapy",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Physical Therapy"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Plant Science",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Plant Sciences"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Plastic Arts",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Visual Arts or Studio Arts"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Police science or any variation",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Police Studies"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Political communication and marketing",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Political Communication"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Population and Family LIfe",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Human development and family studies"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Population and Health (graduate)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Population Health"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Power Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Energy and Power Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Primary Education",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Elementary education"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Production Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Manufacturing engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Project Management",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Project Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Public Administration ( at undergraduate level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Public Administration"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Public Administration (at graduate level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Master of Public Administration"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Public Health",
+    "Designation": "Stand alone",
+    "MAJOR TO USE ON EQUIVALENCY": "Master of Public Health"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Publishing (undergraduate incomplete studies equivalency)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Publishing"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Publishing (bachelor's degree equivalent)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Publishing"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Publishing (graduate level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Publishing"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Pure Mathematics",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Pure Mathematics"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Orthophonia",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Speech-Language Pathology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Quality Engineering (graduate level)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Quality Engineering and Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Quantity surveying",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Construction Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Quimico Clinico Biologo",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Clinical Laboratory Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Quimico Farmaceutico Biologo",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Chemical Biology and Pharmacology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Quimico Laborista",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Laboratory science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Radiology Technology ",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Radiologic Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Reading (education)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Reading education"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Real Estate",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Bachelor's degree in real estate"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Records Management (associate's degree level)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Associate of Applied Science in Records Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Records Management (bachelor's degree level or graduate level)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Information Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Information Management",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Information Management Systems"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Management Information",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Information Management Systems"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Information Management Systems",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Information Management Systems"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Refrigeration and Air Conditioning (associate's degree level)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "AAS in Air Conditioning and Refrigeration"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Religious Studies (masteral level)_",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Religious Studies"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Research and Development (Project) Management [graduate]",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Technology (Project) Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Respiratory Therapy (associate's level)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "AAS in Respiratory Therapy"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Respiratory Therapy (bachelor's level)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "BSc in Respiratory Therapy"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Risk Managemednt",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Risk Management and Insurance"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Safety, Health, Environmental",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Occupational health and safety"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Sanitary Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Environmental Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "School counseling (graduate level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "School Counseling"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Science Laboratory Technology",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "AAS in Laboratory Science Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Secondary Education (associate's degree level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Associate's degree in secondary education"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Secretarial studies",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Office administration"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Singing",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Vocal performance"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Social communication",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Communications"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Software Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Software Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Sonography",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Diagnostic Medical Sonography"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Special Education at associate's level",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Special Education Paraeducator"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Special Education (doctoral level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Special Education"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Speech and Hearing Therapy (bachelor's level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Speech, Language and Hearing Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Speech and Language Therapy/Pathology (associate's level)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "AAS Speech-Language Pathology Assistant"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Speech and Language Therapy/Pathology (bachelor's or master's level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Speech-language Pathology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Sport Psychology",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Sport Psychology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Sport(s) Management",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Sports Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Sport(s) and Recreation Management",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Sport(s) and Recreation Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Sport(s) Science",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Exercise and Sport Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Sport(s) Training",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Exercise and Sport Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Statistics (associate's degree level)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "AAS in Data Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Supervision and Administration (in education - bachelor's level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Education"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Supervision and Administration (in education - graduate level)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Educational Admininstration"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Supply chain management",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Logistics and supply chain management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Systems Engineering ",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Systems Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Teaching Chinese as a Second Language",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Teaching Chinese as a Foreign Language"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Technical Management",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Technical Management*"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Technology and Livelihood Education",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Career and technical education"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Telecommunications Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Telecommunications Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Textile Engineering ",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Textile Engineering"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Theatre/Theater, Theater Arts or anything similar",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Theater"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Tourism or any variation",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Tourism Management"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Traditional Chinese medicine (graduate)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Traditional Chinese Medicine"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Translational Medicine",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Translational Medicine"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "University Didactics",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Curriculum and Instruction"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Urban and Regional Planning",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Bachelor's degree/master's degree in urban and regional planning"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Veterinary Science (not 1st professional degree in veterinary medicine)",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "AAS or BSc in Veterinary Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Visual Communication Design",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Visual Communication Design"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Vocal music",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Vocal Performance"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Vocational education (any form)",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Career and technical education"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "War Studies",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Peace and Security"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Yoga",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Yoga / Yoga Studies"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Zootecnista",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Animal Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Naturopathy",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Exercise Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Laurea di 1o Livello  in Scienze delle attività motorie e sportive",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Exercise Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Acupuncture",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Exercise Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Religious Studies",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Religious Studies"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Astrology",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Astrology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Tarot Reading",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Tarot Reading"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Agricultural Science",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Agricultural Science"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Information Technology",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Information Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Information Technology Engineering",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Information Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Computer Science and Information Technology",
+    "Designation": "Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Computer Science and Information Technology"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "MBA",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Business Administration"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Master of Business Administration",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Business Administration"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Masters in Business Administration",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Business Administration"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Maestría en Administración",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Business Administration"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Maestro En Administración",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Business Administration"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Administración con Énfasis en Negocios",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Business Administration"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Grado de Maestro en Administración",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Business Administration"
+  },
+  {
+    "PROGRAM OF STUDY (FOREIGN)": "Maestro En Administración Con Énfasis En Negocios",
+    "Designation": "Non-Science",
+    "MAJOR TO USE ON EQUIVALENCY": "Business Administration"
+  }
+]

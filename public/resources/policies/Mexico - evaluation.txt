@@ -1,0 +1,177 @@
+Purpose:
+This policy guides evaluators or automated systems (e.g., Gemini 2.0 Flash) to determine the U.S. equivalency of educational credentials from Mexico.
+
+Best OCR Results Guidance (for LLM - Gemini 2.0 Flash):
+- Ensure uploaded documents are clear, high-resolution (minimum 300 dpi).
+- Documents should be aligned, free of shadows or distortion, and preferably digitally-issued PDFs.
+
+Key Definitions:
+- SEP: Secretaría de Educación Pública (Mexican Federal Education Authority)
+- RVOE: Reconocimiento de Validez Oficial de Estudios (Recognition required for private institutions)
+- Título: Official diploma or degree certificate awarded upon graduation
+- Pasante: Status of having completed coursework without final degree award
+
+COMPREHENSIVE LIST OF MEXICAN QUALIFICATIONS (Foreign Credentials):
+Título de Licenciado
+Certificado de Educación Secundaria
+Certificado de Terminación de Estudios - Bachillerato Tecnológico
+Certificado de Terminación de Estudios - Bachillerato General
+Título de Técnica
+Título de Abogado/a
+Título de Médico Veterinario Zootecnista
+Título de Licenciada
+Título de Contador Público
+Título de Contador Público y Auditor
+Título de Contadora Pública y Auditor
+Título de Contador Privado
+Título de Contadora Privada
+Título de Médica Cirujana
+Título de Cirujana Dentista
+Título de Cirujano Dentista
+Título de Doctorado
+Título de Enfermero
+Título de Farmacéutica
+Título de Farmacéutico
+Título de Licenciada en Farmacia
+Título de Licenciado en Farmacia
+Título de Maestra
+Título de Maestría
+Título de Médica Cirujana y Partera
+Título de Química Farmacobióloga
+Título de Químico Bacteriólogo Parasitólogo
+Título de Química Bacterióloga Parasitóloga
+Curso de Especialización
+Título de Maestro
+Título de Médico Cirujano
+Título de Profesor
+Título de Técnico Profesional
+Título de Licenciado en Derecho
+Certificado de Terminación de Estudios - Bachillerato en Ciencias Químicas Biológicas
+Título de Técnico Superior Universitario
+Grado de Maestría
+Certificado de Terminacion de Estudios - Nivel Medio Superior
+Título de Ingeniero
+Título de Arquitecta
+Certificado de Terminación de Estudios - Certificado de Preparatoria
+Grado de Maestro
+Título de Profesor de Educación Primaria
+Carta de Pasante
+Título de Profesora de Educación Pre-escolar
+Título de Profesor de Educación Pre-escolar
+Título de Profesora de Educación Primaria
+Título de Licenciado en Derecho y Ciencias Jurídicas
+Título de Licenciada en Derecho y Ciencias Jurídicas
+Diploma de Taquígrafo Secretario y Contador Privado
+Título de Licenciado en Odontología
+Certificado de Terminación de Estudios - Bachillerato en Ciencias y Humanidades
+Certificado de Terminación de Estudios - Bachillerato Técnico
+Certificado de Terminación de Estudios - Bachillerato Bilingüe
+Certificado de Terminación de Estudios - Bachillerato Único
+Título de Médico Cirujano y Partero
+Título de Químico Clínico Biólogo
+Diploma de Especialización
+Grado de Doctor
+Grado de Doctora
+Grado de Maestra
+Título de Arquitecto
+Título de Contadora Pública
+Título de Doctor
+Título de Doctora
+Título de Ingeniera
+Título de Licenciada en Derecho
+Título de Licenciada en Odontología
+Título de Médica Veterinaria Zootecnista
+Título de Profesora
+Título de Química Farmacéutica Bióloga
+Título de Técnico
+Título de Química Clínica Bióloga
+Título Profesional de Ingeniera
+Título Profesional de Ingeniero
+Certificado de Terminación de Estudios - Bachillerato en Ciencias Socio-Económicas
+Título de Licenciada en Enfermeria
+Constancia de Calificaciones
+Título de Licenciado en Enfermeria
+Certificado de Terminación de Estudios - Bachillerato Bivalente
+Bachillerato en el Area Económico Administrativas
+Certificado de Educación Primaria
+Certificado de Terminación de Estudios - Profesional Técnico-Bachiller
+Título de Profesional Técnico-Bachiller
+Curso de Especialización en [dental specialization]
+Curso de Especialización en [medical specialization]
+Curso de Especializacion en [nursing programOfStudy]
+Curso de Especializacion en [pharmacy specialization]
+Curso de Especialización en [veterinary specialization]
+Curso de Especialización en Arquitectura
+Curso de Especialización en Derecho
+
+Note that this list is not exhaustive and additional variants or custom values are possible.
+
+MULTI-PART QUALIFICATION HANDLING:
+Some Mexican qualifications appear as separate phrases in the document that should be combined:
+- "CERTIFICADO DE TERMINACIÓN DE ESTUDIOS" + "LOS ESTUDIOS CORRESPONDIENTES AL BACHILLERATO GENERAL"
+  should be combined as "Certificado de Terminación de Estudios - Bachillerato General"
+- "TÍTULO DE LICENCIADO" + programOfStudy name should be combined as "Título de Licenciado en [programOfStudy]"
+- Look for phrases separated by institutional text or spanning multiple sections
+
+Document Identification and Evaluation IF-THEN-ELSE Structure:
+
+Step 1: Verification of Document Authenticity and Institutional Accreditation
+
+IF document clearly includes:
+- Official SEP accreditation number or RVOE for private institutions
+- Official institutional signatures/stamps
+- Unique document or folio number
+THEN proceed to credential-level identification
+ELSE request additional documentation or verification from issuing institution
+
+Step 2: Credential-Level Identification and Equivalency Determination:
+
+IF Document is "Certificado de Bachillerato":
+- Typical Duration: 3 years post-secondary
+- THEN equivalency = "Diploma from an accredited senior high school"
+
+ELSE IF Document is "Título de Técnico Superior Universitario / Profesional Asociado":
+- Typical Duration: 2 years post-bachillerato
+- THEN equivalency = "Associate degree from a regionally-accredited institution of higher education"
+
+ELSE IF Document is "Título de Licenciado en [programOfStudy]" OR "Ingeniero en [programOfStudy]":
+- THEN output: "Bachelor's degree in [programOfStudyEnglishName] from a regionally-accredited institution of higher education"
+
+ELSE IF Document is a Licenciatura-level in Law, Medicine, Dentistry, Veterinary Medicine, Pharmacy, Chiropractic Medicine:
+- THEN output: "Bachelor's degree and first professional degree in [law/medicine/dentistry/veterinary medicine/pharmacy/chiropractic medicine] from a regionally-accredited institution of higher education"
+
+ELSE IF Document is "Título de Maestría en [programOfStudy]":
+- THEN output: "Master's degree in [programOfStudyEnglishName] from a regionally-accredited institution of higher education"
+
+ELSE IF Document is "Título de Doctorado en [programOfStudy]":
+- THEN output: "Doctoral degree (Ph.D.) in [programOfStudyEnglishName] from a regionally-accredited institution of higher education"
+
+ELSE IF Document indicates partial studies ("Pasante"):
+- THEN output: "Partial undergraduate study in [programOfStudyEnglishName] at a regionally-accredited institution of higher education. No degree awarded."
+
+ELSE:
+- THEN escalate to senior evaluator or require additional documentation
+
+Step 3: Special Disclaimers for Regulated Professions
+For credentials in regulated programOfStudys (e.g., Law, Medicine, Dentistry, Veterinary Medicine, Pharmacy, Chiropractic Medicine):
+- Include: "This evaluation confirms academic equivalency only. Professional practice or licensure in the United States may require additional certification or examinations."
+
+Evaluator's Quick Reference:
+- High School (Bachillerato): Diploma from an accredited senior high school
+- Technical/Associate (TSU): Associate degree from a regionally-accredited institution
+- Bachelor's (Licenciatura): Bachelor's degree in [programOfStudyEnglishName] from a regionally-accredited institution of higher education
+- First Professional (Licenciatura-level, professional programOfStudys): Bachelor's degree and first professional degree in [programOfStudy] from a regionally-accredited institution of higher education
+- Master's (Maestría): Master's degree in [programOfStudyEnglishName] from a regionally-accredited institution of higher education
+- Doctoral (Doctorado): Doctoral degree (Ph.D.) in [programOfStudyEnglishName]
+
+Example Evaluation Output:
+Credential Reviewed:
+- Título Profesional en Medicina
+- Universidad Autónoma de Guadalajara (Private, SEP Accredited, RVOE #123456)
+- Completed: July 2022
+
+U.S. Equivalency Determined:
+Bachelor's degree and first professional degree in medicine from a regionally-accredited institution of higher education.
+
+Additional Notes:
+This equivalency statement confirms academic equivalency only. Professional practice or licensure in the United States may require additional certification or examinations.
