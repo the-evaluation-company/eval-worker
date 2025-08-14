@@ -33,6 +33,15 @@ class InstitutionMatch:
             return self.validated_name
         else:
             return self.extracted_name
+    
+    def get_pdf_display_name(self) -> str:
+        """Get the display name for PDF format with English on new line."""
+        if self.validated_name and self.validated_english_name:
+            return f"{self.validated_name}\n{self.validated_english_name}"
+        elif self.validated_name:
+            return self.validated_name
+        else:
+            return self.extracted_name
 
 
 @dataclass
@@ -47,6 +56,15 @@ class CredentialMatch:
         """Get the display type with both original and English when available."""
         if self.validated_type and self.validated_english_type:
             return f"{self.validated_type} ({self.validated_english_type})"
+        elif self.validated_type:
+            return self.validated_type
+        else:
+            return self.extracted_type
+    
+    def get_pdf_display_type(self) -> str:
+        """Get the display type for PDF format with English on new line."""
+        if self.validated_type and self.validated_english_type:
+            return f"{self.validated_type}\n{self.validated_english_type}"
         elif self.validated_type:
             return self.validated_type
         else:

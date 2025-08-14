@@ -465,56 +465,28 @@ class PDFGenerator:
                 value_x = self.document.page_width - min_width_for_wrapping - self.config.layout.RIGHT_MARGIN
                 available_width = min_width_for_wrapping
 
-            # Wrap text for long values (especially Recommended U.S. Equivalency)
-            if len(detail["value"]) > 80 or is_equivalency_label:  # Increased threshold for better wrapping
-                # Special handling for Recommended U.S. Equivalency to ensure proper wrapping
-                is_notes_label = detail["label"] == "Notes:"
-                if is_equivalency_label:
-                    # Split at "regionally-accredited institution" for better formatting
-                    split_phrase = "regionally-accredited institution"
-                    if split_phrase in detail["value"]:
-                        parts = detail["value"].split(split_phrase)
-                        if len(parts) == 2:
-                            first_part = parts[0] + split_phrase
-                            second_part = parts[1]
-                            wrapped_lines = [first_part, second_part]
-                        else:
-                            wrapped_lines = wrap_text(detail["value"], self.document.font_manager, 9, available_width, "bold")
-                    else:
-                        wrapped_lines = wrap_text(detail["value"], self.document.font_manager, 9, available_width, "bold")
-                elif is_notes_label:
-                    # Notes should not be bold but should wrap
-                    wrapped_lines = wrap_text(detail["value"], self.document.font_manager, 9, available_width, "regular")
-                else:
-                    wrapped_lines = wrap_text(detail["value"], self.document.font_manager, 9, available_width, "regular")
-
-                # Draw first line with appropriate font weight
-                if is_equivalency_label:
-                    value_font_type = "bold-italic"  # Equivalency statement should be bold-italic
-                elif is_notes_label:
-                    value_font_type = "regular"  # Notes should be regular
-                else:
-                    value_font_type = "regular"
-                    
-                self.document.draw_text(normalize_text(wrapped_lines[0]), value_x, current_y, 9, value_font_type, BLACK_COLOR)
-
-                # Draw additional lines if any
-                for line in wrapped_lines[1:]:
-                    current_y -= 12  # Move to next line
-                    self.document.draw_text(normalize_text(line), value_x, current_y, 9, value_font_type, BLACK_COLOR)
-
-                current_y -= 12  # Extra spacing after wrapped text
+            # Determine font style for value
+            is_notes_label = detail["label"] == "Notes:"
+            if is_equivalency_label:
+                value_font_type = "bold-italic"  # Equivalency statement should be bold-italic
+            elif is_notes_label:
+                value_font_type = "regular"  # Notes should be regular
             else:
-                # Draw single line value with appropriate font weight
-                if is_equivalency_label:
-                    value_font_type = "bold-italic"  # Equivalency statement should be bold-italic
-                elif detail["label"] == "Notes:":
-                    value_font_type = "regular"  # Notes should be regular
-                else:
-                    value_font_type = "regular"
-                self.document.draw_text(normalize_text(detail["value"]), value_x, current_y, 9, value_font_type, BLACK_COLOR)
-
-            current_y -= 12  # TypeScript line height
+                value_font_type = "regular"
+            
+            # Use multiline text drawing (handles both newlines and wrapping)
+            current_y = self._draw_multiline_text(
+                detail["value"], 
+                value_x, 
+                current_y, 
+                9, 
+                value_font_type, 
+                BLACK_COLOR, 
+                available_width
+            )
+            
+            # Add spacing between fields (not between lines within a field)
+            current_y -= 12
 
         # Add grade conversion table for CBC evaluations
         if isinstance(form_data, CredentialGroupWithCBC) and form_data.parsedGradeScaleTable:
@@ -935,32 +907,28 @@ Foreign grades are converted to U.S. letter grades based on the 4.00 system. Let
                 credential_value_x_position = self.document.page_width - min_width_for_wrapping - self.config.layout.RIGHT_MARGIN
                 available_width = min_width_for_wrapping
 
-            # Check if text needs wrapping
+            # Determine font style for value
             is_equivalency_label = detail["label"] == "Recommended U.S. Equivalency:"
-            if len(detail["value"]) > 50 or is_equivalency_label:
-                # Wrap text for long values
-                font_type_for_wrap = "bold-italic" if is_equivalency_label else "regular"
-                wrapped_lines = wrap_text(detail["value"], self.document.font_manager, self.config.fonts.NORMAL_SIZE, available_width, font_type_for_wrap)
-                
-                # Draw first line
-                font_type = "bold-italic" if is_equivalency_label else "regular"
-                self.document.draw_text(
-                    normalize_text(wrapped_lines[0]), credential_value_x_position, current_y, self.config.fonts.NORMAL_SIZE, font_type, BLACK_COLOR
-                )
-                
-                # Draw additional lines if any
-                for line in wrapped_lines[1:]:
-                    current_y -= self.config.layout.LINE_HEIGHT
-                    self.document.draw_text(
-                        normalize_text(line), credential_value_x_position, current_y, self.config.fonts.NORMAL_SIZE, font_type, BLACK_COLOR
-                    )
+            is_notes_label = detail["label"] == "Notes:"
+            if is_equivalency_label:
+                font_type = "bold-italic"
+            elif is_notes_label:
+                font_type = "regular"
             else:
-                # Draw single line value
-                font_type = "bold-italic" if is_equivalency_label else "regular"
-                self.document.draw_text(
-                    normalize_text(detail["value"]), credential_value_x_position, current_y, self.config.fonts.NORMAL_SIZE, font_type, BLACK_COLOR
-                )
-
+                font_type = "regular"
+            
+            # Use multiline text drawing (handles both newlines and wrapping)
+            current_y = self._draw_multiline_text(
+                detail["value"], 
+                credential_value_x_position, 
+                current_y, 
+                self.config.fonts.NORMAL_SIZE, 
+                font_type, 
+                BLACK_COLOR, 
+                available_width
+            )
+            
+            # Add spacing between fields (not between lines within a field)
             current_y -= self.config.layout.LINE_HEIGHT
 
         # Add grade conversion table for CBC evaluations
@@ -1277,3 +1245,55 @@ All documentation submitted to TEC is reviewed internally. At a minimum, TEC req
                 return float(value)
         
         return 0.0
+    
+    def _draw_multiline_text(self, text: str, x: float, y: float, font_size: int, font_type: str, color, available_width: float) -> float:
+        """
+        Draw text that may contain newlines and long lines that need wrapping.
+        
+        Args:
+            text: Text to draw (may contain \n characters)
+            x: X coordinate for text start
+            y: Y coordinate for first line
+            font_size: Font size
+            font_type: Font type (regular, bold, etc.)
+            color: Text color
+            available_width: Available width for text wrapping
+            
+        Returns:
+            New Y position at the baseline of the last line drawn
+        """
+        from .utils.text_utils import wrap_text, normalize_text
+        
+        current_y = y
+        first_line = True
+        
+        # Split on explicit newlines FIRST (before normalize_text can strip them)
+        newline_split = text.split('\n')
+        
+        for i, line_text in enumerate(newline_split):
+            if not line_text.strip():
+                # Empty line, just move down
+                if not first_line:
+                    current_y -= 12  # Use same line height as existing code
+                continue
+                
+            # Normalize each line separately to preserve newline structure
+            normalized_line = normalize_text(line_text)
+            
+            # Check if this line needs text wrapping
+            if len(normalized_line) > 80:  # Threshold for wrapping
+                # wrap_text already calls normalize_text internally, so pass the original line
+                wrapped_lines = wrap_text(line_text, self.document.font_manager, font_size, available_width, font_type)
+            else:
+                wrapped_lines = [normalized_line]
+            
+            # Draw each wrapped line
+            for j, wrapped_line in enumerate(wrapped_lines):
+                if not first_line:
+                    current_y -= 12  # Move down before drawing (except for first line)
+                # Don't normalize again since wrap_text already did it
+                self.document.draw_text(wrapped_line, x, current_y, font_size, font_type, color)
+                first_line = False
+        
+        # Return position at baseline of last line (no extra spacing)
+        return current_y
