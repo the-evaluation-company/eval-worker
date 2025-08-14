@@ -118,7 +118,7 @@ class PDFGenerator:
 
         # Save and return document
         return self.document.save_document()
-
+    
     def generate_evaluation_report_enhanced_style(
         self, evaluation_type: str, credential_groups: List[Dict[str, Any]], evaluation_data: Dict[str, Any], student_name: str, case_info: Dict[str, str]
     ) -> bytes:
@@ -963,13 +963,31 @@ Foreign grades are converted to U.S. letter grades based on the 4.00 system. Let
             # Add spacing between fields (not between lines within a field)
             current_y -= self.config.layout.LINE_HEIGHT
 
-        # Add course analysis table for CBC evaluations
-        if isinstance(form_data, CredentialGroupWithCBC) and form_data.course_analysis:
-            current_y = self._draw_course_analysis_table(current_y, form_data.course_analysis)
+        # For CBC evaluations, ensure ordering:
+        # COURSE ANALYSIS header → Grade Conversion → Subjects table
+        if isinstance(form_data, CredentialGroupWithCBC):
+            has_grade_table = bool(form_data.parsedGradeScaleTable)
+            has_courses = bool(form_data.course_analysis)
+            if has_grade_table or has_courses:
+                # Single header
+                current_y -= self.config.layout.LINE_HEIGHT * 2.0
+                self.document.draw_text(
+                    "COURSE ANALYSIS",
+                    self.config.layout.LEFT_MARGIN,
+                    current_y,
+                    self.config.fonts.NORMAL_SIZE,
+                    "bold",
+                    BLACK_COLOR,
+                )
+                current_y -= self.config.layout.LINE_HEIGHT * 1.2
 
-        # Add grade conversion table for CBC evaluations (legacy)
-        if isinstance(form_data, CredentialGroupWithCBC) and form_data.parsedGradeScaleTable:
-            current_y = self._draw_grade_conversion_table(current_y, form_data.parsedGradeScaleTable)
+            # Grade conversion first
+            if has_grade_table:
+                current_y = self._draw_grade_conversion_table(current_y, form_data.parsedGradeScaleTable)
+
+            # Then course table
+            if has_courses:
+                current_y = self._draw_course_analysis_table(current_y, form_data.course_analysis, draw_header=False)
 
         return current_y
 
@@ -1341,41 +1359,46 @@ All documentation submitted to TEC is reviewed internally. At a minimum, TEC req
         
         # Draw each section and its courses
         for section in course_analysis.sections:
-            # Check if section fits on current page
-            section_height = (len(section.courses) + 1) * row_height
-            if not self._will_content_fit(current_y, section_height):
-                # Create new page and redraw header
+            # Ensure there is space for the section header row; if not, move to new page
+            if not self._will_content_fit(current_y, row_height):
                 self.current_page_number += 1
                 self.document.add_page_with_background()
                 self._draw_enhanced_page_numbering(None)
-                current_y = self.document.page_height - self.config.layout.TOP_MARGIN - 50
-                
-                # Redraw table header on new page
-                header_y = current_y
-                self.document.draw_rectangle(
-                    table_x, header_y - row_height + 5, total_width, row_height, 
-                    border_color=(0, 0, 0), border_width=1, fill_color=(240, 240, 240)
-                )
-                current_x = table_x
-                for i, header in enumerate(headers):
-                    text_x = current_x + col_widths[i] / 2 - self.document.get_text_width(header, font_size, "bold") / 2
-                    self.document.draw_text(header, text_x, header_y - 10, font_size, "bold", BLACK_COLOR)
-                    current_x += col_widths[i]
-                current_y = header_y - row_height
-            
-            # Draw section header spanning all columns
+                current_y = self.document.page_height - self.config.layout.TOP_MARGIN
+
+            # Draw section header row (no background), split into 3 columns with vertical lines
             self.document.draw_rectangle(
-                table_x, current_y - row_height + 5, total_width, row_height, 
-                border_color=(0, 0, 0), border_width=1, fill_color=(250, 250, 250)
+                table_x, current_y - row_height + 5, total_width, row_height,
+                border_color=(0, 0, 0), border_width=1
             )
-            
-            # Center the section name across all columns
-            section_text_x = table_x + total_width / 2 - self.document.get_text_width(section.section_name, font_size, "bold") / 2
+            # Column separators for section header row
+            self.document.draw_line(v1_x, current_y - row_height + 5, v1_x, current_y + 5)
+            self.document.draw_line(v2_x, current_y - row_height + 5, v2_x, current_y + 5)
+
+            # Left-align section name within the SUBJECT column
+            section_text_x = table_x + 5
             self.document.draw_text(section.section_name, section_text_x, current_y - 10, font_size, "bold", BLACK_COLOR)
             current_y -= row_height
             
             # Draw courses for this section
             for course in section.courses:
+                # If the next course row won't fit, continue on next page
+                if not self._will_content_fit(current_y, row_height):
+                    self.current_page_number += 1
+                    self.document.add_page_with_background()
+                    self._draw_enhanced_page_numbering(None)
+                    current_y = self.document.page_height - self.config.layout.TOP_MARGIN
+
+                    # Redraw only the section header row on the new page to preserve grouping
+                    self.document.draw_rectangle(
+                        table_x, current_y - row_height + 5, total_width, row_height,
+                        border_color=(0, 0, 0), border_width=1
+                    )
+                    self.document.draw_line(v1_x, current_y - row_height + 5, v1_x, current_y + 5)
+                    self.document.draw_line(v2_x, current_y - row_height + 5, v2_x, current_y + 5)
+                    self.document.draw_text(section.section_name, table_x + 5, current_y - 10, font_size, "bold", BLACK_COLOR)
+                    current_y -= row_height
+
                 # Row border
                 self.document.draw_rectangle(
                     table_x, current_y - row_height + 5, total_width, row_height,

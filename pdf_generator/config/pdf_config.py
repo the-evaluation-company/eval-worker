@@ -22,7 +22,7 @@ class PDFLayoutConfig:
     """Layout configuration for PDF generation"""
 
     LEFT_MARGIN: int = 35  # left margin
-    TOP_MARGIN: int = 124  # top margin
+    TOP_MARGIN: int = 130  # top margin
     RIGHT_MARGIN: int = 35  # right margin
     BOTTOM_MARGIN: int = 50  # bottom margin (prevents content cutoff)
     LINE_HEIGHT: int = 12  # line height
