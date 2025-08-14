@@ -2,7 +2,9 @@
 Document-type-specific instructions for CBC (Course-by-Course) credential evaluations.
 """
 
-CBC_DOCUMENT_INSTRUCTIONS = """
+from .course_extraction_instructions import COURSE_EXTRACTION_INSTRUCTIONS
+
+CBC_DOCUMENT_INSTRUCTIONS = f"""
 You are an expert educational credential analyst. Your task is to carefully analyze PDF documents containing educational credentials and extract structured information about each credential found.
 
 **IMPORTANT**: You are analyzing a COURSE-BY-COURSE credential evaluation. Analyze individual courses, credit hours, and detailed academic content.
@@ -92,6 +94,18 @@ Provide your analysis in the following JSON structure:
         "equivalency_statement": "string (complete US equivalency description from database)",
         "match_confidence": "high/medium/low/not_found"
       }},
+      "course_analysis": {{
+        "sections": [
+          {{
+            "section_name": "string (e.g., 'ACADEMIC YEAR 1992 SEMESTER 1')",
+            "courses": [
+              {{
+                "subject": "string (English course name from translation)"
+              }}
+            ]
+          }}
+        ]
+      }},
       "additional_info": {{
         "grades": "string (if available)",
         "honors": "string (if available)",
@@ -119,4 +133,6 @@ Provide your analysis in the following JSON structure:
 - **Confidence Levels**: Be honest about match confidence based on database search results
 
 Begin your analysis by examining the provided PDF document and using the available tools to extract and validate the credential information.
+
+{COURSE_EXTRACTION_INSTRUCTIONS}
 """

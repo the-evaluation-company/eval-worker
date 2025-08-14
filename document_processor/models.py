@@ -114,6 +114,25 @@ class USEquivalency:
 
 
 @dataclass
+class CourseInfo:
+    """Individual course information from transcript."""
+    subject: str
+
+
+@dataclass
+class CourseSection:
+    """A section of courses (e.g., 'ACADEMIC YEAR 1992 SEMESTER 1')."""
+    section_name: str
+    courses: List[CourseInfo]
+
+
+@dataclass
+class CourseAnalysis:
+    """Course analysis data for a credential (CBC only)."""
+    sections: List[CourseSection]
+
+
+@dataclass
 class AdditionalInfo:
     """Additional credential information."""
     grades: Optional[str] = None
@@ -135,6 +154,7 @@ class CredentialInfo:
     grade_scale: Optional[GradeScaleInfo] = None
     us_equivalency: Optional[USEquivalency] = None
     additional_info: Optional[AdditionalInfo] = None
+    course_analysis: Optional[CourseAnalysis] = None  # For CBC evaluations only
 
 
 @dataclass
@@ -285,6 +305,27 @@ class CredentialAnalysisResultBuilder:
                     notes=additional_data.get("notes")
                 ) if additional_data else None
                 
+                # Parse course analysis (CBC only)
+                course_data = cred_data.get("course_analysis", {})
+                course_analysis = None
+                if course_data and course_data.get("sections"):
+                    sections = []
+                    for section_data in course_data["sections"]:
+                        courses = []
+                        for course_data_item in section_data.get("courses", []):
+                            course = CourseInfo(
+                                subject=course_data_item.get("subject", "")
+                            )
+                            courses.append(course)
+                        
+                        section = CourseSection(
+                            section_name=section_data.get("section_name", ""),
+                            courses=courses
+                        )
+                        sections.append(section)
+                    
+                    course_analysis = CourseAnalysis(sections=sections)
+                
                 # Create credential info
                 credential_info = CredentialInfo(
                     credential_id=cred_data.get("credential_id", ""),
@@ -297,7 +338,8 @@ class CredentialAnalysisResultBuilder:
                     program_length=program_length,
                     grade_scale=grade_scale,
                     us_equivalency=us_equivalency,
-                    additional_info=additional_info
+                    additional_info=additional_info,
+                    course_analysis=course_analysis
                 )
                 
                 credentials.append(credential_info)
@@ -393,7 +435,19 @@ class CredentialAnalysisResultBuilder:
                         "grades": cred.additional_info.grades,
                         "honors": cred.additional_info.honors,
                         "notes": cred.additional_info.notes
-                    } if cred.additional_info else None
+                    } if cred.additional_info else None,
+                    "course_analysis": {
+                        "sections": [
+                            {
+                                "section_name": section.section_name,
+                                                                    "courses": [
+                                        {
+                                            "subject": course.subject
+                                        } for course in section.courses
+                                    ]
+                            } for section in cred.course_analysis.sections
+                        ]
+                    } if cred.course_analysis else None
                 }
                 for cred in result.credentials
             ],

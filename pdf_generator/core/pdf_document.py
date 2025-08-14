@@ -162,6 +162,31 @@ class PDFDocument:
         # Draw rectangle
         self.current_page.rect(x, y, width, height, fill=fill_color is not None)
 
+    def draw_line(
+        self,
+        x1: float,
+        y1: float,
+        x2: float,
+        y2: float,
+        color: Tuple[int, int, int] = (0, 0, 0),
+        width: float = 1,
+    ):
+        """
+        Draw a straight line between two points.
+
+        Args:
+            x1, y1: Start point
+            x2, y2: End point
+            color: Line color as RGB tuple
+            width: Line width
+        """
+        if not self.current_page:
+            raise ValueError("No current page available")
+
+        self.current_page.setStrokeColorRGB(*color)
+        self.current_page.setLineWidth(width)
+        self.current_page.line(x1, y1, x2, y2)
+
     def draw_table(
         self,
         x: float,

@@ -38,6 +38,15 @@ class PDFGenerator:
         if options is None:
             options = PDFGenerationOptions()
 
+        # Ensure case_info is always available to avoid attribute errors
+        if case_info is None:
+            case_info = CaseInfo(
+                caseNumber="",
+                nameOnApplication="",
+                dateOfBirth="",
+                verificationStatus=""
+            )
+
         # Create first page without footer
         self.document.add_page_with_background()
 
@@ -256,10 +265,10 @@ class PDFGenerator:
 
         header_info = [
             {"label": "Date:", "value": date_string},
-            {"label": "SpanTran Number:", "value": case_info.caseNumber},
-            {"label": "Name on Application:", "value": case_info.nameOnApplication or student_name},
-            {"label": "Name on Documentation:", "value": case_info.nameOnApplication or student_name},
-            {"label": "Date of Birth:", "value": case_info.dateOfBirth or "Not Available"},
+            {"label": "SpanTran Number:", "value": (case_info.caseNumber or "")},
+            {"label": "Name on Application:", "value": (case_info.nameOnApplication or "No Name")},
+            {"label": "Name on Documentation:", "value": (case_info.nameOnApplication or "No Name")},
+            {"label": "Date of Birth:", "value": (case_info.dateOfBirth or "Not Available")},
             {"label": "Type of Evaluation:", "value": evaluation_type_text},
         ]
 
@@ -488,9 +497,30 @@ class PDFGenerator:
             # Add spacing between fields (not between lines within a field)
             current_y -= 12
 
-        # Add grade conversion table for CBC evaluations
-        if isinstance(form_data, CredentialGroupWithCBC) and form_data.parsedGradeScaleTable:
-            current_y = self._draw_grade_conversion_table(current_y, form_data.parsedGradeScaleTable)
+        # For CBC evaluations, draw Course Analysis header ONCE, then Grade Conversion,
+        # then the course analysis table below, matching the example layout
+        if isinstance(form_data, CredentialGroupWithCBC):
+            # Only draw when we have either grade table or courses
+            if form_data.parsedGradeScaleTable or form_data.course_analysis:
+                # Draw single "COURSE ANALYSIS" header
+                current_y -= self.config.layout.LINE_HEIGHT * 2.0
+                self.document.draw_text(
+                    "COURSE ANALYSIS",
+                    self.config.layout.LEFT_MARGIN,
+                    current_y,
+                    self.config.fonts.NORMAL_SIZE,
+                    "bold",
+                    BLACK_COLOR,
+                )
+                current_y -= self.config.layout.LINE_HEIGHT * 1.2
+
+            # Draw Grade Conversion immediately under the header if present
+            if form_data.parsedGradeScaleTable:
+                current_y = self._draw_grade_conversion_table(current_y, form_data.parsedGradeScaleTable)
+
+            # Draw course analysis table below
+            if form_data.course_analysis:
+                current_y = self._draw_course_analysis_table(current_y, form_data.course_analysis, draw_header=False)
 
         return current_y
 
@@ -640,7 +670,8 @@ Foreign grades are converted to U.S. letter grades based on the 4.00 system. Let
             display_name = "Unknown"
 
         # Create complete page numbering text as one string
-        full_text = f"TEC NO.: {case_info.caseNumber} * {display_name} * Page {self.current_page_number} of {self.total_pages}"
+        case_number_text = case_info.caseNumber if case_info and case_info.caseNumber else ""
+        full_text = f"TEC NO.: {case_number_text} * {display_name} * Page {self.current_page_number} of {self.total_pages}"
 
         # Calculate total width for centering
         total_width = self.document.get_text_width(full_text, 9, "bold")
@@ -670,7 +701,8 @@ Foreign grades are converted to U.S. letter grades based on the 4.00 system. Let
             display_name = "Unknown"
 
         # Create complete page numbering text as one string
-        full_text = f"TEC NO.: {case_info.caseNumber} * {display_name} * Page {self.current_page_number} of {self.total_pages}"
+        case_number_text = case_info.caseNumber if case_info and case_info.caseNumber else ""
+        full_text = f"TEC NO.: {case_number_text} * {display_name} * Page {self.current_page_number} of {self.total_pages}"
 
         # Calculate total width for centering
         total_width = self.document.get_text_width(full_text, 9, "bold")
@@ -931,7 +963,11 @@ Foreign grades are converted to U.S. letter grades based on the 4.00 system. Let
             # Add spacing between fields (not between lines within a field)
             current_y -= self.config.layout.LINE_HEIGHT
 
-        # Add grade conversion table for CBC evaluations
+        # Add course analysis table for CBC evaluations
+        if isinstance(form_data, CredentialGroupWithCBC) and form_data.course_analysis:
+            current_y = self._draw_course_analysis_table(current_y, form_data.course_analysis)
+
+        # Add grade conversion table for CBC evaluations (legacy)
         if isinstance(form_data, CredentialGroupWithCBC) and form_data.parsedGradeScaleTable:
             current_y = self._draw_grade_conversion_table(current_y, form_data.parsedGradeScaleTable)
 
@@ -1044,20 +1080,9 @@ All documentation submitted to TEC is reviewed internally. At a minimum, TEC req
             self.document.add_page_with_background()
             current_y = self.document.page_height - self.config.layout.TOP_MARGIN
 
-        # Add spacing before table
-        current_y -= self.config.layout.LINE_HEIGHT * 2.0
-
-        # Draw "COURSE ANALYSIS" header
-        self.document.draw_text(
-            "COURSE ANALYSIS",
-            self.config.layout.LEFT_MARGIN,
-            current_y,
-            self.config.fonts.NORMAL_SIZE,
-            "bold",
-            BLACK_COLOR,
-        )
-
-        current_y -= self.config.layout.LINE_HEIGHT * 1.2
+        # No additional "COURSE ANALYSIS" header here; the caller draws it once
+        # Add small spacing before the grade conversion label
+        current_y -= self.config.layout.LINE_HEIGHT * 0.8
 
         # Draw "Grade Conversion:" label
         self.document.draw_text(
@@ -1245,6 +1270,146 @@ All documentation submitted to TEC is reviewed internally. At a minimum, TEC req
                 return float(value)
         
         return 0.0
+    
+    def _draw_course_analysis_table(self, current_y: float, course_analysis, draw_header: bool = True) -> float:
+        """
+        Draw course analysis table for CBC evaluations with 3 columns.
+        
+        Args:
+            current_y: Current Y position
+            course_analysis: CourseAnalysisData containing sections and courses
+            
+        Returns:
+            New Y position after the table
+        """
+        if not course_analysis or not course_analysis.sections:
+            return current_y
+        
+        # Table configuration - 3 columns: Subject, U.S. Credits, U.S. Grades
+        table_x = self.config.layout.LEFT_MARGIN
+        col_widths = [300, 100, 100]  # Subject (wide), U.S. Credits, U.S. Grades
+        total_width = sum(col_widths)
+        row_height = 20
+        font_size = 9
+        
+        # Check if we need a new page for the entire table
+        sections_count = len(course_analysis.sections)
+        total_courses = sum(len(section.courses) for section in course_analysis.sections)
+        estimated_height = (sections_count + total_courses + 2) * row_height  # +2 for header and spacing
+        
+        if not self._will_content_fit(current_y, estimated_height):
+            # Create new page
+            self.current_page_number += 1
+            self.document.add_page_with_background()
+            self._draw_enhanced_page_numbering(None)  # Add page numbering
+            current_y = self.document.page_height - self.config.layout.TOP_MARGIN
+        
+        # Optionally draw section header (handled by caller when integrating with grade table)
+        if draw_header:
+            current_y -= 30  # Spacing before table
+            self.document.draw_text("COURSE ANALYSIS", table_x, current_y, 12, "bold", BLACK_COLOR)
+            current_y -= 25
+        
+        # Draw table header
+        header_y = current_y
+        headers = ["SUBJECT", "U.S. CREDITS", "U.S. GRADES"]
+        
+        # Draw header baseline and vertical column lines (no white background)
+        # Outer border for header row
+        self.document.draw_rectangle(
+            table_x, header_y - row_height + 5, total_width, row_height,
+            border_color=(0, 0, 0), border_width=1
+        )
+        # Vertical lines for U.S. CREDITS and U.S. GRADES columns
+        v1_x = table_x + col_widths[0]
+        v2_x = table_x + col_widths[0] + col_widths[1]
+        self.document.draw_line(v1_x, header_y - row_height + 5, v1_x, header_y + 5)
+        self.document.draw_line(v2_x, header_y - row_height + 5, v2_x, header_y + 5)
+        
+        # Draw header text
+        current_x = table_x
+        for i, header in enumerate(headers):
+            if i == 0:  # SUBJECT left-aligned
+                text_x = current_x + 5
+            else:
+                # Center for numeric columns
+                text_x = current_x + col_widths[i] / 2 - self.document.get_text_width(header, font_size, "bold") / 2
+            self.document.draw_text(header, text_x, header_y - 10, font_size, "bold", BLACK_COLOR)
+            current_x += col_widths[i]
+        
+        current_y = header_y - row_height
+        
+        # Draw each section and its courses
+        for section in course_analysis.sections:
+            # Check if section fits on current page
+            section_height = (len(section.courses) + 1) * row_height
+            if not self._will_content_fit(current_y, section_height):
+                # Create new page and redraw header
+                self.current_page_number += 1
+                self.document.add_page_with_background()
+                self._draw_enhanced_page_numbering(None)
+                current_y = self.document.page_height - self.config.layout.TOP_MARGIN - 50
+                
+                # Redraw table header on new page
+                header_y = current_y
+                self.document.draw_rectangle(
+                    table_x, header_y - row_height + 5, total_width, row_height, 
+                    border_color=(0, 0, 0), border_width=1, fill_color=(240, 240, 240)
+                )
+                current_x = table_x
+                for i, header in enumerate(headers):
+                    text_x = current_x + col_widths[i] / 2 - self.document.get_text_width(header, font_size, "bold") / 2
+                    self.document.draw_text(header, text_x, header_y - 10, font_size, "bold", BLACK_COLOR)
+                    current_x += col_widths[i]
+                current_y = header_y - row_height
+            
+            # Draw section header spanning all columns
+            self.document.draw_rectangle(
+                table_x, current_y - row_height + 5, total_width, row_height, 
+                border_color=(0, 0, 0), border_width=1, fill_color=(250, 250, 250)
+            )
+            
+            # Center the section name across all columns
+            section_text_x = table_x + total_width / 2 - self.document.get_text_width(section.section_name, font_size, "bold") / 2
+            self.document.draw_text(section.section_name, section_text_x, current_y - 10, font_size, "bold", BLACK_COLOR)
+            current_y -= row_height
+            
+            # Draw courses for this section
+            for course in section.courses:
+                # Row border
+                self.document.draw_rectangle(
+                    table_x, current_y - row_height + 5, total_width, row_height,
+                    border_color=(0, 0, 0), border_width=1
+                )
+                # Vertical lines for column separators
+                self.document.draw_line(v1_x, current_y - row_height + 5, v1_x, current_y + 5)
+                self.document.draw_line(v2_x, current_y - row_height + 5, v2_x, current_y + 5)
+
+                # Draw course data - only subject and empty U.S. placeholders
+                values = [
+                    course.subject,
+                    "",  # Empty U.S. Credits placeholder
+                    ""   # Empty U.S. Grades placeholder
+                ]
+
+                current_x = table_x
+                for i, value in enumerate(values):
+                    if i == 0:  # Subject column - left aligned
+                        text_x = current_x + 5  # Small padding from left
+                        # Handle long subject names with truncation if needed
+                        if len(value) > 45:
+                            value = value[:42] + "..."
+                        self.document.draw_text(value, text_x, current_y - 10, font_size, "regular", BLACK_COLOR)
+                    else:  # Credits and grades columns - center aligned
+                        if value:  # Only draw if there's content
+                            text_x = current_x + col_widths[i] / 2 - self.document.get_text_width(value, font_size, "regular") / 2
+                            self.document.draw_text(value, text_x, current_y - 10, font_size, "regular", BLACK_COLOR)
+
+                    current_x += col_widths[i]
+
+                current_y -= row_height
+        
+        return current_y
     
     def _draw_multiline_text(self, text: str, x: float, y: float, font_size: int, font_type: str, color, available_width: float) -> float:
         """

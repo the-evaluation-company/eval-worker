@@ -9,6 +9,25 @@ from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
 
 
+class CourseItem(BaseModel):
+    """Individual course item for PDF generation"""
+    
+    subject: str
+
+
+class CourseSection(BaseModel):
+    """A section of courses for PDF generation"""
+    
+    section_name: str
+    courses: List[CourseItem] = Field(default_factory=list)
+
+
+class CourseAnalysisData(BaseModel):
+    """Course analysis data for PDF generation"""
+    
+    sections: List[CourseSection] = Field(default_factory=list)
+
+
 class GradeMapping(BaseModel):
     """Grade scale mapping for PDF display"""
 
@@ -78,8 +97,12 @@ class CredentialGroup(BaseModel):
 class CredentialGroupWithCBC(CredentialGroup):
     """Credential group with CBC course analysis"""
 
+    # New course analysis structure
+    course_analysis: Optional[CourseAnalysisData] = None
+    
+    # Legacy fields for backward compatibility
     cbcCourseAnalysis: Optional[List[CBCourseAnalysisItem]] = None
-    course_analysis: Optional[List[CBCourseAnalysisItem]] = None
+    
     # Add fields for course evaluation summary
     totalUSCredits: Optional[str] = None
     cumulativeGPA: Optional[str] = None
@@ -141,9 +164,13 @@ class IGeneratePdfRequest(BaseModel):
 
 
 class CaseInfo(BaseModel):
-    """Case information for PDF generation"""
+    """Case information for PDF generation
 
-    caseNumber: str
-    nameOnApplication: str
-    dateOfBirth: str
+    All fields are optional so PDF generation can proceed without a case number
+    or other metadata. Callers may pass empty strings when unknown.
+    """
+
+    caseNumber: Optional[str] = None
+    nameOnApplication: Optional[str] = None
+    dateOfBirth: Optional[str] = None
     verificationStatus: Optional[str] = None

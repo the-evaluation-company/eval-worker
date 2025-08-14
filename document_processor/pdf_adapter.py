@@ -10,7 +10,7 @@ from typing import Dict, List, Optional, Any
 from datetime import datetime
 
 from .models import CredentialAnalysisResult, CredentialInfo
-from pdf_generator.types import CredentialGroup, CredentialGroupWithCBC, GradeMapping, CaseInfo, PDFGenerationOptions
+from pdf_generator.types import CredentialGroup, CredentialGroupWithCBC, GradeMapping, CaseInfo, PDFGenerationOptions, CourseAnalysisData, CourseSection, CourseItem
 
 
 class PDFAdapter:
@@ -44,12 +44,12 @@ class PDFAdapter:
             credential_group = PDFAdapter._convert_credential(cred, i, is_cbc)
             credential_groups.append(credential_group)
         
-        # Create case info
+        # Create case info (tolerate missing values)
         case_info = CaseInfo(
-            caseNumber=case_number,
-            nameOnApplication=name_on_application,
-            dateOfBirth=date_of_birth,
-            verificationStatus=verification_status
+            caseNumber=case_number or "",
+            nameOnApplication=name_on_application or "",
+            dateOfBirth=date_of_birth or "",
+            verificationStatus=verification_status or ""
         )
         
         # Create PDF options based on evaluation type
@@ -127,6 +127,26 @@ class PDFAdapter:
         if cred.additional_info and cred.additional_info.notes:
             notes = f"(LLM Generated): {cred.additional_info.notes}"
         
+        # Convert course analysis data for CBC (PDF only gets subjects + empty U.S. placeholders)
+        course_analysis_data = None
+        if is_cbc and cred.course_analysis:
+            sections = []
+            for section in cred.course_analysis.sections:
+                courses = []
+                for course in section.courses:
+                    course_item = CourseItem(
+                        subject=course.subject
+                    )
+                    courses.append(course_item)
+                
+                course_section = CourseSection(
+                    section_name=section.section_name,
+                    courses=courses
+                )
+                sections.append(course_section)
+            
+            course_analysis_data = CourseAnalysisData(sections=sections)
+        
         # Check if this is a CBC case with grade scale data
         if is_cbc and cred.grade_scale and cred.grade_scale.validated_scale:
             # Create grade mappings from the validated scale data
@@ -151,7 +171,8 @@ class PDFAdapter:
                 documents=[],  # Empty for now - could add PDF reference later
                 parsedGradeScaleTable=grade_mappings,
                 gradeScaleInfo=cred.grade_scale.extracted_hint,
-                gradeScaleSource=cred.grade_scale.match_confidence
+                gradeScaleSource=cred.grade_scale.match_confidence,
+                course_analysis=course_analysis_data
             )
         else:
             # Return regular CredentialGroup for general evaluations
