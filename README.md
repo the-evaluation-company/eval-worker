@@ -266,9 +266,16 @@ All tables populated from Salesforce `Credentials_Form_Setup_Data__c` where:
 ### Report Sections
 1. **Header**: Date, case number, student information, evaluation type
 2. **Credentials Summary**: Highlighted box with US equivalency statement
-3. **Credential Details**: Country, institution, program, length, and equivalency for each credential
+3. **Credential Details**: Varies by evaluation type
+   - **General Evaluations**: Country, institution, foreign credential, program of study, attendance dates, program length, and US equivalency for each credential
+   - **Course-by-Course (CBC) Evaluations**: Same as general plus detailed course analysis section with grade conversion tables for each credential
 4. **Comments**: NACES membership notice and authentication requirements
 5. **Policy Statements**: Comprehensive evaluation policies and grade conversion information
+
+#### Credential Details Format
+- **Institution Names**: Foreign name on first line, English translation on second line (when available)
+- **Foreign Credentials**: Foreign credential type on first line, English translation on second line (when available)
+- **Course Analysis** (CBC only): Individual course listings with grades, credit hours, and US equivalents in tabular format
 
 ### PDF Technical Details
 - **Engine**: ReportLab for PDF generation
@@ -314,6 +321,141 @@ All tables populated from Salesforce `Credentials_Form_Setup_Data__c` where:
 3. Add queries to `database/queries.py`
 4. Update project structure documentation
 
+## Data Model Architecture
+
+### Overview
+The `document_processor/models.py` file defines the complete data structure for credential analysis results. It serves as the bridge between LLM JSON output and PDF generation, ensuring type safety and consistent data flow throughout the system.
+
+### Core Components
+
+#### Data Classes
+- **`CredentialAnalysisResult`**: Top-level container for complete analysis
+- **`CredentialInfo`**: Individual credential with all associated data
+- **`CountryMatch`**, **`InstitutionMatch`**, **`CredentialMatch`**: Database validation results
+- **`AttendanceDates`**, **`ProgramLength`**, **`GradeScaleInfo`**, **`USEquivalency`**: Supporting credential details
+
+#### Builder Pattern
+- **`CredentialAnalysisResultBuilder`**: Converts LLM JSON responses to structured objects
+- **`from_llm_response()`**: Parses and validates incoming JSON
+- **`to_dict()`**: Serializes results for JSON storage
+
+### Adding New LLM Outputs
+
+When extending the system with new data fields, follow this complete workflow:
+
+#### 1. Update LLM Prompts
+```python
+# In prompts/anthropic/general_instructions.py and other prompt files
+"new_field": {
+  "extracted_value": "string (from document)", 
+  "validated_value": "string (from database)",
+  "confidence": "high/medium/low"
+}
+```
+
+#### 2. Extend Data Models
+```python
+# In document_processor/models.py
+@dataclass 
+class NewDataType:
+    extracted_value: Optional[str] = None
+    validated_value: Optional[str] = None
+    confidence: str = "not_found"
+
+# Add to CredentialInfo
+@dataclass
+class CredentialInfo:
+    # ... existing fields ...
+    new_field: Optional[NewDataType] = None
+```
+
+#### 3. Update Builder Logic
+```python
+# In CredentialAnalysisResultBuilder.from_llm_response()
+new_data = cred_data.get("new_field", {})
+new_field = NewDataType(
+    extracted_value=new_data.get("extracted_value"),
+    validated_value=new_data.get("validated_value"), 
+    confidence=new_data.get("confidence", "not_found")
+) if new_data else None
+
+# Add to CredentialInfo constructor
+credential = CredentialInfo(
+    # ... existing fields ...
+    new_field=new_field
+)
+```
+
+#### 4. Update JSON Serialization
+```python
+# In CredentialAnalysisResultBuilder.to_dict()
+"new_field": {
+    "extracted_value": cred.new_field.extracted_value,
+    "validated_value": cred.new_field.validated_value,
+    "confidence": cred.new_field.confidence
+} if cred.new_field else None
+```
+
+#### 5. Extend PDF Adapter
+```python
+# In document_processor/pdf_adapter.py
+# Extract new field for PDF generation
+new_field_value = ""
+if cred.new_field and cred.new_field.validated_value:
+    new_field_value = cred.new_field.validated_value
+elif cred.new_field and cred.new_field.extracted_value:
+    new_field_value = cred.new_field.extracted_value
+
+# Add to CredentialGroup creation
+credential_group = CredentialGroup(
+    # ... existing fields ...
+    newField=new_field_value  # Note: camelCase for PDF types
+)
+```
+
+#### 6. Update PDF Types
+```python
+# In pdf_generator/types/pdf_types.py
+@dataclass
+class CredentialGroup:
+    # ... existing fields ...
+    newField: str = ""
+```
+
+#### 7. Update PDF Generator
+```python
+# In pdf_generator/pdf_generator.py
+def _draw_credential_details(self, credential: CredentialGroup, start_y: float):
+    # ... existing drawing code ...
+    
+    # Draw new field
+    if credential.newField:
+        current_y = self._draw_labeled_text(
+            "New Field:", 
+            credential.newField,
+            current_y - 15
+        )
+```
+
+#### 8. Update Console Display
+```python
+# In main.py analyze_folio function
+if cred.new_field and cred.new_field.validated_value:
+    status = "[MATCH]" if cred.new_field.confidence in ['high', 'medium'] else "[NO MATCH]"
+    print(f"{status} New Field: '{cred.new_field.extracted_value}' → '{cred.new_field.validated_value}' ({cred.new_field.confidence})")
+```
+
+### Data Flow Summary
+```
+LLM JSON → Builder.from_llm_response() → CredentialInfo → PDF Adapter → PDF Types → PDF Generator → Visual Output
+         ↓
+    Builder.to_dict() → JSON Storage
+         ↓  
+    Console Display → Human-readable output
+```
+
+This architecture ensures that all new data fields flow consistently through the entire system while maintaining type safety and validation at each step.
+
 ## Recent Updates
 
 ### August 2025
@@ -321,15 +463,9 @@ All tables populated from Salesforce `Credentials_Form_Setup_Data__c` where:
 - **LLM Service Restructure**: Organized providers into separate modules with shared base class
 - **Automatic Function Calling**: Gemini integration with AFC for streamlined tool execution
 - **Provider Switching**: Dynamic LLM provider selection via environment variable
-- **Enhanced Tool Set**: Added grade scales tool for more comprehensive credential analysis
+- ** Tool Set**: Added grade scales tool for more comprehensive credential analysis
 
-### November 2024
-- **PDF Generation**: Added automated PDF report generation for all credential analyses
-- **Text Wrapping**: Implemented intelligent text wrapping to prevent content overflow
-- **Font Styling**: Added proper bold/italic formatting for credential details
-- **Layout Fixes**: Fixed box width calculations and label/value spacing
-- **Multi-page Support**: Added automatic page breaks with proper numbering
-- **Template Integration**: Integrated SpanTran-branded background template
+
 
 ## TODO - Future Improvements
 
