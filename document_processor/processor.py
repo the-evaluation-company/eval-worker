@@ -65,12 +65,8 @@ class DocumentProcessor:
             
             # Create document type specific prompt
             if prompt is None:
-                if document_type == "cbc":
-                    from prompts.anthropic.cbc_instructions import CBC_DOCUMENT_INSTRUCTIONS
-                    analysis_prompt = CBC_DOCUMENT_INSTRUCTIONS
-                else:
-                    from prompts.anthropic.general_instructions import GENERAL_DOCUMENT_INSTRUCTIONS
-                    analysis_prompt = GENERAL_DOCUMENT_INSTRUCTIONS
+                # Use the LLM service's provider-specific prompt
+                analysis_prompt = self.llm_service.get_default_prompt(document_type)
             else:
                 analysis_prompt = prompt
             

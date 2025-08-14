@@ -139,9 +139,16 @@ Evaluator/
 │   └── extractors.py                  # SOQL queries & data extraction
 │
 ├── llm_services/                       # LLM abstraction layer
+│   ├── __init__.py                    # Provider factory & service creation
 │   ├── base.py                        # Abstract base class
-│   ├── anthropic_service.py           # Claude integration
-│   └── tools.py                       # Database tool definitions
+│   ├── anthropic/                     # Anthropic Claude integration
+│   │   ├── __init__.py               # Anthropic service exports
+│   │   ├── anthropic_service.py      # Claude service implementation
+│   │   └── tools.py                  # Anthropic tool schemas
+│   └── gemini/                        # Google Gemini integration
+│       ├── __init__.py               # Gemini service exports
+│       ├── gemini_service.py         # Gemini service implementation
+│       └── tools.py                  # Gemini function declarations
 │
 ├── document_processor/                 # PDF analysis orchestration
 │   ├── processor.py                   # Main processing pipeline
@@ -164,8 +171,10 @@ Evaluator/
 │       └── text_utils.py             # Text processing, wrapping
 │
 ├── prompts/                            # LLM prompts by provider
-│   └── anthropic/
-│       ├── base_template.py          # Base prompt template
+│   ├── anthropic/                     # Anthropic Claude prompts
+│   │   ├── general_instructions.py   # General analysis instructions
+│   │   └── cbc_instructions.py       # Course-by-course instructions
+│   └── gemini/                        # Google Gemini prompts
 │       ├── general_instructions.py   # General analysis instructions
 │       └── cbc_instructions.py       # Course-by-course instructions
 │
@@ -204,18 +213,34 @@ All tables populated from Salesforce `Credentials_Form_Setup_Data__c` where:
 ## Implementation Details
 
 ### LLM Integration
-- **Provider**: Anthropic Claude (extensible architecture)
-- **Tool Calling**: 5 database tools available to LLM
+- **Providers**: Anthropic Claude & Google Gemini (extensible architecture)
+- **Provider Selection**: Set via `LLM_PROVIDER` environment variable
+- **Tool Calling**: 6 database tools available to all LLMs
 - **Context**: Base64 PDF upload + structured prompt
-- **Timeout**: 20-minute limit for large documents
+- **Timeout**: 20-minute limit for large documents (Anthropic)
 - **Tracking**: Complete conversation metadata with token usage
+
+#### Anthropic Claude Service
+- **Manual Tool Calling**: Full control over function execution cycle
+- **Iterative Process**: Model → Tool Call → Execution → Result → Model
+- **Conversation Management**: Manual tracking of multi-turn interactions
+- **Token Tracking**: Detailed input/output token usage monitoring
+
+#### Google Gemini Service  
+- **Manual Function Calling**: Full control over function execution cycle (AFC disabled)
+- **Iterative Process**: Model → Function Call → Execution → Result → Model (same as Anthropic)
+- **Conversation Management**: Manual tracking of multi-turn interactions
+- **Token Tracking**: Detailed input/output token usage monitoring
+- **Tool Call Tracking**: Complete audit trail of function calls with parameters, results, and timing
+- **Why Manual over AFC**: Provides detailed tracking and monitoring required for analysis transparency
 
 ### Available Tools for LLM
 1. **`search_countries(query)`** - Fuzzy country name matching
 2. **`find_institutions(country_name, query)`** - Institution search within country
 3. **`get_foreign_credentials(country_name)`** - Available credential types
 4. **`get_program_lengths(country_name)`** - Typical program durations
-5. **`get_us_equivalencies()`** - All US degree equivalencies and descriptions
+5. **`get_grade_scales(country_name)`** - Grading systems by country
+6. **`get_us_equivalencies()`** - All US degree equivalencies and descriptions
 
 ### Data Flow
 1. **PDF Upload** → Base64 encoding → Claude API
@@ -254,7 +279,7 @@ All tables populated from Salesforce `Credentials_Form_Setup_Data__c` where:
 ## Technical Specifications
 
 ### Dependencies
-- **Core**: `simple-salesforce`, `anthropic`
+- **Core**: `simple-salesforce`, `anthropic`, `google-genai`
 - **Database**: SQLite (built-in)
 - **PDF Generation**: `reportlab`, `pypdf`, `Pillow`
 - **Data Models**: `pydantic`
@@ -269,10 +294,12 @@ All tables populated from Salesforce `Credentials_Form_Setup_Data__c` where:
 ## Development
 
 ### Adding LLM Providers
-1. Extend `BaseLLMService` in `llm_services/`
-2. Implement required methods
-3. Add provider-specific prompts in `prompts/`
-4. Update `DocumentProcessor` initialization
+1. Create new provider folder in `llm_services/`
+2. Extend `BaseLLMService` with provider-specific implementation
+3. Implement required methods: `analyze_pdf_document()`, `get_model_info()`
+4. Add provider to `create_llm_service()` factory in `llm_services/__init__.py`
+5. Add provider-specific configuration to `config.py`
+6. Add provider-specific prompts in `prompts/`
 
 ### Adding Database Tools
 1. Add method to `DatabaseTools` class in `llm_services/tools.py`
@@ -287,6 +314,13 @@ All tables populated from Salesforce `Credentials_Form_Setup_Data__c` where:
 4. Update project structure documentation
 
 ## Recent Updates
+
+### August 2025
+- **Multi-Provider Support**: Added Google Gemini as alternative to Anthropic Claude
+- **LLM Service Restructure**: Organized providers into separate modules with shared base class
+- **Automatic Function Calling**: Gemini integration with AFC for streamlined tool execution
+- **Provider Switching**: Dynamic LLM provider selection via environment variable
+- **Enhanced Tool Set**: Added grade scales tool for more comprehensive credential analysis
 
 ### November 2024
 - **PDF Generation**: Added automated PDF report generation for all credential analyses

@@ -2,7 +2,7 @@
 Google Gemini service for credential analysis.
 
 Implements the BaseLLMService interface using Google's Gemini models
-with function calling capabilities for PDF credential analysis using the new genai SDK.
+with manual function calling capabilities for PDF credential analysis using the new genai SDK.
 """
 
 import base64
@@ -16,15 +16,7 @@ from google import genai
 from google.genai import types
 
 from ..base import BaseLLMService
-from .tools import (
-    GEMINI_FUNCTION_DECLARATIONS,
-    search_countries,
-    find_institutions,
-    get_foreign_credentials,
-    get_program_lengths,
-    get_grade_scales,
-    get_us_equivalencies
-)
+from .tools import GEMINI_FUNCTION_DECLARATIONS, execute_tool
 from config import GEMINI_API_KEY, GEMINI_MODEL, GEMINI_TEMPERATURE
 
 logger = logging.getLogger(__name__)
@@ -43,20 +35,13 @@ class GeminiService(BaseLLMService):
         self.model = GEMINI_MODEL
         self.temperature = GEMINI_TEMPERATURE
         
-        # Prepare tools for automatic function calling
-        self.tools = [
-            search_countries,
-            find_institutions,
-            get_foreign_credentials,
-            get_program_lengths,
-            get_grade_scales,
-            get_us_equivalencies
-        ]
+        # Prepare tools for manual function calling using function declarations
+        self.tools = [types.Tool(function_declarations=GEMINI_FUNCTION_DECLARATIONS)]
         
         # Initialize tracking variables
         self._reset_tracking()
         
-        logger.info(f"Initialized Gemini service with model: {self.model}")
+        logger.info(f"Initialized Gemini service with model: {self.model} (manual function calling)")
     
     def _reset_tracking(self):
         """Reset all tracking variables for a new analysis."""
@@ -114,24 +99,11 @@ class GeminiService(BaseLLMService):
                 raise ValueError("Analysis prompt is required")
             analysis_prompt = prompt
             
-            # Create content with PDF and prompt
-            content_parts = [
-                types.Part.from_bytes(
-                    data=base64.b64decode(pdf_data),
-                    mime_type="application/pdf"
-                ),
-                types.Part(text=analysis_prompt)
-            ]
+            # Create initial message with PDF and prompt
+            messages = self._create_initial_message(pdf_data, analysis_prompt)
             
-            # Configure generation with tools
-            config = types.GenerateContentConfig(
-                tools=self.tools,
-                temperature=self.temperature,
-                system_instruction="You are a credential analysis expert. Analyze PDF documents for educational credentials and use the provided tools to search the database for matching countries, institutions, and credential types. Always return structured JSON results."
-            )
-            
-            # Process with Gemini using automatic function calling
-            result = self._process_with_gemini(content_parts, config)
+            # Process with Gemini using manual function calling
+            result = self._process_with_tools(messages)
             
             # Add conversation metadata to result
             self.conversation_metadata["completed_at"] = datetime.now().isoformat()
@@ -164,43 +136,171 @@ class GeminiService(BaseLLMService):
             logger.error(f"Failed to encode PDF {pdf_path}: {e}")
             raise
     
-    def _process_with_gemini(self, content_parts: List[types.Part], config: types.GenerateContentConfig) -> Dict[str, Any]:
+    def _create_initial_message(self, pdf_data: str, prompt: str) -> List[types.Content]:
+        """Create the initial message with PDF document and analysis prompt."""
+        return [types.Content(
+            role="user",
+            parts=[
+                types.Part.from_bytes(
+                    data=base64.b64decode(pdf_data),
+                    mime_type="application/pdf"
+                ),
+                types.Part(text=prompt)
+            ]
+        )]
+    
+    def _process_with_tools(self, messages: List[types.Content]) -> Dict[str, Any]:
         """
-        Process the PDF analysis with Gemini using automatic function calling.
+        Process the conversation with Gemini, handling tool calls iteratively.
         
         Args:
-            content_parts: List of content parts (PDF + text prompt)
-            config: Generation configuration with tools
+            messages: Initial messages to send to Gemini
             
         Returns:
             Dict containing final analysis results
         """
-        try:
+        conversation_messages = messages.copy()
+        max_iterations = 10  # Prevent infinite loops
+        iteration = 0
+        
+        while iteration < max_iterations:
+            iteration += 1
+            logger.debug(f"Gemini conversation iteration {iteration}")
+            
             interaction_start = datetime.now()
             
-            # Generate content with automatic function calling
-            response = self.client.models.generate_content(
-                model=self.model,
-                contents=content_parts,
-                config=config
-            )
+            try:
+                # Configure generation with manual function calling
+                config = types.GenerateContentConfig(
+                    tools=self.tools,
+                    temperature=self.temperature,
+                    system_instruction="You are a credential analysis expert. Analyze PDF documents for educational credentials and use the provided tools to search the database for matching countries, institutions, and credential types. Always return structured JSON results.",
+                    # Disable automatic function calling
+                    automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
+                )
+                
+                # Send message to Gemini
+                response = self.client.models.generate_content(
+                    model=self.model,
+                    contents=conversation_messages,
+                    config=config
+                )
+                
+                # Track token usage and interaction
+                self._track_llm_interaction(iteration, response, interaction_start)
+                
+                # Add Gemini's response to conversation
+                conversation_messages.append(response.candidates[0].content)
+                
+                # Check if Gemini wants to use tools
+                if self._has_function_calls(response):
+                    # Extract and execute tool calls
+                    tool_results = self._execute_tool_calls(response, iteration)
+                    
+                    # Add tool results to conversation
+                    conversation_messages.append(types.Content(
+                        role="user",
+                        parts=tool_results
+                    ))
+                    
+                    # Continue the conversation
+                    continue
+                
+                else:
+                    # Gemini finished - extract final response
+                    return self._extract_final_response(response)
+                    
+            except Exception as e:
+                logger.error(f"Error in Gemini conversation: {e}")
+                return {
+                    "success": False,
+                    "errors": [f"Gemini processing failed: {str(e)}"],
+                    "credentials": [],
+                    "metadata": {"iteration": iteration}
+                }
+        
+        # Max iterations reached
+        logger.warning(f"Max iterations ({max_iterations}) reached in Gemini conversation")
+        return {
+            "success": False,
+            "errors": ["Analysis exceeded maximum iterations"],
+            "credentials": [],
+            "metadata": {"max_iterations_reached": True}
+        }
+    
+    def _has_function_calls(self, response) -> bool:
+        """Check if the response contains function calls."""
+        try:
+            if not response.candidates or not response.candidates[0].content.parts:
+                return False
             
-            # Track the interaction
-            self._track_llm_interaction(1, response, interaction_start)
+            for part in response.candidates[0].content.parts:
+                if hasattr(part, 'function_call') and part.function_call:
+                    return True
+            return False
+        except Exception:
+            return False
+    
+    def _execute_tool_calls(self, response, iteration: int) -> List[types.Part]:
+        """
+        Execute tool calls from Gemini's response.
+        
+        Args:
+            response: Gemini's response containing function calls
+            iteration: Current conversation iteration number
             
-            # Extract and parse the response
-            result = self._extract_final_response(response)
-            
-            return result
-            
+        Returns:
+            List of function response parts to send back to Gemini
+        """
+        tool_results = []
+        
+        try:
+            for part in response.candidates[0].content.parts:
+                if hasattr(part, 'function_call') and part.function_call:
+                    function_call = part.function_call
+                    tool_name = function_call.name
+                    tool_input = dict(function_call.args) if function_call.args else {}
+                    
+                    logger.debug(f"Executing tool: {tool_name} with input: {tool_input}")
+                    
+                    # Track tool call start
+                    tool_start = datetime.now()
+                    
+                    # Execute the tool
+                    try:
+                        result = execute_tool(tool_name, **tool_input)
+                        tool_duration = (datetime.now() - tool_start).total_seconds()
+                        
+                        # Track successful tool call
+                        self._track_tool_call(
+                            iteration, tool_name, tool_input, result, tool_duration, True
+                        )
+                        
+                        tool_results.append(types.Part.from_function_response(
+                            name=tool_name,
+                            response=result
+                        ))
+                        
+                    except Exception as e:
+                        tool_duration = (datetime.now() - tool_start).total_seconds()
+                        error_result = {"error": f"Tool execution failed: {str(e)}"}
+                        
+                        # Track failed tool call
+                        self._track_tool_call(
+                            iteration, tool_name, tool_input, error_result, tool_duration, False
+                        )
+                        
+                        logger.error(f"Tool execution failed for {tool_name}: {e}")
+                        tool_results.append(types.Part.from_function_response(
+                            name=tool_name,
+                            response=error_result
+                        ))
+        
         except Exception as e:
-            logger.error(f"Error in Gemini processing: {e}")
-            return {
-                "success": False,
-                "errors": [f"Gemini processing failed: {str(e)}"],
-                "credentials": [],
-                "metadata": {"model": self.model}
-            }
+            logger.error(f"Error processing tool calls: {e}")
+            tool_results.append(types.Part(text=f"Error processing tool calls: {str(e)}"))
+        
+        return tool_results
     
     def _extract_final_response(self, response) -> Dict[str, Any]:
         """
@@ -213,8 +313,14 @@ class GeminiService(BaseLLMService):
             Dict containing parsed analysis results
         """
         try:
-            # Get the text content from response
-            text_content = response.text if hasattr(response, 'text') else ""
+            # Find text content in Gemini's response
+            text_content = ""
+            if hasattr(response, 'candidates') and response.candidates:
+                for part in response.candidates[0].content.parts:
+                    if hasattr(part, 'text') and part.text:
+                        text_content += part.text
+            elif hasattr(response, 'text'):
+                text_content = response.text
             
             # Try to extract JSON from the response
             json_str = self._extract_json_from_text(text_content)
@@ -338,18 +444,6 @@ class GeminiService(BaseLLMService):
             "output_tokens": output_tokens,
             "total_tokens": total_tokens
         })
-        
-        # Track function calls if any
-        if hasattr(response, 'function_calls') and response.function_calls:
-            for i, fn_call in enumerate(response.function_calls):
-                self._track_tool_call(
-                    iteration, 
-                    fn_call.name, 
-                    dict(fn_call.args), 
-                    {"status": "executed_via_automatic_calling"}, 
-                    0.0,  # Duration not available for automatic calls
-                    True
-                )
     
     def _track_tool_call(self, iteration: int, tool_name: str, tool_input: Dict[str, Any], 
                         result: Dict[str, Any], duration: float, success: bool):
@@ -365,3 +459,24 @@ class GeminiService(BaseLLMService):
         }
         
         self.conversation_metadata["tool_calls"].append(tool_call_data)
+    
+    def get_default_prompt(self, document_type: str = "general") -> str:
+        """
+        Get the default analysis prompt for this provider.
+        
+        Args:
+            document_type: Type of document analysis ('general' or 'cbc')
+            
+        Returns:
+            str: Analysis prompt text
+        """
+        try:
+            if document_type.lower() == "cbc":
+                from prompts.gemini.cbc_instructions import CBC_DOCUMENT_INSTRUCTIONS
+                return CBC_DOCUMENT_INSTRUCTIONS
+            else:
+                from prompts.gemini.general_instructions import GENERAL_DOCUMENT_INSTRUCTIONS
+                return GENERAL_DOCUMENT_INSTRUCTIONS
+        except ImportError as e:
+            logger.error(f"Failed to load Gemini prompt for {document_type}: {e}")
+            return super().get_default_prompt()

@@ -434,3 +434,24 @@ class AnthropicService(BaseLLMService):
         }
         
         self.conversation_metadata["tool_calls"].append(tool_call_data)
+    
+    def get_default_prompt(self, document_type: str = "general") -> str:
+        """
+        Get the default analysis prompt for this provider.
+        
+        Args:
+            document_type: Type of document analysis ('general' or 'cbc')
+            
+        Returns:
+            str: Analysis prompt text
+        """
+        try:
+            if document_type.lower() == "cbc":
+                from prompts.anthropic.cbc_instructions import CBC_DOCUMENT_INSTRUCTIONS
+                return CBC_DOCUMENT_INSTRUCTIONS
+            else:
+                from prompts.anthropic.general_instructions import GENERAL_DOCUMENT_INSTRUCTIONS
+                return GENERAL_DOCUMENT_INSTRUCTIONS
+        except ImportError as e:
+            logger.error(f"Failed to load Anthropic prompt for {document_type}: {e}")
+            return super().get_default_prompt()

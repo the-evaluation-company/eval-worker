@@ -63,7 +63,7 @@ Provide your analysis in the following JSON structure:
       }},
       "foreign_credential": {{
         "extracted_type": "string (exactly as written in document)",
-        "validated_type": "string (from database if found)",
+        "validated_type": "string (from database if found - USE THE foreign_credential here)",
         "match_confidence": "high/medium/low/not_found"
       }},
       "program_of_study": "string",

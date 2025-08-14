@@ -63,10 +63,13 @@ class BaseLLMService(ABC):
         except Exception:
             return False
     
-    def get_default_prompt(self) -> str:
+    def get_default_prompt(self, document_type: str = "general") -> str:
         """
         Get the default analysis prompt for this provider.
         Should be overridden by each provider to load their specific prompt.
+        
+        Args:
+            document_type: Type of document analysis ('general' or 'cbc')
         
         Returns:
             str: Default prompt text
