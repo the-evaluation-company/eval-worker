@@ -29,11 +29,18 @@ SALESFORCE_SECURITY_TOKEN=your_token
 SALESFORCE_CONSUMER_KEY=your_consumer_key
 SALESFORCE_CONSUMER_SECRET=your_consumer_secret
 
-# LLM Configuration
-LLM_PROVIDER=anthropic
+# LLM Configuration - Choose Provider
+LLM_PROVIDER=anthropic                   # Options: anthropic, gemini
+
+# Anthropic Configuration
 ANTHROPIC_API_KEY=your_api_key
 ANTHROPIC_MODEL=claude-sonnet-4-20250514
 ANTHROPIC_TIMEOUT=1200.0
+
+# Gemini Configuration  
+GEMINI_API_KEY=your_api_key
+GEMINI_MODEL=gemini-2.5-flash
+GEMINI_TEMPERATURE=0.1
 ```
 
 ## Usage
@@ -73,35 +80,38 @@ python main.py analyze "filename.pdf" --type cbc        # Analyze PDF (course-by
 ```mermaid
 graph TD
     A[PDF Document] --> B[DocumentProcessor]
-    B --> C[AnthropicService]
-    C --> D[LLM Analysis with Tools]
-    D --> E{Tool Calls}
+    B --> C{LLM Provider}
+    C -->|anthropic| D[AnthropicService]
+    C -->|gemini| E[GeminiService]
+    D --> F[LLM Analysis with Tools]
+    E --> F
+    F --> G{Tool Calls}
     
-    E --> F[search_countries]
-    E --> G[find_institutions] 
-    E --> H[get_foreign_credentials]
-    E --> I[get_program_lengths]
+    G --> H[search_countries]
+    G --> I[find_institutions] 
+    G --> J[get_foreign_credentials]
+    G --> K[get_program_lengths]
     
-    F --> J[(SQLite Database)]
-    G --> J
-    H --> J
-    I --> J
+    H --> L[(SQLite Database)]
+    I --> L
+    J --> L
+    K --> L
     
-    J --> K[Tool Results]
-    K --> D
+    L --> M[Tool Results]
+    M --> F
     
-    D --> L[Structured Analysis]
-    L --> M[JSON Output]
-    L --> N[Console Display]
-    L --> S[PDF Generator]
+    F --> N[Structured Analysis]
+    N --> O[JSON Output]
+    N --> P[Console Display]
+    N --> S[PDF Generator]
     S --> T[PDF Report]
     
-    O[Salesforce API] --> P[Data Migration]
-    P --> Q[Schema Normalization]
-    Q --> J
+    U[Salesforce API] --> V[Data Migration]
+    V --> W[Schema Normalization]
+    W --> L
     
     R[config.py] --> C
-    R --> P
+    R --> V
 ```
 
 ## Project Structure

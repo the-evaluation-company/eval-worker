@@ -15,7 +15,7 @@ from typing import Dict, Any, Optional, List
 import anthropic
 from anthropic.types import MessageParam, ToolUseBlock, ToolResultBlockParam
 
-from .base import BaseLLMService
+from ..base import BaseLLMService
 from .tools import TOOL_SCHEMAS, execute_tool
 from config import ANTHROPIC_API_KEY, ANTHROPIC_MODEL, ANTHROPIC_TIMEOUT
 

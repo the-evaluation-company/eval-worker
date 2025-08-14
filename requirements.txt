@@ -2,6 +2,7 @@
 simple-salesforce
 python-dotenv
 anthropic
+google-genai
 
 # PDF Generation dependencies
 reportlab

@@ -11,8 +11,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, Optional
 
-from llm_services.anthropic_service import AnthropicService
-from llm_services.base import BaseLLMService
+from llm_services import create_llm_service, BaseLLMService
 from .models import CredentialAnalysisResult, CredentialAnalysisResultBuilder
 from config import LLM_PROVIDER
 
@@ -37,10 +36,7 @@ class DocumentProcessor:
     
     def _create_llm_service(self) -> BaseLLMService:
         """Create the appropriate LLM service based on provider."""
-        if self.llm_provider.lower() == "anthropic":
-            return AnthropicService()
-        else:
-            raise ValueError(f"Unsupported LLM provider: {self.llm_provider}")
+        return create_llm_service()
     
     def process_pdf(self, pdf_path: str, prompt: Optional[str] = None, document_type: str = "general") -> CredentialAnalysisResult:
         """
