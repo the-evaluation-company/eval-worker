@@ -435,6 +435,7 @@ class PDFGenerator:
             {"label": "Country of Study:", "value": form_data.country or ""},
             {"label": "Institution:", "value": form_data.institution or ""},
             {"label": "Foreign Credential:", "value": program_value},
+            {"label": "Program of Study:", "value": (form_data.programOfStudy or "") + (", " + form_data.awardDate if form_data.awardDate else "")},
             {"label": "Length of Program:", "value": form_data.programLength or ""},
             {"label": "Recommended U.S. Equivalency:", "value": form_data.usEquivalency or ""},
         ]
@@ -905,6 +906,7 @@ Foreign grades are converted to U.S. letter grades based on the 4.00 system. Let
             {"label": "Country of Study:", "value": form_data.country or ""},
             {"label": "Institution:", "value": form_data.institution or ""},
             {"label": "Foreign Credential:", "value": program_value},
+            {"label": "Program of Study:", "value": (form_data.programOfStudy or "") + (", " + form_data.awardDate if form_data.awardDate else "")},
             {"label": "Length of Program:", "value": form_data.programLength or ""},
             {"label": "Dates of Attendance:", "value": form_data.dateOfAttendance or ""},
             {"label": "Recommended U.S. Equivalency:", "value": form_data.usEquivalency or ""},
