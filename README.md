@@ -176,7 +176,8 @@ Evaluator/
 │   │   └── cbc_instructions.py       # Course-by-course instructions
 │   └── gemini/                        # Google Gemini prompts
 │       ├── general_instructions.py   # General analysis instructions
-│       └── cbc_instructions.py       # Course-by-course instructions
+│       ├── cbc_instructions.py       # Course-by-course instructions
+│       └── system_instruction.py     # System-level role and behavior
 │
 ├── public/                             # Static resources
 │   └── resources/

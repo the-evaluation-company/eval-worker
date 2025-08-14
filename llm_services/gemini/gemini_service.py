@@ -174,7 +174,7 @@ class GeminiService(BaseLLMService):
                 config = types.GenerateContentConfig(
                     tools=self.tools,
                     temperature=self.temperature,
-                    system_instruction="You are a credential analysis expert. Analyze PDF documents for educational credentials and use the provided tools to search the database for matching countries, institutions, and credential types. Always return structured JSON results.",
+                    system_instruction=self._get_system_instruction(),
                     # Disable automatic function calling
                     automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
                 )
@@ -480,3 +480,17 @@ class GeminiService(BaseLLMService):
         except ImportError as e:
             logger.error(f"Failed to load Gemini prompt for {document_type}: {e}")
             return super().get_default_prompt()
+    
+    def _get_system_instruction(self) -> str:
+        """
+        Get the system instruction for Gemini.
+        
+        Returns:
+            str: System instruction text
+        """
+        try:
+            from prompts.gemini.system_instruction import GEMINI_SYSTEM_INSTRUCTION
+            return GEMINI_SYSTEM_INSTRUCTION
+        except ImportError as e:
+            logger.error(f"Failed to load Gemini system instruction: {e}")
+            return "You are a credential analysis expert. Analyze PDF documents for educational credentials and use the provided tools to search the database for matching countries, institutions, and credential types. Always return structured JSON results."
