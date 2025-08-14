@@ -24,6 +24,7 @@ class PDFLayoutConfig:
     LEFT_MARGIN: int = 35  # left margin
     TOP_MARGIN: int = 124  # top margin
     RIGHT_MARGIN: int = 35  # right margin
+    BOTTOM_MARGIN: int = 50  # bottom margin (prevents content cutoff)
     LINE_HEIGHT: int = 12  # line height
     HORIZONTAL_PADDING: int = 15  # horizontal padding
     VERTICAL_PADDING: int = 8  # vertical padding

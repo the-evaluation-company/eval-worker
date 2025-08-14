@@ -60,7 +60,7 @@ class PDFGenerator:
             estimated_lines_needed = 7
             estimated_space_needed = estimated_lines_needed * self.config.layout.LINE_HEIGHT
 
-            if current_y - estimated_space_needed < 100:
+            if not self._will_content_fit(current_y, estimated_space_needed):
                 # Create new page
                 self.current_page_number += 1
                 self.total_pages = max(self.total_pages, self.current_page_number)
@@ -77,7 +77,8 @@ class PDFGenerator:
                 current_y -= self.config.spacing.SECTION_BREAK * self.config.layout.LINE_HEIGHT
 
         # Check if we need a new page for comments section
-        if len(credential_groups) > 2 or current_y < 200:
+        comments_estimated_height = 200  # Estimate height needed for comments section
+        if len(credential_groups) > 2 or not self._will_content_fit(current_y, comments_estimated_height):
             # Create new page for comments
             self.current_page_number += 1
             self.total_pages = max(self.total_pages, self.current_page_number)
@@ -193,7 +194,7 @@ class PDFGenerator:
             estimated_lines_needed = 7
             estimated_space_needed = estimated_lines_needed * self.config.layout.LINE_HEIGHT
 
-            if current_y - estimated_space_needed < 100:
+            if not self._will_content_fit(current_y, estimated_space_needed):
                 # Create new page
                 self.current_page_number += 1
                 self.total_pages = max(self.total_pages, self.current_page_number)
@@ -210,7 +211,8 @@ class PDFGenerator:
                 current_y -= 40  # Spacing between credentials
 
         # Check if we need a new page for comments section
-        if len(credential_groups) > 2 or current_y < 200:
+        comments_estimated_height = 200  # Estimate height needed for comments section
+        if len(credential_groups) > 2 or not self._will_content_fit(current_y, comments_estimated_height):
             # Create new page for comments
             self.current_page_number += 1
             self.total_pages = max(self.total_pages, self.current_page_number)
@@ -1053,6 +1055,27 @@ All documentation submitted to TEC is reviewed internally. At a minimum, TEC req
         if not grade_mappings:
             return current_y
 
+        # Calculate total space needed for the entire COURSE ANALYSIS section
+        header_height = self.config.layout.LINE_HEIGHT * 2.0  # Spacing before header
+        header_height += self.config.layout.LINE_HEIGHT * 1.2  # Header itself
+        header_height += self.config.layout.LINE_HEIGHT * 1.2  # Grade Conversion label
+        header_height += self.config.layout.LINE_HEIGHT * 1.2  # Spacing after label
+        
+        # Estimate table height (2 rows + some padding)
+        table_height = 20 * 2 + 20  # row_height * num_rows + padding
+        
+        total_section_height = header_height + table_height
+
+        # Check if the entire COURSE ANALYSIS section will fit on current page
+        if not self._will_content_fit(current_y, total_section_height):
+            # Move entire section to next page
+            self.current_page_number += 1
+            self.total_pages = max(self.total_pages, self.current_page_number)
+            
+            # Add new page with background
+            self.document.add_page_with_background()
+            current_y = self.document.page_height - self.config.layout.TOP_MARGIN
+
         # Add spacing before table
         current_y -= self.config.layout.LINE_HEIGHT * 2.0
 
@@ -1123,6 +1146,23 @@ All documentation submitted to TEC is reviewed internally. At a minimum, TEC req
         )
 
         return table_y - self.config.layout.LINE_HEIGHT
+    
+    def _will_content_fit(self, current_y: float, content_height: float) -> bool:
+        """
+        Check if content will fit on the current page without being cut off.
+        
+        Args:
+            current_y: Current Y position
+            content_height: Height of content to be drawn
+            
+        Returns:
+            True if content will fit, False if it will be cut off
+        """
+        # Check if the content would go below the bottom margin
+        content_bottom = current_y - content_height
+        page_bottom_boundary = self.document.get_bottom_boundary()
+        
+        return content_bottom >= page_bottom_boundary
 
     def _draw_grade_table_custom(
         self,

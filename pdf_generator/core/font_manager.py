@@ -28,6 +28,7 @@ class FontManager:
             # Define font file paths
             arial_regular_path = resources_path / "ARIAL.TTF"
             arial_bold_path = resources_path / "ARIALBD.TTF"
+            arial_bold_italic_path = resources_path / "ARIALBI.TTF"
 
             # Check if font files exist
             if not arial_regular_path.exists():
@@ -38,15 +39,28 @@ class FontManager:
                 print(f"Warning: Arial bold font not found at {arial_bold_path}")
                 return
 
+            if not arial_bold_italic_path.exists():
+                print(f"Warning: Arial bold-italic font not found at {arial_bold_italic_path}")
+                # Will use bold as fallback
+
             # Register fonts with reportlab using TTFont for UTF-8 support
             try:
                 pdfmetrics.registerFont(TTFont("Arial", str(arial_regular_path)))
                 pdfmetrics.registerFont(TTFont("Arial-Bold", str(arial_bold_path)))
+                
+                # Register bold-italic if available
+                if arial_bold_italic_path.exists():
+                    pdfmetrics.registerFont(TTFont("Arial-BoldItalic", str(arial_bold_italic_path)))
 
                 # Store font references
                 self.fonts["regular"] = pdfmetrics.getFont("Arial")
                 self.fonts["bold"] = pdfmetrics.getFont("Arial-Bold")
-                self.fonts["bold-italic"] = pdfmetrics.getFont("Arial-Bold")  # Use bold for bold-italic
+                
+                # Use proper bold-italic font if available, otherwise fallback to bold
+                if arial_bold_italic_path.exists():
+                    self.fonts["bold-italic"] = pdfmetrics.getFont("Arial-BoldItalic")
+                else:
+                    self.fonts["bold-italic"] = pdfmetrics.getFont("Arial-Bold")  # Fallback to bold
 
                 # Also add Times fonts for policy statements
                 self.fonts["times"] = pdfmetrics.getFont("Times-Roman")
@@ -69,7 +83,12 @@ class FontManager:
             # Use Helvetica as fallback (built into reportlab)
             self.fonts["regular"] = pdfmetrics.getFont("Helvetica")
             self.fonts["bold"] = pdfmetrics.getFont("Helvetica-Bold")
-            self.fonts["bold-italic"] = pdfmetrics.getFont("Helvetica-Bold")  # Use bold for bold-italic
+            # ReportLab has built-in Helvetica-BoldOblique which is close to bold-italic
+            try:
+                self.fonts["bold-italic"] = pdfmetrics.getFont("Helvetica-BoldOblique")
+            except:
+                # If not available, fallback to bold
+                self.fonts["bold-italic"] = pdfmetrics.getFont("Helvetica-Bold")
             self.fonts["times"] = pdfmetrics.getFont("Times-Roman")
             self.fonts["times-bold"] = pdfmetrics.getFont("Times-Bold")
             print("Using fallback fonts (Helvetica/Times)")
@@ -78,6 +97,7 @@ class FontManager:
             # Last resort - use default fonts
             self.fonts["regular"] = None
             self.fonts["bold"] = None
+            self.fonts["bold-italic"] = None
             self.fonts["times"] = None
             self.fonts["times-bold"] = None
 
@@ -123,7 +143,14 @@ class FontManager:
             if resolved_font is not None:
                 font_name = resolved_font.fontName
             else:
-                if font_type == "bold" or font_type == "bold-italic":
+                if font_type == "bold-italic":
+                    # Try to use Helvetica-BoldOblique, fallback to Helvetica-Bold
+                    try:
+                        pdfmetrics.getFont("Helvetica-BoldOblique")
+                        font_name = "Helvetica-BoldOblique"
+                    except:
+                        font_name = "Helvetica-Bold"
+                elif font_type == "bold":
                     font_name = "Helvetica-Bold"
                 elif font_type == "times-bold":
                     font_name = "Times-Bold"

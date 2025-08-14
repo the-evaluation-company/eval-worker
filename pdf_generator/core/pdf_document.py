@@ -305,3 +305,21 @@ class PDFDocument:
             Available width in points
         """
         return self.page_width - self.config.layout.LEFT_MARGIN - self.config.layout.RIGHT_MARGIN
+    
+    def get_available_height(self) -> float:
+        """
+        Get available height for content (page height minus top and bottom margins).
+
+        Returns:
+            Available height in points
+        """
+        return self.page_height - self.config.layout.TOP_MARGIN - self.config.layout.BOTTOM_MARGIN
+    
+    def get_bottom_boundary(self) -> float:
+        """
+        Get the Y coordinate where content should not go below (bottom margin).
+
+        Returns:
+            Bottom boundary Y coordinate in points
+        """
+        return self.config.layout.BOTTOM_MARGIN
