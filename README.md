@@ -330,3 +330,8 @@ All tables populated from Salesforce `Credentials_Form_Setup_Data__c` where:
 - **Layout Fixes**: Fixed box width calculations and label/value spacing
 - **Multi-page Support**: Added automatic page breaks with proper numbering
 - **Template Integration**: Integrated SpanTran-branded background template
+
+## TODO - Future Improvements
+
+### Data Validation & Security
+- **LLM Output Validation**: Currently the system trusts the LLM to accurately populate `validated_name`/`validated_type` fields from database tool responses. There's no technical enforcement preventing the LLM from fabricating values that end up on the PDF. Need to implement cross-reference validation between LLM output and actual tool call responses within conversation metadata to ensure database integrity.

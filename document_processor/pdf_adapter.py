@@ -83,7 +83,7 @@ class PDFAdapter:
         
         # Extract core information
         country = cred.country.validated_name or cred.country.extracted_name
-        institution = cred.institution.validated_name or cred.institution.extracted_name
+        institution = cred.institution.get_display_name()
         
         # Build US equivalency statement
         us_equivalency = ""
@@ -91,7 +91,7 @@ class PDFAdapter:
             us_equivalency = cred.us_equivalency.equivalency_statement
         else:
             # Fallback to basic equivalency if no statement found
-            foreign_cred = cred.foreign_credential.validated_type or cred.foreign_credential.extracted_type
+            foreign_cred = cred.foreign_credential.get_display_type()
             us_equivalency = f"{foreign_cred} (equivalency to be determined)"
         
         # Format attendance dates
@@ -116,7 +116,7 @@ class PDFAdapter:
                 date_of_attendance = ", ".join(period_strings)
         
         # Extract program details
-        program = cred.foreign_credential.validated_type or cred.foreign_credential.extracted_type
+        program = cred.foreign_credential.get_display_type()
         program_of_study = cred.program_of_study or "Not specified"
         program_length = ""
         if cred.program_length:

@@ -38,7 +38,7 @@ TOOL_SCHEMAS = [
     },
     {
         "name": "find_institutions",
-        "description": "Find educational institutions in a specific country. Use this to match institution names from credentials.",
+        "description": "Find educational institutions in a specific country. Use this to match institution names from credentials. Returns both original foreign names and English translations when available.",
         "input_schema": {
             "type": "object",
             "properties": {
@@ -56,7 +56,7 @@ TOOL_SCHEMAS = [
     },
     {
         "name": "get_foreign_credentials",
-        "description": "Get all foreign credential types available for a specific country.",
+        "description": "Get all foreign credential types available for a specific country. Returns both original foreign credential names and English translations when available.",
         "input_schema": {
             "type": "object",
             "properties": {

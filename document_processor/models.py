@@ -22,7 +22,17 @@ class InstitutionMatch:
     """Information about an institution match from the database."""
     extracted_name: str
     validated_name: Optional[str] = None
+    validated_english_name: Optional[str] = None  # English translation from database
     match_confidence: str = "not_found"  # high, medium, low, not_found
+    
+    def get_display_name(self) -> str:
+        """Get the display name with both original and English when available."""
+        if self.validated_name and self.validated_english_name:
+            return f"{self.validated_name} ({self.validated_english_name})"
+        elif self.validated_name:
+            return self.validated_name
+        else:
+            return self.extracted_name
 
 
 @dataclass
@@ -30,7 +40,17 @@ class CredentialMatch:
     """Information about a credential type match from the database."""
     extracted_type: str
     validated_type: Optional[str] = None
+    validated_english_type: Optional[str] = None  # English translation from database
     match_confidence: str = "not_found"  # high, medium, low, not_found
+    
+    def get_display_type(self) -> str:
+        """Get the display type with both original and English when available."""
+        if self.validated_type and self.validated_english_type:
+            return f"{self.validated_type} ({self.validated_english_type})"
+        elif self.validated_type:
+            return self.validated_type
+        else:
+            return self.extracted_type
 
 
 @dataclass
@@ -162,6 +182,7 @@ class CredentialAnalysisResultBuilder:
                 institution = InstitutionMatch(
                     extracted_name=institution_data.get("extracted_name", ""),
                     validated_name=institution_data.get("validated_name"),
+                    validated_english_name=institution_data.get("validated_english_name"),
                     match_confidence=institution_data.get("match_confidence", "not_found")
                 )
                 
@@ -170,6 +191,7 @@ class CredentialAnalysisResultBuilder:
                 credential = CredentialMatch(
                     extracted_type=credential_data.get("extracted_type", ""),
                     validated_type=credential_data.get("validated_type"),
+                    validated_english_type=credential_data.get("validated_english_type"),
                     match_confidence=credential_data.get("match_confidence", "not_found")
                 )
                 
@@ -313,11 +335,13 @@ class CredentialAnalysisResultBuilder:
                     "institution": {
                         "extracted_name": cred.institution.extracted_name,
                         "validated_name": cred.institution.validated_name,
+                        "validated_english_name": cred.institution.validated_english_name,
                         "match_confidence": cred.institution.match_confidence
                     },
                     "foreign_credential": {
                         "extracted_type": cred.foreign_credential.extracted_type,
                         "validated_type": cred.foreign_credential.validated_type,
+                        "validated_english_type": cred.foreign_credential.validated_english_type,
                         "match_confidence": cred.foreign_credential.match_confidence
                     },
                     "program_of_study": cred.program_of_study,

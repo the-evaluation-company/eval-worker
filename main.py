@@ -233,11 +233,13 @@ def analyze_folio(filename: str, document_type: str = "general", generate_pdf: b
                 
                 # Institution
                 inst_status = "[MATCH]" if cred.institution.match_confidence in ['high', 'medium'] else "[NO MATCH]"
-                print(f"{inst_status} Institution: '{cred.institution.extracted_name}' → '{cred.institution.validated_name or 'Not found'}' ({cred.institution.match_confidence})")
+                display_name = cred.institution.get_display_name() if cred.institution.match_confidence in ['high', 'medium'] else 'Not found'
+                print(f"{inst_status} Institution: '{cred.institution.extracted_name}' → '{display_name}' ({cred.institution.match_confidence})")
                 
                 # Credential
                 cred_status = "[MATCH]" if cred.foreign_credential.match_confidence in ['high', 'medium'] else "[NO MATCH]"
-                print(f"{cred_status} Credential: '{cred.foreign_credential.extracted_type}' → '{cred.foreign_credential.validated_type or 'Not found'}' ({cred.foreign_credential.match_confidence})")
+                display_type = cred.foreign_credential.get_display_type() if cred.foreign_credential.match_confidence in ['high', 'medium'] else 'Not found'
+                print(f"{cred_status} Credential: '{cred.foreign_credential.extracted_type}' → '{display_type}' ({cred.foreign_credential.match_confidence})")
                 
                 # Other details
                 if cred.program_of_study:

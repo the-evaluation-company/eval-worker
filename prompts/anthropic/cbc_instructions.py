@@ -60,12 +60,14 @@ Provide your analysis in the following JSON structure:
       }},
       "institution": {{
         "extracted_name": "string (exactly as written in document)",
-        "validated_name": "string (from database search if found)",
+        "validated_name": "string (from database search if found - USE institution_name)",
+        "validated_english_name": "string (from database if found - USE institution_english_name)",
         "match_confidence": "high/medium/low/not_found"
       }},
       "foreign_credential": {{
         "extracted_type": "string (exactly as written in document)",
-        "validated_type": "string (from database if found - USE THE foreign_credential here)",
+        "validated_type": "string (from database if found - USE foreign_credential field)",
+        "validated_english_type": "string (from database if found - USE english_credential field)",
         "match_confidence": "high/medium/low/not_found"
       }},
       "program_of_study": "string",
