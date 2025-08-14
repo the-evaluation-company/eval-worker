@@ -518,7 +518,7 @@ class PDFGenerator:
             if form_data.parsedGradeScaleTable:
                 current_y = self._draw_grade_conversion_table(current_y, form_data.parsedGradeScaleTable)
 
-            # Draw course analysis table below
+            # Draw course analysis table immediately below grade conversion
             if form_data.course_analysis:
                 current_y = self._draw_course_analysis_table(current_y, form_data.course_analysis, draw_header=False)
 
@@ -985,7 +985,7 @@ Foreign grades are converted to U.S. letter grades based on the 4.00 system. Let
             if has_grade_table:
                 current_y = self._draw_grade_conversion_table(current_y, form_data.parsedGradeScaleTable)
 
-            # Then course table
+            # Then course table immediately after grade conversion
             if has_courses:
                 current_y = self._draw_course_analysis_table(current_y, form_data.course_analysis, draw_header=False)
 
@@ -1099,8 +1099,8 @@ All documentation submitted to TEC is reviewed internally. At a minimum, TEC req
             current_y = self.document.page_height - self.config.layout.TOP_MARGIN
 
         # No additional "COURSE ANALYSIS" header here; the caller draws it once
-        # Add small spacing before the grade conversion label
-        current_y -= self.config.layout.LINE_HEIGHT * 0.8
+        # Minimal spacing before the grade conversion label
+        current_y -= self.config.layout.LINE_HEIGHT * 0.3
 
         # Draw "Grade Conversion:" label
         self.document.draw_text(
@@ -1156,7 +1156,7 @@ All documentation submitted to TEC is reviewed internally. At a minimum, TEC req
             border_width=1,
         )
 
-        return table_y - self.config.layout.LINE_HEIGHT
+        return table_y - 20
     
     def _will_content_fit(self, current_y: float, content_height: float) -> bool:
         """
@@ -1305,28 +1305,30 @@ All documentation submitted to TEC is reviewed internally. At a minimum, TEC req
         
         # Table configuration - 3 columns: Subject, U.S. Credits, U.S. Grades
         table_x = self.config.layout.LEFT_MARGIN
-        col_widths = [300, 100, 100]  # Subject (wide), U.S. Credits, U.S. Grades
-        total_width = sum(col_widths)
+        
+        # Calculate table width to match grade conversion table
+        page_width = self.document.page_width
+        total_width = page_width - self.config.layout.LEFT_MARGIN - self.config.layout.RIGHT_MARGIN
+        
+        # Distribute columns: Subject gets most space, Credits and Grades get equal smaller space
+        subject_width = total_width * 0.7  # 70% for subject
+        credits_width = total_width * 0.15  # 15% for credits
+        grades_width = total_width * 0.15   # 15% for grades
+        col_widths = [subject_width, credits_width, grades_width]
         row_height = 20
         font_size = 9
         
-        # Check if we need a new page for the entire table
-        sections_count = len(course_analysis.sections)
-        total_courses = sum(len(section.courses) for section in course_analysis.sections)
-        estimated_height = (sections_count + total_courses + 2) * row_height  # +2 for header and spacing
-        
-        if not self._will_content_fit(current_y, estimated_height):
-            # Create new page
-            self.current_page_number += 1
-            self.document.add_page_with_background()
-            self._draw_enhanced_page_numbering(None)  # Add page numbering
-            current_y = self.document.page_height - self.config.layout.TOP_MARGIN
+        # Don't pre-check if entire table fits - let it flow naturally and handle pagination per row
+        # This ensures the table starts immediately after grade conversion
         
         # Optionally draw section header (handled by caller when integrating with grade table)
         if draw_header:
             current_y -= 30  # Spacing before table
             self.document.draw_text("COURSE ANALYSIS", table_x, current_y, 12, "bold", BLACK_COLOR)
             current_y -= 25
+        else:
+            # Minimal spacing when called after grade conversion table
+            current_y -= 5
         
         # Draw table header
         header_y = current_y
