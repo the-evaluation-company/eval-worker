@@ -1423,11 +1423,11 @@ All documentation submitted to TEC is reviewed internally. At a minimum, TEC req
                 self.document.draw_line(v1_x, current_y - row_height + 5, v1_x, current_y + 5)
                 self.document.draw_line(v2_x, current_y - row_height + 5, v2_x, current_y + 5)
 
-                # Draw course data - only subject and empty U.S. placeholders
+                # Draw course data with actual US credits and grades
                 values = [
                     course.subject,
-                    "",  # Empty U.S. Credits placeholder
-                    ""   # Empty U.S. Grades placeholder
+                    course.us_credits or "",  # Use actual US credits if available
+                    course.us_grades or ""    # Use actual US grades if available
                 ]
 
                 current_x = table_x

@@ -13,6 +13,7 @@ from .models import CredentialAnalysisResult, CredentialInfo
 from pdf_generator.types import CredentialGroup, CredentialGroupWithCBC, GradeMapping, CaseInfo, PDFGenerationOptions, CourseAnalysisData, CourseSection, CourseItem
 from database.queries import get_grade_scale_by_uuid, get_foreign_credential_by_uuid
 from utils.helpers import parse_grade_scale_bifurcation, extract_numeric_grade_for_sorting
+from utils.grade_converter import GradeConverter
 
 
 class PDFAdapter:
@@ -129,15 +130,30 @@ class PDFAdapter:
         if cred.additional_info and cred.additional_info.notes:
             notes = f"(LLM Generated): {cred.additional_info.notes}"
         
-        # Convert course analysis data for CBC (PDF only gets subjects + empty U.S. placeholders)
+        # Convert course analysis data for CBC with grade conversion
         course_analysis_data = None
         if is_cbc and cred.course_analysis:
+            # Get grade scale data for conversion
+            grade_converter = None
+            if cred.grade_scale and cred.grade_scale.validated_scale and cred.grade_scale.validated_scale.id:
+                grade_scale_uuid = cred.grade_scale.validated_scale.id
+                grade_scale_data = get_grade_scale_by_uuid(grade_scale_uuid)
+                if grade_scale_data and grade_scale_data.get('bifurcation_setup'):
+                    grade_converter = GradeConverter(grade_scale_data['bifurcation_setup'])
+            
             sections = []
             for section in cred.course_analysis.sections:
                 courses = []
                 for course in section.courses:
+                    # Convert foreign grade to US grade if converter is available
+                    us_grade = None
+                    if grade_converter and course.foreign_grades:
+                        us_grade = grade_converter.convert_grade(course.foreign_grades)
+                    
                     course_item = CourseItem(
-                        subject=course.subject
+                        subject=course.subject,
+                        us_credits=course.foreign_credits,  # Use foreign credits as US credits for now
+                        us_grades=us_grade  # Use converted US grade
                     )
                     courses.append(course_item)
                 

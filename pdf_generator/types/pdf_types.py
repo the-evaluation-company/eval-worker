@@ -13,6 +13,8 @@ class CourseItem(BaseModel):
     """Individual course item for PDF generation"""
     
     subject: str
+    us_credits: Optional[str] = None
+    us_grades: Optional[str] = None
 
 
 class CourseSection(BaseModel):
