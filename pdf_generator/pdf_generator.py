@@ -1404,15 +1404,7 @@ All documentation submitted to TEC is reviewed internally. At a minimum, TEC req
                     self._draw_enhanced_page_numbering(None)
                     current_y = self.document.page_height - self.config.layout.TOP_MARGIN
 
-                    # Redraw only the section header row on the new page to preserve grouping
-                    self.document.draw_rectangle(
-                        table_x, current_y - row_height + 5, total_width, row_height,
-                        border_color=(0, 0, 0), border_width=1
-                    )
-                    self.document.draw_line(v1_x, current_y - row_height + 5, v1_x, current_y + 5)
-                    self.document.draw_line(v2_x, current_y - row_height + 5, v2_x, current_y + 5)
-                    self.document.draw_text(section.section_name, table_x + 5, current_y - 10, font_size, "bold", BLACK_COLOR)
-                    current_y -= row_height
+                    # Don't redraw section header - just continue with course rows
 
                 # Row border
                 self.document.draw_rectangle(
@@ -1434,9 +1426,7 @@ All documentation submitted to TEC is reviewed internally. At a minimum, TEC req
                 for i, value in enumerate(values):
                     if i == 0:  # Subject column - left aligned
                         text_x = current_x + 5  # Small padding from left
-                        # Handle long subject names with truncation if needed
-                        if len(value) > 45:
-                            value = value[:42] + "..."
+                        # Remove truncation - let text wrap naturally within the cell
                         self.document.draw_text(value, text_x, current_y - 10, font_size, "regular", BLACK_COLOR)
                     else:  # Credits and grades columns - center aligned
                         if value:  # Only draw if there's content
