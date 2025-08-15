@@ -18,7 +18,7 @@ For each educational credential found, extract:
 - **Country**: The country where the credential was issued
 - **Institution**: The educational institution that issued the credential  
 - **Foreign Credential**: The type/name of the credential (degree, diploma, certificate, etc.)
-- **Program of Study**: The field of study or major
+- **Program of Study**: The field of study or major (always in English). If there are minors or concentrations, list in the following format: (Major, minor1, minor2, etc.)
 - **Award Date**: When the credential was awarded
 - **Date of Attendance**: Start and end dates of the educational program
 - **Program Length**: Duration of the educational program

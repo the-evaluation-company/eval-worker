@@ -20,7 +20,7 @@ For each educational credential found, extract:
 - **Country**: The country where the credential was issued
 - **Institution**: The educational institution that issued the credential  
 - **Foreign Credential**: The type/name of the credential (degree, diploma, certificate, etc.). 
-- **Program of Study**: The field of study or major
+- **Program of Study**: The field of study or major (always in English). If there are minors or concentrations, list in the following format: (Major, minor1, minor2, etc.)
 - **Award Date**: When the credential was awarded
 - **Date of Attendance**: Start and end dates of the educational program
 - **Program Length**: Duration of the educational program
@@ -97,10 +97,12 @@ Provide your analysis in the following JSON structure:
       "course_analysis": {{
         "sections": [
           {{
-            "section_name": "string (e.g., 'ACADEMIC YEAR 1992 SEMESTER 1')",
+            "section_name": "string (format: 'ACADEMIC YEAR [year] SEMESTER [number]' or 'EXAMINATION [year/date info]' for exam grades)",
             "courses": [
               {{
-                "subject": "string (English course name from translation)"
+                "subject": "string (English course name from translation)",
+                "foreign_credits": "string (credits as shown in document)",
+                "foreign_grades": "string (grade as shown in document, use 'PASS' for any variation of pass grades)"
               }}
             ]
           }}

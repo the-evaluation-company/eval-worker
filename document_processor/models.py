@@ -117,6 +117,8 @@ class USEquivalency:
 class CourseInfo:
     """Individual course information from transcript."""
     subject: str
+    foreign_credits: Optional[str] = None
+    foreign_grades: Optional[str] = None
 
 
 @dataclass
@@ -314,7 +316,9 @@ class CredentialAnalysisResultBuilder:
                         courses = []
                         for course_data_item in section_data.get("courses", []):
                             course = CourseInfo(
-                                subject=course_data_item.get("subject", "")
+                                subject=course_data_item.get("subject", ""),
+                                foreign_credits=course_data_item.get("foreign_credits"),
+                                foreign_grades=course_data_item.get("foreign_grades")
                             )
                             courses.append(course)
                         
@@ -440,11 +444,13 @@ class CredentialAnalysisResultBuilder:
                         "sections": [
                             {
                                 "section_name": section.section_name,
-                                                                    "courses": [
-                                        {
-                                            "subject": course.subject
-                                        } for course in section.courses
-                                    ]
+                                "courses": [
+                                    {
+                                        "subject": course.subject,
+                                        "foreign_credits": course.foreign_credits,
+                                        "foreign_grades": course.foreign_grades
+                                    } for course in section.courses
+                                ]
                             } for section in cred.course_analysis.sections
                         ]
                     } if cred.course_analysis else None
