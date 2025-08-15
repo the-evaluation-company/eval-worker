@@ -60,14 +60,14 @@ Provide your analysis in the following JSON structure:
       }},
       "institution": {{
         "extracted_name": "string (exactly as written in document)",
-        "validated_name": "string (from database search if found - USE institution_name)",
-        "validated_english_name": "string (from database if found - USE institution_english_name)",
+        "validated_name": "string (from database search  - USE institution_name)",
+        "validated_english_name": "string (from database  - USE institution_english_name)",
         "match_confidence": "high/medium/low/not_found"
       }},
       "foreign_credential": {{
         "extracted_type": "string (exactly as written in document)",
-        "validated_type": "string (from database if found - USE foreign_credential field)",
-        "validated_english_type": "string (from database if found - USE english_credential field)",
+        "validated_type": "string (from database  - USE foreign_credential field)",
+        "validated_english_type": "string (from database  - USE english_credential field)",
         "match_confidence": "high/medium/low/not_found"
       }},
       "program_of_study": "string",
@@ -78,7 +78,7 @@ Provide your analysis in the following JSON structure:
       }},
       "program_length": {{
         "extracted_length": "string (as written in document)",
-        "validated_length": "string (from database if found)"
+        "validated_length": "string (from database )"
       }},
        "grade_scale": {{
          "extracted_hint": "string (as written in document, e.g., '0–100', 'A–F', '5-point scale')",
@@ -123,6 +123,7 @@ Provide your analysis in the following JSON structure:
 - **Be Thorough**: Examine the entire document carefully for all credentials
 - **Preserve Original Text**: Always include the exact text as it appears in the document
 - **Use Tools Actively**: Don't guess - use the database tools to validate information
+- **Database Validation Required**: All fields must be matched to their closest match from the database. Complete the validated_ fields by directly using the values returned by database searches. Do not make up any values not found in the database.
 - **Select Grade Scale**: Always call get_grade_scales() and select/report the grade scale used for each credential
 - **Include US Equivalencies**: Always call get_us_equivalencies() and match credentials to appropriate US degree descriptions
 - **Complete Equivalency Statements**: Provide the full equivalency description from the database for each credential, ensuring any placeholder terms in parentheses and all caps (like "(LEVEL)" or "(SUBJECT)") are either filled in with specific information or removed entirely
