@@ -257,3 +257,24 @@ def get_grade_scale_by_uuid(grade_scale_uuid: str) -> Optional[Dict[str, Any]]:
         cursor.execute(sql, (grade_scale_uuid,))
         result = cursor.fetchone()
         return dict(result) if result else None
+
+
+def get_foreign_credential_by_uuid(credential_uuid: str) -> Optional[Dict[str, Any]]:
+    """
+    Get a specific foreign credential by UUID.
+    
+    Args:
+        credential_uuid: UUID of the foreign credential to find
+        
+    Returns:
+        Optional[Dict]: Foreign credential record if found, None otherwise
+    """
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        sql = """
+        SELECT * FROM foreign_credential 
+        WHERE credential_uuid = ?
+        """
+        cursor.execute(sql, (credential_uuid,))
+        result = cursor.fetchone()
+        return dict(result) if result else None

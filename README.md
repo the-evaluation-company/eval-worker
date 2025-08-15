@@ -464,6 +464,26 @@ This architecture ensures that all new data fields flow consistently through the
 - **Automatic Function Calling**: Gemini integration with AFC for streamlined tool execution
 - **Provider Switching**: Dynamic LLM provider selection via environment variable
 - ** Tool Set**: Added grade scales tool for more comprehensive credential analysis
+- **Database Lookup Pattern**: Implemented validated_id workflow for foreign credentials and grade scales to prevent LLM from making up values not in the database
+
+### Database Lookup Workflow Pattern
+To prevent the LLM from generating values not present in the database, the system now uses a **validated_id workflow** for critical fields:
+
+1. **LLM Returns Only IDs**: Instead of returning validated text values, the LLM returns only the `validated_id` (UUID) from database searches
+2. **PDF Generator Does Database Lookup**: The PDF generator queries the database using the UUID to retrieve the actual display values
+3. **Fallback to Extracted Values**: If no validated_id is provided or database lookup fails, the system falls back to the extracted text from the document
+
+**Fields Currently Using This Pattern:**
+- **Foreign Credentials**: `validated_credential.id` → Database lookup for `foreign_credential` and `english_credential`
+- **Grade Scales**: `validated_scale.id` → Database lookup for `bifurcation_setup` and grade conversion tables
+
+**Benefits:**
+- **Data Integrity**: Ensures only values actually in the database appear in final reports
+- **Consistency**: Eliminates LLM-generated variations of the same database values
+- **Maintainability**: Centralizes display logic in the PDF generator rather than LLM prompts
+
+**Future Implementation:**
+Consider converting other fields (institutions, program lengths, US equivalencies) to use this same pattern to further improve data integrity and prevent LLM-generated values from appearing in evaluation reports.
 
 
 

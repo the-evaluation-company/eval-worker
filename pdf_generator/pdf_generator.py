@@ -435,8 +435,8 @@ class PDFGenerator:
         credential_details = [
             {"label": "Country of Study:", "value": form_data.country or ""},
             {"label": "Institution:", "value": form_data.institution or ""},
-            {"label": "Foreign Credential:", "value": program_value},
-            {"label": "Program of Study:", "value": (form_data.programOfStudy or "") + (", " + form_data.awardDate if form_data.awardDate else "")},
+            {"label": "Foreign Credential:", "value": program_value + (", " + form_data.awardDate if form_data.awardDate else "")},
+            {"label": "Program of Study:", "value": form_data.programOfStudy or ""},
             {"label": "Length of Program:", "value": form_data.programLength or ""},
             {"label": "Recommended U.S. Equivalency:", "value": form_data.usEquivalency or ""},
         ]
@@ -906,8 +906,8 @@ Foreign grades are converted to U.S. letter grades based on the 4.00 system. Let
         credential_details = [
             {"label": "Country of Study:", "value": form_data.country or ""},
             {"label": "Institution:", "value": form_data.institution or ""},
-            {"label": "Foreign Credential:", "value": program_value},
-            {"label": "Program of Study:", "value": (form_data.programOfStudy or "") + (", " + form_data.awardDate if form_data.awardDate else "")},
+            {"label": "Foreign Credential:", "value": program_value + (", " + form_data.awardDate if form_data.awardDate else "")},
+            {"label": "Program of Study:", "value": form_data.programOfStudy or ""},
             {"label": "Length of Program:", "value": form_data.programLength or ""},
             {"label": "Dates of Attendance:", "value": form_data.dateOfAttendance or ""},
             {"label": "Recommended U.S. Equivalency:", "value": form_data.usEquivalency or ""},
@@ -1086,8 +1086,10 @@ All documentation submitted to TEC is reviewed internally. At a minimum, TEC req
         header_height += self.config.layout.LINE_HEIGHT * 1.2  # Grade Conversion label
         header_height += self.config.layout.LINE_HEIGHT * 1.2  # Spacing after label
         
-        # Estimate table height (2 rows + some padding)
-        table_height = 20 * 2 + 20  # row_height * num_rows + padding
+        # Estimate table height more conservatively for multi-line content
+        # Assume each row could have up to 3 lines of text
+        estimated_row_height = 35  # Increased from 20 to account for multi-line content
+        table_height = estimated_row_height * 2 + 20  # row_height * num_rows + padding
         
         total_section_height = header_height + table_height
 
@@ -1197,7 +1199,7 @@ All documentation submitted to TEC is reviewed internally. At a minimum, TEC req
             y: Y coordinate of top-left corner (top of table)
             data: List of rows, each row is a list of cell values
             col_widths: List of column widths
-            row_height: Height of each row
+            row_height: Base height of each row (will be adjusted dynamically)
             font_size: Font size for table text
             border_color: Border color as RGB tuple
             border_width: Border width
@@ -1208,25 +1210,40 @@ All documentation submitted to TEC is reviewed internally. At a minimum, TEC req
         if not data or not col_widths:
             return y
 
+        # Calculate dynamic row heights based on content
+        line_height = font_size + 2  # Height per line of text
+        padding = 8  # Padding above and below text
+        min_row_height = 20  # Minimum row height
+        
+        row_heights = []
+        for row_data in data:
+            max_lines_in_row = 1
+            for cell_value in row_data:
+                if cell_value:
+                    # Count lines in this cell (split by newlines)
+                    cell_lines = str(cell_value).split('\n')
+                    max_lines_in_row = max(max_lines_in_row, len(cell_lines))
+            
+            # Calculate row height based on content
+            dynamic_height = max(min_row_height, (max_lines_in_row * line_height) + padding)
+            row_heights.append(dynamic_height)
+
+        # Calculate total table height
         table_width = sum(col_widths)
-        table_height = len(data) * row_height
+        table_height = sum(row_heights)
 
         # Draw table border
         self.document.draw_rectangle(x, y - table_height, table_width, table_height, border_color, border_width)
 
         # Draw rows
+        current_y = y
         for row_idx, row_data in enumerate(data):
-            row_y = y - (row_idx * row_height)
+            row_height = row_heights[row_idx]
+            row_y = current_y
             
-            # Draw column separators and cell content
+            # Draw cell content
             col_x = x
             for col_idx, cell_value in enumerate(row_data):
-                # Draw vertical line (column separator)
-                if col_idx > 0:
-                    self.document.current_page.setStrokeColorRGB(*border_color)
-                    self.document.current_page.setLineWidth(border_width)
-                    self.document.current_page.line(col_x, y, col_x, y - table_height)
-
                 # Draw cell text
                 if cell_value:
                     cell_width = col_widths[col_idx]
@@ -1270,8 +1287,20 @@ All documentation submitted to TEC is reviewed internally. At a minimum, TEC req
                 self.document.current_page.setStrokeColorRGB(*border_color)
                 self.document.current_page.setLineWidth(border_width)
                 self.document.current_page.line(x, row_y - row_height, x + table_width, row_y - row_height)
+            
+            # Move to next row
+            current_y -= row_height
 
-        return y - table_height
+        # Draw vertical column separators after all rows are processed
+        # This ensures they extend exactly from the top to bottom of the table
+        col_x = x
+        for col_idx in range(1, len(col_widths)):  # Start from 1 to skip the first column
+            col_x += col_widths[col_idx - 1]
+            self.document.current_page.setStrokeColorRGB(*border_color)
+            self.document.current_page.setLineWidth(border_width)
+            self.document.current_page.line(col_x, y, col_x, y - table_height)
+
+        return current_y
 
     def _draw_course_analysis_table(self, current_y: float, course_analysis, draw_header: bool = True) -> float:
         """

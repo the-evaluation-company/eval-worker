@@ -11,7 +11,7 @@ from datetime import datetime
 
 from .models import CredentialAnalysisResult, CredentialInfo
 from pdf_generator.types import CredentialGroup, CredentialGroupWithCBC, GradeMapping, CaseInfo, PDFGenerationOptions, CourseAnalysisData, CourseSection, CourseItem
-from database.queries import get_grade_scale_by_uuid
+from database.queries import get_grade_scale_by_uuid, get_foreign_credential_by_uuid
 from utils.helpers import parse_grade_scale_bifurcation, extract_numeric_grade_for_sorting
 
 
@@ -117,8 +117,8 @@ class PDFAdapter:
                         period_strings.append(f"{start}-{end}")
                 date_of_attendance = ", ".join(period_strings)
         
-        # Extract program details
-        program = cred.foreign_credential.get_pdf_display_type()
+        # Extract program details with database lookup for foreign credential
+        program = PDFAdapter._get_credential_display_name(cred.foreign_credential)
         program_of_study = cred.program_of_study or "Not specified"
         program_length = ""
         if cred.program_length:
@@ -272,6 +272,44 @@ class PDFAdapter:
             )
         
         return grade_mappings
+    
+    @staticmethod
+    def _get_credential_display_name(credential_match) -> str:
+        """
+        Get the display name for a foreign credential using database lookup.
+        
+        Args:
+            credential_match: CredentialMatch object containing validated credential info
+            
+        Returns:
+            str: Display name for the credential (foreign name, or foreign + English if available)
+        """
+        # Check if we have validated credential data with an ID
+        if not credential_match or not credential_match.validated_credential or not credential_match.validated_credential.id:
+            # Fallback to extracted type if no validated credential
+            return credential_match.extracted_type if credential_match else "Not specified"
+        
+        # Get credential data from database using the UUID
+        credential_uuid = credential_match.validated_credential.id
+        credential_data = get_foreign_credential_by_uuid(credential_uuid)
+        
+        if not credential_data:
+            # Fallback to extracted type if no database match
+            return credential_match.extracted_type
+        
+        # Build display name based on available data
+        foreign_name = credential_data.get('foreign_credential', '')
+        english_name = credential_data.get('english_credential', '')
+        
+        if foreign_name and english_name:
+            # Both names available - show foreign name with English on new line
+            return f"{foreign_name}\n{english_name}"
+        elif foreign_name:
+            # Only foreign name available
+            return foreign_name
+        else:
+            # No names in database - fallback to extracted type
+            return credential_match.extracted_type
     
     @staticmethod
     def extract_case_info_from_filename(filename: str) -> Dict[str, str]:

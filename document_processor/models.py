@@ -45,30 +45,25 @@ class InstitutionMatch:
 
 
 @dataclass
+class ValidatedCredential:
+    """Validated credential reference from the database."""
+    id: Optional[Any] = None
+
+
+@dataclass
 class CredentialMatch:
     """Information about a credential type match from the database."""
     extracted_type: str
-    validated_type: Optional[str] = None
-    validated_english_type: Optional[str] = None  # English translation from database
+    validated_credential: Optional[ValidatedCredential] = None
     match_confidence: str = "not_found"  # high, medium, low, not_found
     
     def get_display_type(self) -> str:
-        """Get the display type with both original and English when available."""
-        if self.validated_type and self.validated_english_type:
-            return f"{self.validated_type} ({self.validated_english_type})"
-        elif self.validated_type:
-            return self.validated_type
-        else:
-            return self.extracted_type
+        """Get the display type - this will be handled by PDF generator with database lookup."""
+        return self.extracted_type
     
     def get_pdf_display_type(self) -> str:
-        """Get the display type for PDF format with English on new line."""
-        if self.validated_type and self.validated_english_type:
-            return f"{self.validated_type}\n{self.validated_english_type}"
-        elif self.validated_type:
-            return self.validated_type
-        else:
-            return self.extracted_type
+        """Get the display type for PDF format - this will be handled by PDF generator with database lookup."""
+        return self.extracted_type
 
 
 @dataclass
@@ -225,10 +220,13 @@ class CredentialAnalysisResultBuilder:
                 
                 # Parse credential match
                 credential_data = cred_data.get("foreign_credential", {})
+                validated_credential_data = credential_data.get("validated_credential", {}) or {}
+                validated_credential = ValidatedCredential(
+                    id=validated_credential_data.get("id")
+                ) if validated_credential_data else None
                 credential = CredentialMatch(
                     extracted_type=credential_data.get("extracted_type", ""),
-                    validated_type=credential_data.get("validated_type"),
-                    validated_english_type=credential_data.get("validated_english_type"),
+                    validated_credential=validated_credential,
                     match_confidence=credential_data.get("match_confidence", "not_found")
                 )
                 
@@ -398,8 +396,9 @@ class CredentialAnalysisResultBuilder:
                     },
                     "foreign_credential": {
                         "extracted_type": cred.foreign_credential.extracted_type,
-                        "validated_type": cred.foreign_credential.validated_type,
-                        "validated_english_type": cred.foreign_credential.validated_english_type,
+                        "validated_credential": {
+                            "id": cred.foreign_credential.validated_credential.id
+                        } if cred.foreign_credential.validated_credential else None,
                         "match_confidence": cred.foreign_credential.match_confidence
                     },
                     "program_of_study": cred.program_of_study,

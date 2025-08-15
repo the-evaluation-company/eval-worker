@@ -62,12 +62,13 @@ Provide your analysis in the following JSON structure:
         "validated_english_name": "string (from database  - USE institution_english_name)",
         "match_confidence": "high/medium/low/not_found"
       }},
-      "foreign_credential": {{
-        "extracted_type": "string (exactly as written in document)",
-        "validated_type": "string (from database  - USE foreign_credential field)",
-        "validated_english_type": "string (from database  - USE english_credential field)",
-        "match_confidence": "high/medium/low/not_found"
-      }},
+             "foreign_credential": {{
+         "extracted_type": "string (exactly as written in document)",
+         "validated_credential": {{
+           "id": "string (from database - USE credential_uuid field)"
+         }},
+         "match_confidence": "high/medium/low/not_found"
+       }},
       "program_of_study": "string",
       "award_date": "YYYY",
       "attendance_dates": {{
