@@ -1213,20 +1213,9 @@ All documentation submitted to TEC is reviewed internally. At a minimum, TEC req
         # Draw table border
         self.document.draw_rectangle(x, y - table_height, table_width, table_height, border_color, border_width)
 
-        # Light gray color for label cells background
-        light_gray = (0.9, 0.9, 0.9)
-
         # Draw rows
         for row_idx, row_data in enumerate(data):
             row_y = y - (row_idx * row_height)
-            
-            # Fill first column (label column) with light gray background
-            self.document.draw_rectangle(
-                x, row_y - row_height, 
-                col_widths[0], row_height, 
-                border_color, 0,  # No border for fill
-                fill_color=light_gray
-            )
             
             # Draw column separators and cell content
             col_x = x
