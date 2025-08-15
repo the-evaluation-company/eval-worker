@@ -11,6 +11,8 @@ from datetime import datetime
 
 from .models import CredentialAnalysisResult, CredentialInfo
 from pdf_generator.types import CredentialGroup, CredentialGroupWithCBC, GradeMapping, CaseInfo, PDFGenerationOptions, CourseAnalysisData, CourseSection, CourseItem
+from database.queries import get_grade_scale_by_uuid
+from utils.helpers import parse_grade_scale_bifurcation, extract_numeric_grade_for_sorting
 
 
 class PDFAdapter:
@@ -207,23 +209,65 @@ class PDFAdapter:
         """
         grade_mappings = []
         
-        # Example mappings - these should be extracted from the actual grade scale data
-        # In a real implementation, this would parse the validated_scale data
-        # For now, create sample mappings based on typical patterns
-        default_mappings = [
-            {"original": "17-20", "us": "A", "gpa": "4.00", "letter": "A"},
-            {"original": "13-16", "us": "B", "gpa": "3.00", "letter": "B"},
-            {"original": "10-12", "us": "C", "gpa": "2.00", "letter": "C"},
-            {"original": "1-9", "us": "F", "gpa": "0.00", "letter": "F"},
-        ]
+        # Check if we have validated scale data with an ID
+        if not grade_scale_info or not grade_scale_info.validated_scale or not grade_scale_info.validated_scale.id:
+            # Fallback to default mappings if no validated scale
+            default_mappings = [
+                {"original": "17-20", "us": "A", "gpa": "4.00", "letter": "A"},
+                {"original": "13-16", "us": "B", "gpa": "3.00", "letter": "B"},
+                {"original": "10-12", "us": "C", "gpa": "2.00", "letter": "C"},
+                {"original": "1-9", "us": "F", "gpa": "0.00", "letter": "F"},
+            ]
+            
+            for mapping in default_mappings:
+                grade_mappings.append(
+                    GradeMapping(
+                        originalGrade=mapping["original"],
+                        usGrade=mapping["us"],
+                        gpa=mapping["gpa"],
+                        letterGrade=mapping["letter"]
+                    )
+                )
+            return grade_mappings
         
-        for mapping in default_mappings:
+        # Get grade scale data from database using the UUID
+        grade_scale_uuid = grade_scale_info.validated_scale.id
+        grade_scale_data = get_grade_scale_by_uuid(grade_scale_uuid)
+        
+        if not grade_scale_data or not grade_scale_data.get('bifurcation_setup'):
+            # Fallback to default mappings if no bifurcation setup
+            default_mappings = [
+                {"original": "17-20", "us": "A", "gpa": "4.00", "letter": "A"},
+                {"original": "13-16", "us": "B", "gpa": "3.00", "letter": "B"},
+                {"original": "10-12", "us": "C", "gpa": "2.00", "letter": "C"},
+                {"original": "1-9", "us": "F", "gpa": "0.00", "letter": "F"},
+            ]
+            
+            for mapping in default_mappings:
+                grade_mappings.append(
+                    GradeMapping(
+                        originalGrade=mapping["original"],
+                        usGrade=mapping["us"],
+                        gpa=mapping["gpa"],
+                        letterGrade=mapping["letter"]
+                    )
+                )
+            return grade_mappings
+        
+        # Parse the bifurcation setup to get grade mappings
+        parsed_mappings = parse_grade_scale_bifurcation(grade_scale_data['bifurcation_setup'])
+        
+        # Sort by original grade (descending) for better display
+        parsed_mappings.sort(key=lambda x: extract_numeric_grade_for_sorting(x["original_grade"]), reverse=True)
+        
+        # Convert to GradeMapping objects
+        for mapping in parsed_mappings:
             grade_mappings.append(
                 GradeMapping(
-                    originalGrade=mapping["original"],
-                    usGrade=mapping["us"],
+                    originalGrade=mapping["original_grade"],
+                    usGrade=mapping["us_grade"],
                     gpa=mapping["gpa"],
-                    letterGrade=mapping["letter"]
+                    letterGrade=mapping["letter_grade"]
                 )
             )
         

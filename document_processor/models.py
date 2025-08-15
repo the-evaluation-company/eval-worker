@@ -95,7 +95,6 @@ class ProgramLength:
 class ValidatedGradeScale:
     """Validated grade scale reference from the database."""
     id: Optional[Any] = None
-    name: Optional[str] = None
 
 
 @dataclass
@@ -137,8 +136,6 @@ class CourseAnalysis:
 @dataclass
 class AdditionalInfo:
     """Additional credential information."""
-    grades: Optional[str] = None
-    honors: Optional[str] = None
     notes: Optional[str] = None
 
 
@@ -281,8 +278,7 @@ class CredentialAnalysisResultBuilder:
                 if grade_data:
                     validated_scale_data = grade_data.get("validated_scale", {}) or {}
                     validated_scale = ValidatedGradeScale(
-                        id=validated_scale_data.get("id"),
-                        name=validated_scale_data.get("name")
+                        id=validated_scale_data.get("id")
                     ) if validated_scale_data else None
                     grade_scale = GradeScaleInfo(
                         extracted_hint=grade_data.get("extracted_hint"),
@@ -302,8 +298,6 @@ class CredentialAnalysisResultBuilder:
                 # Parse additional info
                 additional_data = cred_data.get("additional_info", {})
                 additional_info = AdditionalInfo(
-                    grades=additional_data.get("grades"),
-                    honors=additional_data.get("honors"),
                     notes=additional_data.get("notes")
                 ) if additional_data else None
                 
@@ -426,8 +420,7 @@ class CredentialAnalysisResultBuilder:
                     "grade_scale": {
                         "extracted_hint": cred.grade_scale.extracted_hint,
                         "validated_scale": {
-                            "id": cred.grade_scale.validated_scale.id,
-                            "name": cred.grade_scale.validated_scale.name
+                            "id": cred.grade_scale.validated_scale.id
                         } if cred.grade_scale.validated_scale else None,
                         "match_confidence": cred.grade_scale.match_confidence
                     } if cred.grade_scale else None,
@@ -436,8 +429,6 @@ class CredentialAnalysisResultBuilder:
                         "match_confidence": cred.us_equivalency.match_confidence
                     } if cred.us_equivalency else None,
                     "additional_info": {
-                        "grades": cred.additional_info.grades,
-                        "honors": cred.additional_info.honors,
                         "notes": cred.additional_info.notes
                     } if cred.additional_info else None,
                     "course_analysis": {

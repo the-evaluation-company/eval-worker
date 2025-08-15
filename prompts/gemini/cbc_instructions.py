@@ -107,8 +107,6 @@ Provide your analysis in the following JSON structure:
         ]
       }},
       "additional_info": {{
-        "grades": "string (if available)",
-        "honors": "string (if available)",
         "notes": "string (any additional relevant information)"
       }}
     }}

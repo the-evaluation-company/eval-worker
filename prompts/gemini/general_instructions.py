@@ -84,8 +84,6 @@ Provide your analysis in the following JSON structure:
         "match_confidence": "high/medium/low/not_found"
       }},
       "additional_info": {{
-        "grades": "string (if available)",
-        "honors": "string (if available)",
         "notes": "string (any additional relevant information)"
       }}
     }}

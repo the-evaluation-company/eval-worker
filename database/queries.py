@@ -236,3 +236,24 @@ def validate_data_integrity() -> Dict[str, Any]:
         'issues': issues,
         'checked_at': 'now'  # TODO: Use actual timestamp
     }
+
+
+def get_grade_scale_by_uuid(grade_scale_uuid: str) -> Optional[Dict[str, Any]]:
+    """
+    Get a specific grade scale by UUID.
+    
+    Args:
+        grade_scale_uuid: UUID of the grade scale to find
+        
+    Returns:
+        Optional[Dict]: Grade scale record if found, None otherwise
+    """
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        sql = """
+        SELECT * FROM grade_scale 
+        WHERE grade_scale_uuid = ?
+        """
+        cursor.execute(sql, (grade_scale_uuid,))
+        result = cursor.fetchone()
+        return dict(result) if result else None

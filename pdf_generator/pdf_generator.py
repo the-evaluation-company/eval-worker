@@ -12,6 +12,7 @@ from .config import BLACK_COLOR, PDF_CONFIG
 from .core import PDFDocument
 from .types import CaseInfo, CredentialGroup, CredentialGroupWithCBC, GradeMapping, PDFGenerationOptions
 from .utils import normalize_text, wrap_text
+from utils.helpers import extract_numeric_grade_for_sorting
 
 
 class PDFGenerator:
@@ -1121,7 +1122,7 @@ All documentation submitted to TEC is reviewed internally. At a minimum, TEC req
         us_grades = []
         
         # Sort grade mappings by original grade (descending)
-        sorted_mappings = sorted(grade_mappings, key=lambda x: self._extract_numeric_grade(x.originalGrade), reverse=True)
+        sorted_mappings = sorted(grade_mappings, key=lambda x: extract_numeric_grade_for_sorting(x.originalGrade), reverse=True)
         
         for mapping in sorted_mappings:
             original_grades.append(mapping.originalGrade)
@@ -1241,8 +1242,26 @@ All documentation submitted to TEC is reviewed internally. At a minimum, TEC req
                         text_width = self.document.get_text_width(str(cell_value), font_size, font_type)
                         text_x = col_x + (cell_width - text_width) / 2
                     
-                    text_y = row_y - row_height + (row_height - font_size) / 2
-                    self.document.draw_text(str(cell_value), text_x, text_y, font_size, font_type, border_color)
+                    # Handle multi-line text (from <br/> tags)
+                    cell_lines = str(cell_value).split('\n')
+                    line_height = font_size + 2  # Add small spacing between lines
+                    
+                    # Calculate starting Y position to center the text block vertically
+                    total_text_height = len(cell_lines) * line_height
+                    start_y = row_y - row_height + (row_height - total_text_height) / 2
+                    
+                    for line_idx, line in enumerate(cell_lines):
+                        line_y = start_y + (line_idx * line_height)
+                        
+                        # For multi-line text, recalculate text position for each line
+                        if len(cell_lines) > 1 and col_idx > 0:
+                            # Re-center each line individually
+                            line_width = self.document.get_text_width(line, font_size, font_type)
+                            line_x = col_x + (cell_width - line_width) / 2
+                        else:
+                            line_x = text_x
+                        
+                        self.document.draw_text(line, line_x, line_y, font_size, font_type, border_color)
 
                 col_x += col_widths[col_idx]
 
@@ -1254,32 +1273,6 @@ All documentation submitted to TEC is reviewed internally. At a minimum, TEC req
 
         return y - table_height
 
-    def _extract_numeric_grade(self, grade_str: str) -> float:
-        """
-        Extract numeric value from grade string for sorting.
-        
-        Args:
-            grade_str: Grade string (e.g., "17-20", "13-16", "A")
-            
-        Returns:
-            Numeric value for sorting
-        """
-        import re
-        
-        # Extract numbers from grade string
-        numbers = re.findall(r'\d+', grade_str)
-        if numbers:
-            # Use the first number for sorting
-            return float(numbers[0])
-        
-        # Handle letter grades
-        letter_values = {"A": 20, "B": 16, "C": 12, "D": 8, "F": 4}
-        for letter, value in letter_values.items():
-            if letter in grade_str.upper():
-                return float(value)
-        
-        return 0.0
-    
     def _draw_course_analysis_table(self, current_y: float, course_analysis, draw_header: bool = True) -> float:
         """
         Draw course analysis table for CBC evaluations with 3 columns.

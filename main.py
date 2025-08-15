@@ -264,9 +264,9 @@ def analyze_folio(filename: str, document_type: str = "general", generate_pdf: b
                 # Grade scale
                 if getattr(cred, 'grade_scale', None):
                     gs = cred.grade_scale
-                    if gs.validated_scale and (gs.validated_scale.id or gs.validated_scale.name):
+                    if gs.validated_scale and gs.validated_scale.id:
                         gs_status = "[MATCH]" if gs.match_confidence in ['high', 'medium'] else "[LOW CONF]"
-                        print(f"{gs_status} Grade Scale: {gs.validated_scale.name or 'Unnamed'} (ID: {gs.validated_scale.id or 'N/A'})")
+                        print(f"{gs_status} Grade Scale: ID {gs.validated_scale.id}")
                     elif gs.extracted_hint:
                         print(f"[HINT] Grade Scale: {gs.extracted_hint} (no database match)")
                     else:
