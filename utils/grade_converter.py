@@ -6,7 +6,7 @@ from the database. Supports complex grade formats and multiple input variations.
 """
 
 import re
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Any
 from .helpers import parse_grade_scale_bifurcation
 
 
@@ -258,6 +258,142 @@ def convert_grade_with_scale(foreign_grade: str, bifurcation_setup: str) -> Opti
     return converter.convert_grade(foreign_grade)
 
 
+def extract_gpa_from_grade_output(grade_output: str) -> Optional[float]:
+    """
+    Extract GPA value from a grade output string.
+    
+    Args:
+        grade_output: Grade output string (e.g., "4.00/A", "3.00/B", "PASS")
+        
+    Returns:
+        GPA value as float or None if not found
+    """
+    if not grade_output:
+        return None
+    
+    # Handle PASS/FAIL grades
+    if grade_output.upper() in ['PASS', 'FAIL']:
+        return None
+    
+    # Extract numeric GPA from output (e.g., "4.00/A" -> 4.00)
+    match = re.match(r'^(\d+\.?\d*)', grade_output)
+    if match:
+        try:
+            return float(match.group(1))
+        except ValueError:
+            pass
+    
+    return None
+
+
+def calculate_cumulative_stats(course_data: List[Dict[str, Any]], grade_scale: Optional[str] = None) -> Tuple[float, float]:
+    """
+    Calculate total credits and cumulative GPA from course data.
+    
+    Args:
+        course_data: List of course dictionaries with 'us_credits' and 'original_grade' fields
+        grade_scale: Optional grade scale bifurcation setup for grade conversion
+        
+    Returns:
+        Tuple of (total_credits, cumulative_gpa)
+    """
+    total_credits = 0.0
+    total_grade_points = 0.0
+    courses_with_gpa = 0
+    
+    # Initialize grade converter if grade scale is provided
+    converter = None
+    if grade_scale:
+        converter = GradeConverter(grade_scale)
+    
+    for course in course_data:
+        # Get US credits
+        us_credits_str = course.get('us_credits', '0')
+        try:
+            us_credits = float(us_credits_str)
+        except (ValueError, TypeError):
+            us_credits = 0.0
+        
+        # Get original grade
+        original_grade = course.get('original_grade', '')
+        
+        # Check if the grade is already a US grade (e.g., "4.00/A") or needs conversion
+        gpa = None
+        if original_grade:
+            # First try to extract GPA directly (in case it's already converted)
+            gpa = extract_gpa_from_grade_output(original_grade)
+            
+            # If no GPA found and we have a converter, try to convert the grade
+            if gpa is None and converter:
+                us_grade_output = converter.convert_grade(original_grade)
+                if us_grade_output:
+                    gpa = extract_gpa_from_grade_output(us_grade_output)
+        
+        # Add to totals if GPA is valid
+        if gpa is not None and us_credits > 0:
+            total_credits += us_credits
+            total_grade_points += (gpa * us_credits)
+            courses_with_gpa += 1
+    
+    # Calculate cumulative GPA
+    cumulative_gpa = 0.0
+    if total_credits > 0:
+        cumulative_gpa = total_grade_points / total_credits
+    
+    return total_credits, cumulative_gpa
+
+
+def calculate_cumulative_stats_from_credential_group(credential_group: Any) -> Tuple[float, float]:
+    """
+    Calculate cumulative stats from a credential group object.
+    
+    Args:
+        credential_group: CredentialGroup or CredentialGroupWithCBC object
+        
+    Returns:
+        Tuple of (total_credits, cumulative_gpa)
+    """
+    # Check if this is a CBC credential group
+    if hasattr(credential_group, 'course_analysis') and credential_group.course_analysis:
+        # Extract course data from course analysis
+        course_data = []
+        
+        # Navigate through course analysis structure
+        if hasattr(credential_group.course_analysis, 'sections'):
+            for section in credential_group.course_analysis.sections:
+                if hasattr(section, 'courses'):
+                    for course in section.courses:
+                        # Handle both CourseItem (us_credits, us_grades) and CourseInfo (foreign_credits, foreign_grades)
+                        us_credits = None
+                        original_grade = None
+                        
+                        # Check if this is a CourseItem (converted format)
+                        if hasattr(course, 'us_credits') and hasattr(course, 'us_grades'):
+                            us_credits = course.us_credits
+                            original_grade = course.us_grades  # Already converted US grade
+                        # Check if this is a CourseInfo (original format)
+                        elif hasattr(course, 'foreign_credits') and hasattr(course, 'foreign_grades'):
+                            us_credits = course.foreign_credits
+                            original_grade = course.foreign_grades  # Original foreign grade
+                        
+                        if us_credits and original_grade:
+                            course_dict = {
+                                'us_credits': us_credits,
+                                'original_grade': original_grade
+                            }
+                            course_data.append(course_dict)
+        
+        # Get grade scale if available
+        grade_scale = None
+        if hasattr(credential_group, 'gradeScaleInfo'):
+            grade_scale = credential_group.gradeScaleInfo
+        
+        return calculate_cumulative_stats(course_data, grade_scale)
+    
+    # For non-CBC cases, return default values
+    return 0.0, 0.0
+
+
 # Example usage and testing
 if __name__ == "__main__":
     # Test with a sample grade scale
@@ -276,3 +412,16 @@ if __name__ == "__main__":
     
     print("\nAll possible inputs:", converter.get_all_possible_inputs())
     print("All possible outputs:", converter.get_all_possible_outputs())
+    
+    # Test cumulative stats calculation
+    test_courses = [
+        {'us_credits': '3.0', 'original_grade': 'A'},
+        {'us_credits': '3.0', 'original_grade': 'B+'},
+        {'us_credits': '4.0', 'original_grade': 'A+'},
+        {'us_credits': '3.0', 'original_grade': 'C'},
+    ]
+    
+    total_credits, cumulative_gpa = calculate_cumulative_stats(test_courses, test_scale)
+    print(f"\nCumulative Stats Test:")
+    print(f"Total Credits: {total_credits:.2f}")
+    print(f"Cumulative GPA: {cumulative_gpa:.2f}")

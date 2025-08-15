@@ -352,7 +352,7 @@ class PDFGenerator:
         # Add empty line between Type of Evaluation and CREDENTIALS SUMMARY
         current_y -= 12
 
-        # Draw CREDENTIALS SUMMARY header
+        # Draw CREDENTIALS SUMMARY header (for all cases - general and CBC)
         self.document.draw_text(
             "CREDENTIALS SUMMARY",
             35,  # TypeScript left margin
@@ -408,6 +408,64 @@ class PDFGenerator:
         # Add spacing after box
         current_y -= 50
 
+        # Draw cumulative stats box only for CBC cases
+        if isinstance(form_data, CredentialGroupWithCBC):
+            current_y = self._draw_cumulative_stats_box(current_y, form_data)
+
+        return current_y
+
+    def _draw_cumulative_stats_box(self, current_y: float, form_data: CredentialGroupWithCBC) -> float:
+        """
+        Draw cumulative stats box showing total credits and GPA.
+        """
+        # Import the calculation function from grade converter
+        from utils.grade_converter import calculate_cumulative_stats_from_credential_group
+        
+        # Calculate cumulative stats using the grade converter
+        total_credits, cumulative_gpa = calculate_cumulative_stats_from_credential_group(form_data)
+        
+        # Create stats text
+        stats_text = f"Total U.S. Credits and Cumulative Grade Point Average: {total_credits:.2f} {cumulative_gpa:.2f}"
+        
+        # Box dimensions (same as equivalency box)
+        available_width = self.document.get_available_width()
+        line_spacing = 12 * 1.2
+        box_width = available_width
+        
+        # Calculate text width inside the box
+        box_left_margin = 50 - 35
+        box_right_margin = box_left_margin
+        text_available_width = available_width - box_left_margin - box_right_margin
+        
+        # Wrap text
+        wrapped_lines = wrap_text(stats_text, self.document.font_manager, 12, text_available_width, "bold")
+        
+        # Calculate box height
+        box_height = len(wrapped_lines) * line_spacing + 16
+        
+        # Draw box
+        self.document.draw_rectangle(
+            35, current_y - box_height + line_spacing - 15, box_width, box_height, BLACK_COLOR, 1
+        )
+        
+        # Draw text in box
+        line_y = current_y - 15
+        for line in wrapped_lines:
+            self.document.draw_text(
+                normalize_text(line),
+                50,
+                line_y,
+                12,
+                "bold",
+                BLACK_COLOR,
+            )
+            line_y -= line_spacing
+        
+        current_y = current_y - box_height + line_spacing
+        
+        # Add spacing after box
+        current_y -= 24
+        
         return current_y
 
     def _draw_enhanced_credential_details(self, current_y: float, form_data: CredentialGroup, credential_index: int, total_credentials: int) -> float:
@@ -736,13 +794,20 @@ Foreign grades are converted to U.S. letter grades based on the 4.00 system. Let
         name_on_documentation = case_info.nameOnApplication or "NAME_MISSING"
         dob = case_info.dateOfBirth or "Not Available"
 
+        # Determine evaluation type based on options or form data
+        evaluation_type = "General Analysis"
+        if hasattr(form_data, 'course_analysis') and form_data.course_analysis:
+            evaluation_type = "Course-by-Course Analysis"
+        elif hasattr(form_data, 'parsedGradeScaleTable') and form_data.parsedGradeScaleTable:
+            evaluation_type = "Course-by-Course Analysis"
+        
         credential_info = [
             {"label": "Date:", "value": date_string},
             {"label": "SpanTran Number:", "value": case_info.caseNumber},
             {"label": "Name on Application:", "value": name_on_application},
             {"label": "Name on Documentation:", "value": name_on_documentation},
             {"label": "Date of Birth:", "value": dob},
-            {"label": "Type of Evaluation:", "value": "General Analysis"},
+            {"label": "Type of Evaluation:", "value": evaluation_type},
         ]
 
         # Calculate label width for alignment
@@ -817,6 +882,21 @@ Foreign grades are converted to U.S. letter grades based on the 4.00 system. Let
         Returns:
             New Y position
         """
+        # Add empty line between Type of Evaluation and CREDENTIALS SUMMARY
+        current_y -= 12
+
+        # Draw CREDENTIALS SUMMARY header (for all cases - general and CBC)
+        self.document.draw_text(
+            "CREDENTIALS SUMMARY",
+            self.config.layout.LEFT_MARGIN,
+            current_y,
+            9,
+            "bold",
+            BLACK_COLOR,
+        )
+
+        current_y -= 20
+
         # Get equivalency text with proper label
         # Use programOfStudyEnglishName as fallback for program
         program_value = form_data.program or form_data.programOfStudyEnglishName or ""
@@ -867,8 +947,71 @@ Foreign grades are converted to U.S. letter grades based on the 4.00 system. Let
         current_y = current_y - box_height + line_spacing
 
         # Add spacing after box
-        current_y -= 24
+        current_y -= 50
 
+        # Draw cumulative stats box only for CBC cases
+        if isinstance(form_data, CredentialGroupWithCBC):
+            current_y = self._draw_cumulative_stats_box_legacy(current_y, form_data)
+
+        return current_y
+
+    def _draw_cumulative_stats_box_legacy(self, current_y: float, form_data: CredentialGroupWithCBC) -> float:
+        """
+        Draw cumulative stats box showing total credits and GPA (legacy style).
+        """
+        # Import the calculation function from grade converter
+        from utils.grade_converter import calculate_cumulative_stats_from_credential_group
+        
+        # Calculate cumulative stats using the grade converter
+        total_credits, cumulative_gpa = calculate_cumulative_stats_from_credential_group(form_data)
+        
+        # Create stats text
+        stats_text = f"Total U.S. Credits and Cumulative Grade Point Average: {total_credits:.2f} {cumulative_gpa:.2f}"
+        
+        # Box dimensions (same as equivalency box)
+        available_width = self.document.get_available_width()
+        line_spacing = self.config.fonts.EQUIVALENCY_SIZE * 1.2
+        box_width = available_width
+        
+        # Calculate text width inside the box
+        box_internal_margin = self.config.layout.HORIZONTAL_PADDING - 10
+        text_available_width = available_width - (box_internal_margin * 2)
+        
+        # Wrap text
+        wrapped_lines = wrap_text(
+            stats_text,
+            self.document.font_manager,
+            self.config.fonts.EQUIVALENCY_SIZE,
+            text_available_width,
+            "bold",
+        )
+        
+        # Calculate box height
+        box_height = len(wrapped_lines) * line_spacing + self.config.layout.VERTICAL_PADDING * 1.1
+        
+        # Draw box
+        self.document.draw_rectangle(
+            self.config.layout.LEFT_MARGIN, current_y - box_height + line_spacing - 20, box_width, box_height, BLACK_COLOR, 1
+        )
+        
+        # Draw text in box
+        line_y = current_y - 20
+        for line in wrapped_lines:
+            self.document.draw_text(
+                normalize_text(line),
+                self.config.layout.LEFT_MARGIN + self.config.layout.HORIZONTAL_PADDING - 10,
+                line_y,
+                self.config.fonts.EQUIVALENCY_SIZE,
+                "bold",
+                BLACK_COLOR,
+            )
+            line_y -= line_spacing
+        
+        current_y = current_y - box_height + line_spacing
+        
+        # Add spacing after box
+        current_y -= 24
+        
         return current_y
 
     def _draw_credential_details(self, current_y: float, form_data: CredentialGroup, credential_index: int, total_credentials: int) -> float:
@@ -1436,6 +1579,73 @@ All documentation submitted to TEC is reviewed internally. At a minimum, TEC req
                     current_x += col_widths[i]
 
                 current_y -= row_height
+        
+        # Calculate cumulative GPA and total credits
+        total_credits = 0.0
+        total_grade_points = 0.0
+        
+        for section in course_analysis.sections:
+            for course in section.courses:
+                # Sum credits
+                if course.us_credits:
+                    try:
+                        credits = float(course.us_credits)
+                        total_credits += credits
+                    except (ValueError, TypeError):
+                        pass
+                
+                # Sum grade points (GPA × credits)
+                if course.us_grades and course.us_credits:
+                    try:
+                        # Extract GPA from us_grades (e.g., "2.67/B-" → 2.67)
+                        gpa_str = course.us_grades.split('/')[0]
+                        gpa = float(gpa_str)
+                        credits = float(course.us_credits)
+                        total_grade_points += gpa * credits
+                    except (ValueError, TypeError, IndexError):
+                        pass
+        
+        # Calculate cumulative GPA
+        cumulative_gpa = 0.0
+        if total_credits > 0:
+            cumulative_gpa = total_grade_points / total_credits
+        
+        # Draw cumulative row
+        if not self._will_content_fit(current_y, row_height):
+            self.current_page_number += 1
+            self.document.add_page_with_background()
+            self._draw_enhanced_page_numbering(None)
+            current_y = self.document.page_height - self.config.layout.TOP_MARGIN
+        
+        # Row border for cumulative row
+        self.document.draw_rectangle(
+            table_x, current_y - row_height + 5, total_width, row_height,
+            border_color=(0, 0, 0), border_width=1
+        )
+        # Vertical lines for column separators
+        self.document.draw_line(v1_x, current_y - row_height + 5, v1_x, current_y + 5)
+        self.document.draw_line(v2_x, current_y - row_height + 5, v2_x, current_y + 5)
+        
+        # Draw cumulative data
+        cumulative_values = [
+            "U.S. Credits and Cumulative Grade Point Average",
+            f"{total_credits:.2f}" if total_credits > 0 else "",
+            f"{cumulative_gpa:.2f}" if cumulative_gpa > 0 else ""
+        ]
+        
+        current_x = table_x
+        for i, value in enumerate(cumulative_values):
+            if i == 0:  # Subject column - left aligned and bold
+                text_x = current_x + 5
+                self.document.draw_text(value, text_x, current_y - 10, font_size, "bold", BLACK_COLOR)
+            else:  # Credits and grades columns - center aligned and bold
+                if value:
+                    text_x = current_x + col_widths[i] / 2 - self.document.get_text_width(value, font_size, "bold") / 2
+                    self.document.draw_text(value, text_x, current_y - 10, font_size, "bold", BLACK_COLOR)
+            
+            current_x += col_widths[i]
+        
+        current_y -= row_height
         
         return current_y
     
